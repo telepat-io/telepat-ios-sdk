@@ -18,19 +18,24 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 @property (nonatomic, strong) NSString *device_id;
 @property (nonatomic, strong) NSString *bearer;
 @property (nonatomic, strong) NSString *api_key;
+@property (nonatomic, strong) NSString *app_id;
+@property (nonatomic) BOOL socketsEnabled;
 
 + (instancetype) sharedClient;
 + (NSURL *) urlForEndpoint:(NSString*) endpoint;
++ (NSURL *) socketURL;
 
-- (void) get:(NSURL*)url parameters:(NSDictionary*)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
-- (void) post:(NSURL*)url parameters:(NSDictionary*)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
-- (void) put:(NSURL*)url parameters:(NSDictionary*)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
-- (void) patch:(NSURL*)url parameters:(NSDictionary*)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
+- (void) get:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
+- (void) post:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
+- (void) put:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
+- (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
 
-- (void) registerDevice:(UIDevice *)device token:(NSString *)token withBlock:(KRResponseBlock)block;
+- (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
 - (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block;
+- (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
 - (void) logoutWithBlock:(KRResponseBlock)block;
 - (void) updateContextsWithBlock:(KRResponseBlock)block;
-- (void) create:(NSDictionary *)body withBlock:(KRResponseBlock)block;
+- (void) create:(id)body withBlock:(KRResponseBlock)block;
+- (void) update:(id)body withBlock:(KRResponseBlock)block;
 
 @end

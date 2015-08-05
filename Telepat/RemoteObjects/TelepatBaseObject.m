@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Appscend. All rights reserved.
 //
 
+#import <objc/runtime.h>
 #import "TelepatBaseObject.h"
 
 @implementation TelepatBaseObject
@@ -32,7 +33,25 @@
 - (NSComparisonResult) compare:(id)object {
     if (![object isMemberOfClass:[self class]]) return NO;
     TelepatBaseObject *obj = object;
-    return [[NSNumber numberWithInt:self.object_id] compare:[NSNumber numberWithInt:obj.object_id]];
+    return [[NSNumber numberWithInteger:self.object_id] compare:[NSNumber numberWithInteger:obj.object_id]];
+}
+
+- (NSArray *) propertiesList {
+    unsigned count;
+    objc_property_t *properties = class_copyPropertyList([self class], &count);
+    
+    NSMutableArray *rv = [NSMutableArray array];
+    
+    unsigned i;
+    for (i = 0; i < count; i++)
+    {
+        objc_property_t property = properties[i];
+        NSString *name = [NSString stringWithUTF8String:property_getName(property)];
+        [rv addObject:name];
+    }
+    
+    free(properties);
+    return rv;
 }
 
 @end

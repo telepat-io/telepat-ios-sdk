@@ -15,6 +15,8 @@
 #define kNotificationPropertyName @"propertyName"
 #define kNotificationValue @"value"
 #define kUDID @"udid"
+#define kJWT @"authentication-token"
+#define kJWT_TIMESTAMP @"authentication-token-timestamp"
 
 extern NSString *const TelepatRemoteNotificationReceived;
 

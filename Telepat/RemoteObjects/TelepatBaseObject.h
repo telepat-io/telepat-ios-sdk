@@ -13,4 +13,6 @@
 @property (nonatomic) NSInteger object_id;
 @property (nonatomic) NSString<Optional> *uuid;
 
+- (NSArray *) propertiesList;
+
 @end

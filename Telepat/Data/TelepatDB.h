@@ -1,21 +1,22 @@
 //
-//  TelepatDatabaseProtocol.h
-//  Kraken
+//  TelepatDB.h
+//  GW Sales
 //
-//  Created by Ovidiu on 15/07/15.
+//  Created by Ovidiu on 05/08/15.
 //  Copyright (c) 2015 Appscend. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "TelepatBaseObject.h"
 
-@protocol TelepatDatabaseProtocol <NSObject>
+@interface TelepatDB : NSObject
 
 + (id) database;
 - (BOOL) objectWithID:(NSInteger)objectID existsInChannel:(NSString *) channelIdenfier;
 - (id) getObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier;
 - (NSArray *) getObjectsFromChannel:(NSString *)channelIdentifier;
-- (id) getOperationsDataWithKey:(NSString *)key defaultValue:(id)defaultValue;
+- (void) setOperationsDataWithObject:(id)object forKey:(NSString *)key;
+- (id) getOperationsDataForKey:(NSString *)key defaultValue:(id)defaultValue;
 - (void) persistObject:(TelepatBaseObject *)object inChannel:(NSString *)channelIdentifier;
 - (void) persistObjects:(NSArray *)objects inChannel:(NSString *)channelIdentifier;
 - (void) deleteObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier;

@@ -26,6 +26,7 @@
         if (response.error) {
             self.error = response.error;
             self.status = response.status;
+            self.message = response.dict[@"message"];
             return self;
         }
         NSError *err;
@@ -58,12 +59,17 @@
     } else if ([self.content isKindOfClass:[NSArray class]]) {
         NSMutableArray *array = [NSMutableArray array];
         for (NSDictionary *dict in (NSArray *)self.content) {
-            [array addObject:[[classType alloc] initWithDictionary:dict error:&err]];
-            if (err) return nil;  // ABORT!
+            obj = [[classType alloc] initWithDictionary:dict error:&err];
+            if (err) @throw([NSException exceptionWithName:@"InvalidJSONData" reason:@"Invalid JSON data. Required JSON keys are missing from the input. Check the error user information." userInfo:@{@"error": err}]);
+            [array addObject:obj];
         }
         obj = array;
     }
     return obj;
+}
+
+- (NSString *) description {
+    return [NSString stringWithFormat:@"<TelepatResponse: %p>\nstatus: %ld\ncontent: %@", self, (long)self.status, self.content ? self.content : self.message];
 }
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "TelepatContext.h"
 #import "TelepatTransportNotification.h"
+#import "TelepatOperatorFilter.h"
 
 #define kNotificationObject @"object"
 #define kNotificationPropertyName @"propertyName"
@@ -21,12 +22,16 @@
 @property (nonatomic, strong) TelepatContext *context;
 @property (nonatomic, strong) NSString *modelName;
 @property (nonatomic, strong) Class objectType;
+@property (nonatomic, strong) TelepatOperatorFilter *opFilter;
 
 - (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context objectType:(Class)objectType;
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block;
+- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter andBlock:(void (^)(TelepatResponse *response))block;
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block;
 - (void) processNotification:(TelepatTransportNotification *)notification;
 - (NSString *) add:(TelepatBaseObject *)object;
+- (NSString *) replace:(TelepatBaseObject *)object;
+- (NSString *) patch:(TelepatBaseObject *)object;
 
 - (NSString *) subscriptionIdentifier;
 

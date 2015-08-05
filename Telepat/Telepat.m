@@ -7,13 +7,16 @@
 //
 
 #import <sys/utsname.h>
+#import <CommonCrypto/CommonDigest.h>
 #import "Telepat.h"
+#import "TelepatWebsocketTransport.h"
 #import "TelepatTransportNotification.h"
+#import "NSData+HexString.h"
 
 @implementation Telepat {
     NSMutableDictionary *_mServerContexts;
     NSMutableDictionary *_subscriptions;
-    id<TelepatDatabaseProtocol> _dbInstance;
+    TelepatDB *_dbInstance;
 }
 
 + (Telepat *) client {
@@ -38,27 +41,55 @@
                               encoding:NSUTF8StringEncoding];
 }
 
-+ (void) setApiKey:(NSString *)apiKey {
-    [[Telepat client] setApiKey:apiKey];
++ (void) setApplicationId:(NSString *)clientAppId apiKey:(NSString *)clientApiKey {
+    [[Telepat client] setAppId:clientAppId];
+    [[Telepat client] setApiKey:clientApiKey];
 }
 
 - (id) init {
     if (self = [super init]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteNotificationReceived:) name:TelepatRemoteNotificationReceived object:nil];
         
-        _dbInstance = [TelepatLevelDB database];
+        _dbInstance = [TelepatYapDB database];
+        [[KRRest sharedClient] setDevice_id:[_dbInstance getOperationsDataForKey:kUDID defaultValue:@""]];
     }
     
     return self;
 }
 
-- (void) saveDeviceID:(NSString *)identifier {
-    [[KRRest sharedClient] setDevice_id:identifier];
-    [[NSUserDefaults standardUserDefaults] setObject:identifier forKey:@"device_id"];
-}
-
 - (NSString *) deviceID:(NSString *)string {
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"device_id"];
+}
+
+- (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {
+    [[KRRest sharedClient] setSocketsEnabled:YES];
+    
+    NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
+    [[TelepatWebsocketTransport sharedClient] connect:[KRRest socketURL] withBlock:^(NSString *token) {
+        if ([udid length] && !shouldUpdateBackend) {
+            block(nil);
+            return;
+        }
+        
+        if (![udid length]) {
+            [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:NO withBlock:^(KRResponse *response) {
+                TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+                if (![registerResponse isError]) {
+                    TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
+                    [[KRRest sharedClient] setDevice_id:deviceIdentifier.identifier];
+                    [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
+                }
+                block(registerResponse);
+            }];
+        } else {
+            [[KRRest sharedClient] setDevice_id:udid];
+            
+            [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:YES withBlock:^(KRResponse *response) {
+                TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+                block(registerResponse);
+            }];
+        }
+    }];
 }
 
 - (void) registerDeviceWithToken:(NSString*)token withBlock:(TelepatResponseBlock)block {
@@ -66,35 +97,51 @@
 }
 
 - (void) registerDeviceWithToken:(NSString*)token shouldUpdateBackend:(BOOL)shouldUpdateBackend withBlock:(TelepatResponseBlock)block {
-    NSString *udid = [_dbInstance getOperationsDataWithKey:kUDID defaultValue:@""];
+    NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
     
     if ([udid length] && !shouldUpdateBackend) return;
     
     if (![udid length]) {
-        [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token withBlock:^(KRResponse *response) {
+        [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:NO withBlock:^(KRResponse *response) {
             TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
             if (![registerResponse isError]) {
                 TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
-                [self saveDeviceID:deviceIdentifier.identifier];
+                [[KRRest sharedClient] setDevice_id:deviceIdentifier.identifier];
+                [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
             }
             block(registerResponse);
         }];
-    } //else {
-        // TODO: send update
-    //}
+    } else {
+        [[KRRest sharedClient] setDevice_id:udid];
+        
+        [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:YES withBlock:^(KRResponse *response) {
+            TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+            block(registerResponse);
+        }];
+    }
 }
 
 - (void) login:(NSString *)token withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] loginWithToken:token andBlock:^(KRResponse *response) {
-        TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (![loginResponse isError]) {
-            TelepatToken *tokenObj = [loginResponse getObjectOfType:[TelepatToken class]];
-            LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
-            [ldb setObject:tokenObj forKey:@"token"];
-            [[KRRest sharedClient] setBearer:tokenObj.token];
-        }
-        block(loginResponse);
+        [self processLoginResponse:response withBlock:block];
     }];
+}
+
+- (void) login:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] loginWithUsername:username andPassword:password withBlock:^(KRResponse *response) {
+        [self processLoginResponse:response withBlock:block];
+    }];
+}
+
+- (void) processLoginResponse:(KRResponse *)response withBlock:(TelepatResponseBlock)block {
+    TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithResponse:response];
+    if (![loginResponse isError]) {
+        TelepatToken *tokenObj = [loginResponse getObjectOfType:[TelepatToken class]];
+        [_dbInstance setOperationsDataWithObject:tokenObj forKey:kJWT];
+        [_dbInstance setOperationsDataWithObject:[NSDate date] forKey:kJWT_TIMESTAMP];
+        [[KRRest sharedClient] setBearer:tokenObj.token];
+    }
+    block(loginResponse);
 }
 
 - (void) logoutWithBlock:(TelepatResponseBlock)block {
@@ -122,14 +169,21 @@
                      parameters:body
                         headers:@{}
                   responseBlock:^(KRResponse *response) {
-                      NSLog(@"create re status: %d", response.status);
+                      NSLog(@"create re status: %ld", (long)response.status);
                       NSLog(@"create re: %@", [response asString]);
                   }];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
+    return [self subscribe:context modelName:modelName classType:classType filter:nil withBlock:block];
+}
+
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter *)filter withBlock:(TelepatResponseBlock)block {
+    if (![classType isSubclassOfClass:[TelepatBaseObject class]])
+        @throw([NSException exceptionWithName:@"InvalidSubclassException" reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
+    
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
-    [channel subscribeWithBlock:^(TelepatResponse *response) {
+    [channel subscribeWithFilter:filter andBlock:^(TelepatResponse *response) {
         block(response);
     }];
     return channel;
@@ -167,8 +221,17 @@
 }
 
 - (void) setApiKey:(NSString *)apiKey {
-    _apiKey = apiKey;
-    [[KRRest sharedClient] setApi_key:apiKey];
+    NSData *dataIn = [apiKey dataUsingEncoding:NSASCIIStringEncoding];
+    NSMutableData *dataOut = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    CC_SHA256(dataIn.bytes, (CC_LONG)dataIn.length, dataOut.mutableBytes);
+    _apiKey = [[NSData dataWithData:dataOut] dataToHex];
+    
+    [[KRRest sharedClient] setApi_key:self.apiKey];
+}
+
+- (void) setAppId:(NSString *)appId {
+    _appId = appId;
+    [[KRRest sharedClient] setApp_id:appId];
 }
 
 - (void) remoteNotificationReceived:(NSNotification *)notification {
@@ -216,7 +279,7 @@
     return channel;
 }
 
-- (id<TelepatDatabaseProtocol>) getDBInstance {
+- (TelepatDB *) dbInstance {
     return _dbInstance;
 }
 
