@@ -10,7 +10,6 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "Telepat.h"
 #import "TelepatWebsocketTransport.h"
-#import "TelepatTransportNotification.h"
 #import "NSData+HexString.h"
 
 @implementation Telepat {
@@ -136,7 +135,7 @@
 - (void) processLoginResponse:(KRResponse *)response withBlock:(TelepatResponseBlock)block {
     TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithResponse:response];
     if (![loginResponse isError]) {
-        TelepatToken *tokenObj = [loginResponse getObjectOfType:[TelepatToken class]];
+        TelepatAuthorization *tokenObj = [loginResponse getObjectOfType:[TelepatAuthorization class]];
         [_dbInstance setOperationsDataWithObject:tokenObj forKey:kJWT];
         [_dbInstance setOperationsDataWithObject:[NSDate date] forKey:kJWT_TIMESTAMP];
         [[KRRest sharedClient] setBearer:tokenObj.token];
@@ -175,15 +174,15 @@
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
-    return [self subscribe:context modelName:modelName classType:classType filter:nil withBlock:block];
+    return [self subscribe:context modelName:modelName classType:classType filter:nil params:@{} withBlock:block];
 }
 
-- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter *)filter withBlock:(TelepatResponseBlock)block {
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter *)filter params:(NSDictionary*)params withBlock:(TelepatResponseBlock)block {
     if (![classType isSubclassOfClass:[TelepatBaseObject class]])
         @throw([NSException exceptionWithName:@"InvalidSubclassException" reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
-    [channel subscribeWithFilter:filter andBlock:^(TelepatResponse *response) {
+    [channel subscribeWithFilter:filter additionalParameters:params andBlock:^(TelepatResponse *response) {
         block(response);
     }];
     return channel;

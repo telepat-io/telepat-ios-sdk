@@ -125,9 +125,9 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  s.dependency "leveldb-library"
-  # s.dependency "Objective-LevelDB", "2.1.4"
+  s.dependency "YapDatabase"
   s.dependency "JSONModel"
   s.dependency "AFNetworking"
+  s.dependency "SIOSocket"
 
 end

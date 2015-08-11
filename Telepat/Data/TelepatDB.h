@@ -11,7 +11,7 @@
 
 @interface TelepatDB : NSObject
 
-+ (id) database;
++ (instancetype) database;
 - (BOOL) objectWithID:(NSInteger)objectID existsInChannel:(NSString *) channelIdenfier;
 - (id) getObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier;
 - (NSArray *) getObjectsFromChannel:(NSString *)channelIdentifier;

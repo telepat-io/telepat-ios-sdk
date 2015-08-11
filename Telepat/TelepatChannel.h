@@ -26,7 +26,7 @@
 
 - (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context objectType:(Class)objectType;
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block;
-- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter andBlock:(void (^)(TelepatResponse *response))block;
+- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter additionalParameters:(NSDictionary*)addParams andBlock:(void (^)(TelepatResponse *response))block;
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block;
 - (void) processNotification:(TelepatTransportNotification *)notification;
 - (NSString *) add:(TelepatBaseObject *)object;

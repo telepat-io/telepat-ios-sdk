@@ -25,13 +25,19 @@
 }
 
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block {
-    [self subscribeWithFilter:nil andBlock:block];
+    [self subscribeWithFilter:nil additionalParameters:@{} andBlock:block];
 }
 
-- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter andBlock:(void (^)(TelepatResponse *response))block {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": @{
-                                                                                          @"context": [NSNumber numberWithLong:self.context.context_id],
-                                                                                          @"model": self.modelName}}];
+- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter additionalParameters:(NSDictionary*)addParams andBlock:(void (^)(TelepatResponse *response))block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                                                              @"context": [NSNumber numberWithLong:self.context.context_id],
+                                                                                                                                              @"model": self.modelName}]}];
+    if (addParams) {
+        for (NSString *key in addParams) {
+            [params[@"channel"] setObject:addParams[key] forKey:key];
+        }
+    }
+    
     if (opFilter) {
         [params setObject:[opFilter toDictionary] forKey:@"filters"];
         _opFilter = opFilter;

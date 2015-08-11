@@ -15,4 +15,9 @@
         @"id" : @"context_id"}];
 }
 
+- (BOOL) isEqual:(id)object {
+    if (![object isKindOfClass:[TelepatContext class]]) return NO;
+    return ((TelepatContext*)object).context_id == self.context_id;
+}
+
 @end
