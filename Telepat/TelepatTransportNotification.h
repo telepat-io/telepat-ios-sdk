@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ENUM(NSInteger, TelepatNotificationType) {
+typedef NS_ENUM(NSInteger, TelepatNotificationType) {
     TelepatNotificationTypeObjectAdded,
     TelepatNotificationTypeObjectUpdated,
     TelepatNotificationTypeObjectDeleted
