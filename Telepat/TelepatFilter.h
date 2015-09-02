@@ -10,7 +10,7 @@
 
 /**
  *  Protocol for Telepat Filters
- /*
+ */
 @protocol TelepatFilterProtocol <NSObject>
 
 /**
