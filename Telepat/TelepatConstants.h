@@ -14,6 +14,7 @@
 #define kNotificationObject @"object"
 #define kNotificationPropertyName @"propertyName"
 #define kNotificationValue @"value"
+#define kNotificationOrigin @"origin"
 #define kUDID @"udid"
 #define kJWT @"authentication-token"
 #define kJWT_TIMESTAMP @"authentication-token-timestamp"

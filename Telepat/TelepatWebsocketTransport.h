@@ -17,6 +17,7 @@ typedef void (^TelepatWebSocketWelcomeBlock)(NSString *sessionId);
 @property (nonatomic, strong) SIOSocket *socket;
 
 - (void) connect:(NSURL *)url withBlock:(TelepatWebSocketWelcomeBlock)block;
+- (void) disconnect;
 + (instancetype) sharedClient;
 
 @end

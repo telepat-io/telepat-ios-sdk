@@ -25,6 +25,8 @@ static TelepatWebsocketTransport *sharedClient;
 }
 
 - (void) connect:(NSURL *)url withBlock:(TelepatWebSocketWelcomeBlock)block {
+    if (self.socket) [self.socket close];
+    
     [SIOSocket socketWithHost:[url absoluteString] response:^(SIOSocket *socket) {
         self.socket = socket;
         self.socket.onConnect = ^void() {
@@ -32,14 +34,21 @@ static TelepatWebsocketTransport *sharedClient;
         };
         
         [self.socket on:@"welcome" callback:^(NSArray *args) {
-            block([self __getValue:@"sessionId" fromArgs:args]);
+            NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
+            NSLog(@"Welcomed with sessionID: %@", sessionID);
+            block(sessionID);
         }];
         
         [self.socket on:@"message" callback:^(NSArray *args) {
             NSLog(@"Websockets: message");
-            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatRemoteNotificationReceived object:args[0]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatRemoteNotificationReceived object:args[0] userInfo:@{@"source": @(TelepatNotificationOriginWebsockets)}];
         }];
     }];
+}
+
+- (void) disconnect {
+    NSLog(@"sockets disconnected");
+    [self.socket close];
 }
 
 - (id) __getValue:(NSString *)valueName fromArgs:(NSArray *)args {
