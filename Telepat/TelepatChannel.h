@@ -10,6 +10,7 @@
 #import "TelepatContext.h"
 #import "TelepatTransportNotification.h"
 #import "TelepatOperatorFilter.h"
+#import "TelepatUser.h"
 
 #define kNotificationObject @"object"
 #define kNotificationPropertyName @"propertyName"
@@ -20,13 +21,13 @@
 @interface TelepatChannel : NSObject
 
 @property (nonatomic, strong) TelepatContext *context;
+@property (nonatomic, strong) TelepatUser *user;
 @property (nonatomic, strong) NSString *modelName;
 @property (nonatomic, strong) Class objectType;
 @property (nonatomic, strong) TelepatOperatorFilter *opFilter;
 
 - (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context objectType:(Class)objectType;
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block;
-- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter additionalParameters:(NSDictionary*)addParams andBlock:(void (^)(TelepatResponse *response))block;
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block;
 - (void) processNotification:(TelepatTransportNotification *)notification;
 - (NSString *) add:(TelepatBaseObject *)object;

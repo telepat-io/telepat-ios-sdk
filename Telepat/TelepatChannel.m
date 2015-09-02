@@ -13,35 +13,29 @@
     NSMutableDictionary *_waitingForCreation;
 }
 
+- (id) init {
+    if (self = [super init]) {
+        _waitingForCreation = [NSMutableDictionary dictionary];
+    }
+    
+    return self;
+}
+
 - (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context objectType:(Class)objectType {
     if (self = [super init]) {
         _modelName = modelName;
         _context = context;
         _objectType = objectType;
-        
-        _waitingForCreation = [NSMutableDictionary dictionary];
     }
     return self;
 }
 
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block {
-    [self subscribeWithFilter:nil additionalParameters:@{} andBlock:block];
-}
-
-- (void) subscribeWithFilter:(TelepatOperatorFilter *)opFilter additionalParameters:(NSDictionary*)addParams andBlock:(void (^)(TelepatResponse *response))block {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
                                                                                                                                               @"context": [NSNumber numberWithLong:self.context.context_id],
                                                                                                                                               @"model": self.modelName}]}];
-    if (addParams) {
-        for (NSString *key in addParams) {
-            [params[@"channel"] setObject:addParams[key] forKey:key];
-        }
-    }
-    
-    if (opFilter) {
-        [params setObject:[opFilter toDictionary] forKey:@"filters"];
-        _opFilter = opFilter;
-    }
+    if (self.user) [params[@"channel"] setObject:@(self.user.user_id) forKey:@"user"];
+    if (self.opFilter) [params[@"channel"] setObject:[self.opFilter toDictionary] forKey:@"filters"];
     
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
                      parameters:params
@@ -52,7 +46,7 @@
                           TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
                           if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
                               for (NSDictionary *dict in subscribeResponse.content) {
-                                  [self processNotification:[TelepatTransportNotification notificationOfType:TelepatNotificationTypeObjectAdded withValue:dict andPath:@"/"]];
+                                  [self processNotification:[TelepatTransportNotification notificationOfType:TelepatNotificationTypeObjectAdded withValue:dict path:@"/" origin:TelepatNotificationOriginSubscribe]];
                               }
                           }
                           
@@ -140,7 +134,8 @@
         case TelepatNotificationTypeObjectAdded: {
             id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
             if (obj) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj}];
+                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
+                                                                                                                            kNotificationOrigin: @(notification.origin)}];
                 [self persistObject:obj];
             }
             break;
@@ -158,7 +153,8 @@
                 [updatedObject setValue:notification.value forKey:propertyName];
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectUpdated object:self userInfo:@{kNotificationObject: updatedObject,
                                                                                                                               kNotificationPropertyName: propertyName,
-                                                                                                                              kNotificationValue: notification.value}];
+                                                                                                                              kNotificationValue: notification.value,
+                                                                                                                              kNotificationOrigin: @(notification.origin)}];
                 [self persistObject:updatedObject];
             }
             break;
@@ -173,7 +169,8 @@
                  TelepatBaseObject *deletedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
                  
-                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedObject}];
+                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedObject,
+                                                                                                                               kNotificationOrigin: @(notification.origin)}];
              }
             break;
         }
@@ -183,24 +180,32 @@
     }
 }
 
-- (NSString *) subscriptionIdentifier {
-    if (self.context == nil || self.modelName == nil) return nil;
-    NSString *subid;
-    if (_opFilter) {
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[_opFilter toDictionary] options:0 error:nil];
-        subid = [NSString stringWithFormat:@"blg:%ld:%@:filter:%@", (long)self.context.context_id, self.modelName, [jsonData base64EncodedStringWithOptions:0]];
-    } else {
-        subid = [NSString stringWithFormat:@"blg:%ld:%@", (long)self.context.context_id, self.modelName];
-    }
-    return subid;
-}
-
 - (void) persistObject:(id)object {
     [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
 }
 
 - (id) retrieveObjectWithID:(NSInteger)object_id {
     return [[[Telepat client] dbInstance] getObjectWithID:object_id fromChannel:[self subscriptionIdentifier]];
+}
+
+- (NSString *) subscriptionIdentifier {
+    if (self.context == nil || self.modelName == nil) return nil;
+    NSString *subid = @"blg";
+    if (self.context) {
+        subid = [NSString stringWithFormat:@"%@:%ld", subid, (long)self.context.context_id];
+    }
+    if (self.user) {
+        subid = [NSString stringWithFormat:@"%@:users:%ld", subid, (long)self.user.user_id];
+    }
+    if (self.modelName) {
+        subid = [NSString stringWithFormat:@"%@:%@", subid, self.modelName];
+    }
+    if (self.opFilter) {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[_opFilter toDictionary] options:0 error:nil];
+        subid = [NSString stringWithFormat:@"%@:%@", subid, [jsonData base64EncodedStringWithOptions:0]];
+    }
+    
+    return subid;
 }
 
 @end

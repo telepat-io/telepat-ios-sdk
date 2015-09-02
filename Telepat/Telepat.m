@@ -144,6 +144,7 @@
 }
 
 - (void) logoutWithBlock:(TelepatResponseBlock)block {
+    [[TelepatWebsocketTransport sharedClient] disconnect];
     [[KRRest sharedClient] logoutWithBlock:^(KRResponse *response) {
         TelepatResponse *logoutResponse = [[TelepatResponse alloc] initWithResponse:response];
         [[KRRest sharedClient] setBearer:nil];
@@ -174,15 +175,11 @@
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
-    return [self subscribe:context modelName:modelName classType:classType filter:nil params:@{} withBlock:block];
-}
-
-- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter *)filter params:(NSDictionary*)params withBlock:(TelepatResponseBlock)block {
     if (![classType isSubclassOfClass:[TelepatBaseObject class]])
         @throw([NSException exceptionWithName:@"InvalidSubclassException" reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
-    [channel subscribeWithFilter:filter additionalParameters:params andBlock:^(TelepatResponse *response) {
+    [channel subscribeWithBlock:^(TelepatResponse *response) {
         block(response);
     }];
     return channel;
@@ -237,11 +234,13 @@
     NSDictionary *userInfo = notification.object;
     if (userInfo[@"data"] == nil) return;
     NSDictionary *data = userInfo[@"data"];
+    TelepatNotificationOrigin origin = [notification.userInfo[@"source"] intValue];
     
     // process "new" notifications
     for (NSDictionary *ndict in data[@"new"]) {
         TelepatTransportNotification *createdTransportNotification = [[TelepatTransportNotification alloc] init];
         createdTransportNotification.type = TelepatNotificationTypeObjectAdded;
+        createdTransportNotification.origin = origin;
         createdTransportNotification.value = ndict[@"value"];
         createdTransportNotification.subscription = ndict[@"subscription"];
         createdTransportNotification.guid = ndict[@"guid"];
@@ -254,6 +253,7 @@
     for (NSDictionary *ndict in data[@"updated"]) {
         TelepatTransportNotification *updatedTransportNotification = [[TelepatTransportNotification alloc] init];
         updatedTransportNotification.type = TelepatNotificationTypeObjectUpdated;
+        updatedTransportNotification.origin = origin;
         updatedTransportNotification.value = ndict[@"value"];
         updatedTransportNotification.path = ndict[@"path"];
         
@@ -265,6 +265,7 @@
     for (NSDictionary *ndict in data[@"deleted"]) {
         TelepatTransportNotification *deletedTransportNotification = [[TelepatTransportNotification alloc] init];
         deletedTransportNotification.type = TelepatNotificationTypeObjectDeleted;
+        deletedTransportNotification.origin = origin;
         deletedTransportNotification.value = nil;
         deletedTransportNotification.path = ndict[@"path"];
         

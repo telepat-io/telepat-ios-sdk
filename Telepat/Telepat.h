@@ -40,7 +40,6 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) logoutWithBlock:(TelepatResponseBlock)block;
 - (void) getAll:(TelepatResponseBlock)block;
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block;
-- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter *)filter params:(NSDictionary*)params withBlock:(TelepatResponseBlock)block;
 - (void) removeSubscription:(TelepatChannel *)channel withBlock:(TelepatResponseBlock)block;
 - (void) registerSubscription:(TelepatChannel *)channel;
 - (void) unregisterSubscription:(TelepatChannel *)channel;
