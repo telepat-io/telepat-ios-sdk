@@ -116,19 +116,6 @@
     return object.uuid;
 }
 
-- (NSString *) replace:(TelepatBaseObject *)object {
-    [object setUuid:[[NSUUID UUID] UUIDString]];
-    [[KRRest sharedClient] update:@{@"model": self.modelName,
-                                    @"context": @(self.context.context_id),
-                                    @"id": @(object.object_id),
-                                    @"patch": @[@{@"op": @"replace",
-                                                @"path": @"folders/1/structure",
-                                                @"value": [object toDictionary][@"structure"]}]} withBlock:^(KRResponse *response) {
-        NSLog(@"update re: %@", response);
-    }];
-    return object.uuid;
-}
-
 - (void) processNotification:(TelepatTransportNotification *)notification {
     switch (notification.type) {
         case TelepatNotificationTypeObjectAdded: {
