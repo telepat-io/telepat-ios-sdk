@@ -7,6 +7,7 @@
 //
 
 #import "TelepatOperatorFilter.h"
+#import "Telepat.h"
 
 @implementation TelepatOperatorFilter {
     TelepatFilterRelation _relation;
@@ -39,7 +40,7 @@
             break;
             
         default:
-                @throw([NSException exceptionWithName:@"InvalidRelationType" reason:@"You need to specify a valid filter relation" userInfo:nil]);
+                @throw([NSException exceptionWithName:kTelepatInvalidFilterRelationType reason:@"You need to specify a valid filter relation" userInfo:nil]);
             break;
     }
     

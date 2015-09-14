@@ -78,10 +78,10 @@
     [[KRRest sharedClient] create:@{@"model": self.modelName,
                                     @"context": @(self.context.context_id),
                                     @"content": [object toDictionary]} withBlock:^(KRResponse *response) {
-        NSLog(@"create re: %@", response);
     }];
     return object.uuid;
 }
+
 - (NSString *) patch:(TelepatBaseObject *)object {
     TelepatBaseObject *oldObject = [self retrieveObjectWithID:object.object_id];
     NSAssert(oldObject, @"Patch error: could not retrieve the original object.");
@@ -110,7 +110,6 @@
                                     @"context": @(self.context.context_id),
                                     @"id": @(object.object_id),
                                     @"patch": patches} withBlock:^(KRResponse *response) {
-        NSLog(@"update re: %@", response);
     }];
     
     return object.uuid;

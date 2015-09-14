@@ -169,14 +169,12 @@
                      parameters:body
                         headers:@{}
                   responseBlock:^(KRResponse *response) {
-                      NSLog(@"create re status: %ld", (long)response.status);
-                      NSLog(@"create re: %@", [response asString]);
                   }];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
     if (![classType isSubclassOfClass:[TelepatBaseObject class]])
-        @throw([NSException exceptionWithName:@"InvalidSubclassException" reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
+        @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
     [channel subscribeWithBlock:^(TelepatResponse *response) {

@@ -1,4 +1,4 @@
-//
+	//
 //  KRRest.m
 //  Kraken
 //
@@ -9,12 +9,16 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "KRRest.h"
 #import "NSString+MD5.h"
+#import "Telepat.h"
 
 @implementation KRRest
 
 + (NSURL *) urlForEndpoint:(NSString*) endpoint {
     if ([endpoint hasPrefix:@"/"]) endpoint = [endpoint substringFromIndex:1];
-    NSString *apiBaseURL = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"kApiURL"];
+    NSString *apiBaseURL = [[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatAPIURL];
+    if (apiBaseURL == nil) {
+        @throw [NSException exceptionWithName:kTelepatInvalidApiURL reason:@"Invalid Telepat API URL. Check if you added a proper value for kTelepatAPIURL in your Info.plist file" userInfo:nil];
+    }
     if (![apiBaseURL hasSuffix:@"/"]) apiBaseURL = [NSString stringWithFormat:@"%@/", apiBaseURL];
     NSString *finalURL = [NSString stringWithFormat:@"%@%@", apiBaseURL, endpoint];
     
@@ -22,7 +26,7 @@
 }
 
 + (NSURL *) socketURL {
-    NSURL *apiURL = [NSURL URLWithString:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"kApiURL"]];
+    NSURL *apiURL = [NSURL URLWithString:[[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatAPIURL]];
     NSString *wsURL = [NSString stringWithFormat:@"ws://%@:80", apiURL.host];
     return [NSURL URLWithString:wsURL];
 }

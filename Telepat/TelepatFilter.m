@@ -7,6 +7,7 @@
 //
 
 #import "TelepatFilter.h"
+#import "Telepat.h"
 
 @implementation TelepatFilter {
     TelepatFilterType _type;
@@ -42,7 +43,7 @@
             break;
             
         default:
-            @throw([NSException exceptionWithName:@"InvalidFilterType" reason:@"You need to specify the filter type" userInfo:nil]);
+            @throw([NSException exceptionWithName:kTelepatInvalidFilterType reason:@"You need to specify the filter type" userInfo:nil]);
             break;
     }
     

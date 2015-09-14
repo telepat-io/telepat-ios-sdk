@@ -18,6 +18,15 @@
 #import "TelepatOperatorFilter.h"
 #import "TelepatYapDB.h"
 
+#pragma mark Exceptions
+
+#define kTelepatInvalidApiURL @"InvalidAPIURL"
+#define kTelepatInvalidClass @"InvalidSubclassException"
+#define kTelepatInvalidFilterType @"InvalidFilterType"
+#define kTelepatInvalidFilterRelationType @"InvalidRelationType"
+
+#pragma mark -
+
 /**
  *  A block used for asynchronious network requests made using `Telepat`
  */

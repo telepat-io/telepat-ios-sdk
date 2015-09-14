@@ -7,8 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <AFNetworking/AFNetworking.h>
 #import "KRResponse.h"
+
+#define kTelepatAPIURL @"kTelepatAPIURL"
 
 typedef void (^KRResponseBlock)(KRResponse *response);
 

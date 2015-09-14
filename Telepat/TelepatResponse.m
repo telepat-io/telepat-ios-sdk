@@ -60,7 +60,7 @@
         NSMutableArray *array = [NSMutableArray array];
         for (NSDictionary *dict in (NSArray *)self.content) {
             obj = [[classType alloc] initWithDictionary:dict error:&err];
-            if (err) @throw([NSException exceptionWithName:@"InvalidJSONData" reason:@"Invalid JSON data. Required JSON keys are missing from the input. Check the error user information." userInfo:@{@"error": err}]);
+            if (err) @throw([NSException exceptionWithName:JSONModelErrorDomain reason:@"Invalid JSON data. Required JSON keys are missing from the input. Check the error user information." userInfo:@{@"error": err}]);
             [array addObject:obj];
         }
         obj = array;
