@@ -34,6 +34,7 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
 
 - (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
+- (void) registerUser:(NSString *)token andBlock:(KRResponseBlock)block;
 - (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block;
 - (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
 - (void) logoutWithBlock:(KRResponseBlock)block;

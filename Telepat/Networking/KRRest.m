@@ -143,6 +143,13 @@
                   responseBlock:block];
 }
 
+- (void) registerUser:(NSString *)token andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
+                     parameters:@{@"access_token": token}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login"]
                      parameters:@{@"access_token": token}
