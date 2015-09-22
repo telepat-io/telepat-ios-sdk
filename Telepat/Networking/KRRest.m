@@ -206,6 +206,13 @@
                   responseBlock:block];
 }
 
+- (void) listAppsWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/apps"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
 - (void) create:(id)body withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/create"]
                      parameters:body

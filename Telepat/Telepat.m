@@ -252,6 +252,13 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) listAppsWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] listAppsWithBlock:^(KRResponse *response) {
+        TelepatResponse *appsListResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(appsListResponse);
+    }];
+}
+
 - (void) setApiKey:(NSString *)apiKey {
     NSData *dataIn = [apiKey dataUsingEncoding:NSASCIIStringEncoding];
     NSMutableData *dataOut = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];

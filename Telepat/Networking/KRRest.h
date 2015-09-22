@@ -44,5 +44,6 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) create:(id)body withBlock:(KRResponseBlock)block;
 - (void) update:(id)body withBlock:(KRResponseBlock)block;
 - (void) appCreate:(NSString *)appName fields:(NSDictionary *)fields withBlock:(KRResponseBlock)block;
+- (void) listAppsWithBlock:(KRResponseBlock)block;
 
 @end

@@ -230,7 +230,15 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *
  *  @param appName The name of the application
  *  @param fields Custom fields to be added to this app
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
 - (void) createAppWithName:(NSString *)appName fields:(NSDictionary *)fields block:(TelepatResponseBlock)block;
+
+/*
+ *  Lists the application for the current admin
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) listAppsWithBlock:(TelepatResponseBlock)block;
 
 @end
