@@ -12,6 +12,12 @@
 #import "TelepatWebsocketTransport.h"
 #import "NSData+HexString.h"
 
+#ifdef DEBUG
+const int ddLogLevel = LOG_LEVEL_VERBOSE;
+#else
+const int ddLogLevel = LOG_LEVEL_ERROR;
+#endif
+
 @implementation Telepat {
     NSMutableDictionary *_mServerContexts;
     NSMutableDictionary *_subscriptions;
@@ -48,6 +54,11 @@
 - (id) init {
     if (self = [super init]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteNotificationReceived:) name:TelepatRemoteNotificationReceived object:nil];
+        
+        [DDLog addLogger:[DDTTYLogger sharedInstance]];
+        [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
+        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor greenColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
+        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor redColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
         
         _dbInstance = [TelepatYapDB database];
         [[KRRest sharedClient] setDevice_id:[_dbInstance getOperationsDataForKey:kUDID defaultValue:@""]];
@@ -132,6 +143,19 @@
     }];
 }
 
+- (void) adminLogin:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminLoginWithUsername:username andPassword:password withBlock:^(KRResponse *response) {
+        [self processLoginResponse:response withBlock:block];
+    }];
+}
+
+- (void) adminAdd:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminAddWithUsername:username password:password name:name withBlock:^(KRResponse *response) {
+        TelepatResponse *addResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(addResponse);
+    }];
+}
+
 - (void) processLoginResponse:(KRResponse *)response withBlock:(TelepatResponseBlock)block {
     TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithResponse:response];
     if (![loginResponse isError]) {
@@ -212,6 +236,13 @@
 
 - (BOOL) isLoggedIn {
     return [[[KRRest sharedClient] bearer] length] > 0;
+}
+
+- (void) createAppWithName:(NSString *)appName fields:(NSDictionary *)fields block:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] appCreate:appName fields:fields withBlock:^(KRResponse *response) {
+        TelepatResponse *createAppResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(createAppResponse);
+    }];
 }
 
 - (void) setApiKey:(NSString *)apiKey {

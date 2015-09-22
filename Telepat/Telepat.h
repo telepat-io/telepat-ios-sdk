@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DDLog.h"
+#import "DDTTYLogger.h"
 #import "KRRest.h"
 #import "TelepatConstants.h"
 #import "TelepatResponse.h"
@@ -18,7 +20,9 @@
 #import "TelepatOperatorFilter.h"
 #import "TelepatYapDB.h"
 
-#pragma mark Exceptions
+extern const int ddLogLevel;
+
+#pragma mark Keys
 
 #define kTelepatInvalidApiURL @"InvalidAPIURL"
 #define kTelepatInvalidClass @"InvalidSubclassException"
@@ -125,6 +129,25 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) login:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Authenticate an admin
+ *
+ *  @param username Username of the admin to authenticate
+ *  @param password Password to login, in clear
+ *  @param block A `TelepatResponseBlock` which will be called when the login completed.
+ */
+- (void) adminLogin:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Add a new admin account
+ *
+ *  @param username Username of the new admin
+ *  @param password Password of the new admin account, in clear
+ *  @param name Name of the admin
+ *  @param block A `TelepatResponseBlock` which will be called when the admin creation is completed.
+ */
+- (void) adminAdd:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Logout from the current account
  *
  *  @param block A `TelepatResponseBlock` which will be called when the login completed.
@@ -192,5 +215,13 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @return YES if logged in, NO if not logged in
  */
 - (BOOL) isLoggedIn;
+
+/*
+ *  Creates an app for the admin.
+ *
+ *  @param appName The name of the application
+ *  @param fields Custom fields to be added to this app
+ */
+- (void) createAppWithName:(NSString *)appName fields:(NSDictionary *)fields block:(TelepatResponseBlock)block;
 
 @end

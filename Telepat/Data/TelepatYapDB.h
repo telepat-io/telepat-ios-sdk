@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <YapDatabase/YapDatabase.h>
+#import "YapDatabase.h"
 #import "TelepatDB.h"
 
 @interface TelepatYapDB : TelepatDB

@@ -158,6 +158,23 @@
                   responseBlock:block];
 }
 
+- (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/login"]
+                     parameters:@{@"email": username,
+                                  @"password": password}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) adminAddWithUsername:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/add"]
+                     parameters:@{@"email": username,
+                                  @"password": password,
+                                  @"name": name}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) logoutWithBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/logout"]
                      parameters:@{}
@@ -170,6 +187,16 @@
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];
+}
+
+- (void) appCreate:(NSString *)appName fields:(NSDictionary *)fields withBlock:(KRResponseBlock)block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:fields];
+    params[@"name"] = appName;
+    
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/app/add"]
+                     parameters:[NSDictionary dictionaryWithDictionary:params]
+                        headers:@{}
+                  responseBlock:block];
 }
 
 - (void) create:(id)body withBlock:(KRResponseBlock)block {

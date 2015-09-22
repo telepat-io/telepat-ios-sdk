@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Appscend. All rights reserved.
 //
 
-#import <JSONModel.h>
+#import "JSONModel.h"
 
 @interface TelepatBaseObject : JSONModel
 

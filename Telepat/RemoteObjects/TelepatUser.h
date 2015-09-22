@@ -11,8 +11,7 @@
 @interface TelepatUser : TelepatBaseObject
 
 @property (nonatomic) NSInteger user_id;
-@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString<Optional> *type;
 @property (nonatomic, strong) NSString *email;
-@property (nonatomic) BOOL suspend;
 
 @end

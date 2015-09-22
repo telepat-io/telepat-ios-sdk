@@ -7,6 +7,7 @@
 //
 
 #import "TelepatResponse.h"
+#import "Telepat.h"
 
 @interface TelepatResponseModel : JSONModel
 @property (nonatomic) NSInteger status;
@@ -55,12 +56,13 @@
         obj = [[classType alloc] initWithDictionary:(NSDictionary*)self.content error:&err];
         if (err) {
             self.error = err;
+            if (err) DDLogError(@"%@", err.userInfo);
         }
     } else if ([self.content isKindOfClass:[NSArray class]]) {
         NSMutableArray *array = [NSMutableArray array];
         for (NSDictionary *dict in (NSArray *)self.content) {
             obj = [[classType alloc] initWithDictionary:dict error:&err];
-            if (err) @throw([NSException exceptionWithName:JSONModelErrorDomain reason:@"Invalid JSON data. Required JSON keys are missing from the input. Check the error user information." userInfo:@{@"error": err}]);
+            if (err) DDLogError(@"%@", err.userInfo);
             [array addObject:obj];
         }
         obj = array;

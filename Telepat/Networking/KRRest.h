@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <AFNetworking/AFNetworking.h>
+#import "AFNetworking.h"
 #import "KRResponse.h"
 
 #define kTelepatAPIURL @"kTelepatAPIURL"
@@ -36,9 +36,12 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
 - (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block;
 - (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
+- (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
+- (void) adminAddWithUsername:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(KRResponseBlock)block;
 - (void) logoutWithBlock:(KRResponseBlock)block;
 - (void) updateContextsWithBlock:(KRResponseBlock)block;
 - (void) create:(id)body withBlock:(KRResponseBlock)block;
 - (void) update:(id)body withBlock:(KRResponseBlock)block;
+- (void) appCreate:(NSString *)appName fields:(NSDictionary *)fields withBlock:(KRResponseBlock)block;
 
 @end
