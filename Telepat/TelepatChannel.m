@@ -73,16 +73,29 @@
 }
 
 - (NSString *) add:(TelepatBaseObject *)object {
+    return [self add:object withBlock:nil];
+}
+
+- (NSString *) add:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block {
     [object setUuid:[[NSUUID UUID] UUIDString]];
-    [_waitingForCreation setObject:object forKey:[[NSUUID UUID] UUIDString]];
+    [_waitingForCreation setObject:object forKey:object.uuid];
     [[KRRest sharedClient] create:@{@"model": self.modelName,
                                     @"context": @(self.context.context_id),
                                     @"content": [object toDictionary]} withBlock:^(KRResponse *response) {
-    }];
+                                        if (block) {
+                                            TelepatResponse *addResponse = [[TelepatResponse alloc] initWithResponse:response];
+                                            if (addResponse.isError) [_waitingForCreation removeObjectForKey:object.uuid];
+                                            block(addResponse);
+                                        }
+                                    }];
     return object.uuid;
 }
 
 - (NSString *) patch:(TelepatBaseObject *)object {
+    return [self patch:object withBlock:nil];
+}
+
+- (NSString *) patch:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block {
     TelepatBaseObject *oldObject = [self retrieveObjectWithID:object.object_id];
     NSAssert(oldObject, @"Patch error: could not retrieve the original object.");
     
@@ -110,7 +123,11 @@
                                     @"context": @(self.context.context_id),
                                     @"id": @(object.object_id),
                                     @"patch": patches} withBlock:^(KRResponse *response) {
-    }];
+                                        if (block) {
+                                            TelepatResponse *patchResponse = [[TelepatResponse alloc] initWithResponse:response];
+                                            block(patchResponse);
+                                        }
+                                    }];
     
     return object.uuid;
 }

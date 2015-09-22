@@ -87,12 +87,30 @@
 - (NSString *) add:(TelepatBaseObject *)object;
 
 /**
+ *  Add an object in this channel
+ *
+ *  @param object An instance of a `TelepatBaseObject` subclass to be added in this channel
+ *  @param block A block which will be called when the add request was completed
+ *  @return The UUID of the created object
+ */
+- (NSString *) add:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block;
+
+/**
  *  Update an object in this channel
  *
  *  @param object The updated object
  *  @return The UUID of the updated object
  */
 - (NSString *) patch:(TelepatBaseObject *)object;
+
+/**
+ *  Update an object in this channel
+ *
+ *  @param object The updated object
+ *  @param block A block which will be called when the patch request was completed
+ *  @return The UUID of the updated object
+ */
+- (NSString *) patch:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block;
 
 /**
  *  Get the current subscription identifier

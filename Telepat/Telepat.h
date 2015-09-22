@@ -113,8 +113,17 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) registerDeviceWithToken:(NSString*)token shouldUpdateBackend:(BOOL)shouldUpdateBackend withBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Register a new account using a Facebook token
+ *
+ *  @param token The token returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
+ *  @param block A `TelepatResponseBlock` which will be called when the user registration is completed.
+ */
+- (void) registerUser:(NSString *)token withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Login with a Facebook token
  *
+ *  @param token The token returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
  *  @param block A `TelepatResponseBlock` which will be called when the login completed.
  */
 - (void) login:(NSString *)token withBlock:(TelepatResponseBlock)block;

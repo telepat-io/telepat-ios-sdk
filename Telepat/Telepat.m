@@ -131,6 +131,13 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }
 }
 
+- (void) registerUser:(NSString *)token withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] registerUser:token andBlock:^(KRResponse *response) {
+        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(registerResponse);
+    }];
+}
+
 - (void) login:(NSString *)token withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] loginWithToken:token andBlock:^(KRResponse *response) {
         [self processLoginResponse:response withBlock:block];
