@@ -1,0 +1,506 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A507315D1BB1A54600A41090 /* TelepatProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A507315C1BB1A54600A41090 /* TelepatProjectTests.m */; };
+		A5330CDF1BB1959100271E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CDE1BB1959100271E08 /* main.m */; };
+		A5330CE21BB1959100271E08 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CE11BB1959100271E08 /* AppDelegate.m */; };
+		A5330CE51BB1959100271E08 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CE41BB1959100271E08 /* ViewController.m */; };
+		A5330CE81BB1959100271E08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE61BB1959100271E08 /* Main.storyboard */; };
+		A5330CEA1BB1959100271E08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE91BB1959100271E08 /* Assets.xcassets */; };
+		A5330CED1BB1959100271E08 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CEB1BB1959100271E08 /* LaunchScreen.storyboard */; };
+		B25BA84BA8ECF85DE4B14B2F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9649BD2FB4B1D6828B2F6393 /* libPods.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A507315F1BB1A54600A41090 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5330CD21BB1959100271E08 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A5330CD91BB1959100271E08;
+			remoteInfo = TelepatProject;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		9649BD2FB4B1D6828B2F6393 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		A507315A1BB1A54600A41090 /* TelepatProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepatProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A507315C1BB1A54600A41090 /* TelepatProjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TelepatProjectTests.m; sourceTree = "<group>"; };
+		A507315E1BB1A54600A41090 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5330CDA1BB1959100271E08 /* TelepatProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelepatProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5330CDE1BB1959100271E08 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A5330CE01BB1959100271E08 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A5330CE11BB1959100271E08 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		A5330CE31BB1959100271E08 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		A5330CE41BB1959100271E08 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		A5330CE71BB1959100271E08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A5330CE91BB1959100271E08 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A5330CEC1BB1959100271E08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A5330CEE1BB1959100271E08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5330CF71BB1959100271E08 /* TelepatProjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TelepatProjectTests.m; sourceTree = "<group>"; };
+		A5330CF91BB1959100271E08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A5330D021BB1959100271E08 /* TelepatProjectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TelepatProjectUITests.m; sourceTree = "<group>"; };
+		A5330D041BB1959100271E08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A50731571BB1A54600A41090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5330CD71BB1959100271E08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B25BA84BA8ECF85DE4B14B2F /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1818248381CF6C079265BDA2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */,
+				A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A507315B1BB1A54600A41090 /* TelepatProjectTests */ = {
+			isa = PBXGroup;
+			children = (
+				A507315C1BB1A54600A41090 /* TelepatProjectTests.m */,
+				A507315E1BB1A54600A41090 /* Info.plist */,
+			);
+			path = TelepatProjectTests;
+			sourceTree = "<group>";
+		};
+		A5330CD11BB1959100271E08 = {
+			isa = PBXGroup;
+			children = (
+				A5330CDC1BB1959100271E08 /* TelepatProject */,
+				A5330CF61BB1959100271E08 /* TelepatProjectTests */,
+				A5330D011BB1959100271E08 /* TelepatProjectUITests */,
+				A507315B1BB1A54600A41090 /* TelepatProjectTests */,
+				A5330CDB1BB1959100271E08 /* Products */,
+				1818248381CF6C079265BDA2 /* Pods */,
+				DE6F44041BE0DD8032EFB3B5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		A5330CDB1BB1959100271E08 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A5330CDA1BB1959100271E08 /* TelepatProject.app */,
+				A507315A1BB1A54600A41090 /* TelepatProjectTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A5330CDC1BB1959100271E08 /* TelepatProject */ = {
+			isa = PBXGroup;
+			children = (
+				A5330CE01BB1959100271E08 /* AppDelegate.h */,
+				A5330CE11BB1959100271E08 /* AppDelegate.m */,
+				A5330CE31BB1959100271E08 /* ViewController.h */,
+				A5330CE41BB1959100271E08 /* ViewController.m */,
+				A5330CE61BB1959100271E08 /* Main.storyboard */,
+				A5330CE91BB1959100271E08 /* Assets.xcassets */,
+				A5330CEB1BB1959100271E08 /* LaunchScreen.storyboard */,
+				A5330CEE1BB1959100271E08 /* Info.plist */,
+				A5330CDD1BB1959100271E08 /* Supporting Files */,
+			);
+			path = TelepatProject;
+			sourceTree = "<group>";
+		};
+		A5330CDD1BB1959100271E08 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A5330CDE1BB1959100271E08 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A5330CF61BB1959100271E08 /* TelepatProjectTests */ = {
+			isa = PBXGroup;
+			children = (
+				A5330CF71BB1959100271E08 /* TelepatProjectTests.m */,
+				A5330CF91BB1959100271E08 /* Info.plist */,
+			);
+			path = TelepatProjectTests;
+			sourceTree = "<group>";
+		};
+		A5330D011BB1959100271E08 /* TelepatProjectUITests */ = {
+			isa = PBXGroup;
+			children = (
+				A5330D021BB1959100271E08 /* TelepatProjectUITests.m */,
+				A5330D041BB1959100271E08 /* Info.plist */,
+			);
+			path = TelepatProjectUITests;
+			sourceTree = "<group>";
+		};
+		DE6F44041BE0DD8032EFB3B5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9649BD2FB4B1D6828B2F6393 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50731591BB1A54600A41090 /* TelepatProjectTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A50731611BB1A54700A41090 /* Build configuration list for PBXNativeTarget "TelepatProjectTests" */;
+			buildPhases = (
+				A50731561BB1A54600A41090 /* Sources */,
+				A50731571BB1A54600A41090 /* Frameworks */,
+				A50731581BB1A54600A41090 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A50731601BB1A54600A41090 /* PBXTargetDependency */,
+			);
+			name = TelepatProjectTests;
+			productName = TelepatProjectTests;
+			productReference = A507315A1BB1A54600A41090 /* TelepatProjectTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A5330CD91BB1959100271E08 /* TelepatProject */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A5330D071BB1959100271E08 /* Build configuration list for PBXNativeTarget "TelepatProject" */;
+			buildPhases = (
+				2A514BC97CDD5C41F55DA1A3 /* Check Pods Manifest.lock */,
+				A5330CD61BB1959100271E08 /* Sources */,
+				A5330CD71BB1959100271E08 /* Frameworks */,
+				A5330CD81BB1959100271E08 /* Resources */,
+				808F7204968F7DF8DE5F513B /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TelepatProject;
+			productName = TelepatProject;
+			productReference = A5330CDA1BB1959100271E08 /* TelepatProject.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A5330CD21BB1959100271E08 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = Telepat;
+				TargetAttributes = {
+					A50731591BB1A54600A41090 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = A5330CD91BB1959100271E08;
+					};
+					A5330CD91BB1959100271E08 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+				};
+			};
+			buildConfigurationList = A5330CD51BB1959100271E08 /* Build configuration list for PBXProject "TelepatProject" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A5330CD11BB1959100271E08;
+			productRefGroup = A5330CDB1BB1959100271E08 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A5330CD91BB1959100271E08 /* TelepatProject */,
+				A50731591BB1A54600A41090 /* TelepatProjectTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A50731581BB1A54600A41090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5330CD81BB1959100271E08 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5330CED1BB1959100271E08 /* LaunchScreen.storyboard in Resources */,
+				A5330CEA1BB1959100271E08 /* Assets.xcassets in Resources */,
+				A5330CE81BB1959100271E08 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2A514BC97CDD5C41F55DA1A3 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		808F7204968F7DF8DE5F513B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A50731561BB1A54600A41090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A507315D1BB1A54600A41090 /* TelepatProjectTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5330CD61BB1959100271E08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5330CE51BB1959100271E08 /* ViewController.m in Sources */,
+				A5330CE21BB1959100271E08 /* AppDelegate.m in Sources */,
+				A5330CDF1BB1959100271E08 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A50731601BB1A54600A41090 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A5330CD91BB1959100271E08 /* TelepatProject */;
+			targetProxy = A507315F1BB1A54600A41090 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A5330CE61BB1959100271E08 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A5330CE71BB1959100271E08 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A5330CEB1BB1959100271E08 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A5330CEC1BB1959100271E08 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A50731621BB1A54700A41090 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = TelepatProjectTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.telepat.TelepatProjectTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TelepatProject.app/TelepatProject";
+			};
+			name = Debug;
+		};
+		A50731631BB1A54700A41090 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = TelepatProjectTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.telepat.TelepatProjectTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TelepatProject.app/TelepatProject";
+			};
+			name = Release;
+		};
+		A5330D051BB1959100271E08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A5330D061BB1959100271E08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A5330D081BB1959100271E08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = TelepatProject/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.telepat.TelepatProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A5330D091BB1959100271E08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = TelepatProject/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.telepat.TelepatProject;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A50731611BB1A54700A41090 /* Build configuration list for PBXNativeTarget "TelepatProjectTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A50731621BB1A54700A41090 /* Debug */,
+				A50731631BB1A54700A41090 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		A5330CD51BB1959100271E08 /* Build configuration list for PBXProject "TelepatProject" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A5330D051BB1959100271E08 /* Debug */,
+				A5330D061BB1959100271E08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A5330D071BB1959100271E08 /* Build configuration list for PBXNativeTarget "TelepatProject" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A5330D081BB1959100271E08 /* Debug */,
+				A5330D091BB1959100271E08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A5330CD21BB1959100271E08 /* Project object */;
+}

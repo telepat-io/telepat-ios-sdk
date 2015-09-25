@@ -20,5 +20,6 @@ Pod::Spec.new do |s|
   s.dependency "JSONModel"
   s.dependency "AFNetworking"
   s.dependency "SIOSocket"
+  s.dependency "CocoaLumberjack"
 
 end
