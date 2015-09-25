@@ -18,6 +18,17 @@ static NSString *updatedAppName = @"Updated iOS Test Application";
 static NSString *contextInfo = @"A super context";
 static NSString *apiKey = @"3406870085495689e34d878f09faf52c";
 
+@interface Event : TelepatBaseObject
+
+@property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *image;
+
+@end
+
+@implementation Event
+
+@end
+
 @interface TelepatProjectTests : XCTestCase
 
 @end
@@ -85,43 +96,42 @@ static NSString *apiKey = @"3406870085495689e34d878f09faf52c";
 - (void) testCreateRemoveApp {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Testing application adding"];
     
-    [[Telepat client] createAppWithName:appName keys:@[apiKey] customFields:@{} block:^(TelepatResponse *response) {
-        [[Telepat client] setApiKey:apiKey];
-        TelepatApp *resultedApp = [response getObjectOfType:[TelepatApp class]];
-        XCTAssertNotNil(resultedApp, @"createAppWithName didn't returned a valid application");
-        XCTAssertNotNil(resultedApp.app_id, @"createAppWithName didn't returned a valid app_id");
-        [[Telepat client] setAppId:resultedApp.app_id];
-        [[Telepat client] listAppsWithBlock:^(TelepatResponse *response) {
-            NSArray *apps = [response getObjectOfType:[TelepatApp class]];
-            XCTAssertGreaterThanOrEqual([apps count], 1, @"listAppsWithBlock: %lu applications found, expected at least 1", (unsigned long)[apps count]);
-            XCTAssertEqualObjects(resultedApp, [apps lastObject], @"listAppsWithBlock: received app is not the same like the created one");
-            TelepatApp *updatedApp = [[TelepatApp alloc] initWithDictionary:[resultedApp toDictionary] error:nil];
-            updatedApp.name = updatedAppName;
-            [[Telepat client] updateApp:resultedApp withApp:updatedApp andBlock:^(TelepatResponse *response) {
-                XCTAssertEqual(response.status, 200, @"updateApp: app update error");
-                [[Telepat client] createContextWithName:@"TestContext" meta:@{@"info": contextInfo} withBlock:^(TelepatResponse *response) {
-                    _createdContext = [response getObjectOfType:[TelepatContext class]];
-                    XCTAssertNotNil([response getObjectOfType:[TelepatContext class]], @"createContextWithName: The server returned an invalid context");
-                    XCTAssertEqualObjects(_createdContext.meta[@"info"], contextInfo, @"createContextWithName: context info doesn't match");
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                        [[Telepat client] getContextsWithBlock:^(TelepatResponse *response) {
-                            XCTAssertGreaterThanOrEqual([[response getObjectOfType:[TelepatContext class]] count], 1, @"getContextsWithBlock: there should be at least one context");
-                            [[Telepat client] getContext:_createdContext.context_id withBlock:^(TelepatResponse *response) {
-                                TelepatContext *retrievedContext = [response getObjectOfType:[TelepatContext class]];
-                                XCTAssertEqualObjects(_createdContext.meta[@"info"], retrievedContext.meta[@"info"]);
-                                [[Telepat client] removeAppWithBlock:^(TelepatResponse *response) {
-                                    XCTAssertEqual(response.status, 200);
+    NSLog(@"Registering device...");
+    [[Telepat client] registerDeviceForWebsocketsWithBlock:^(TelepatResponse *response) {
+        [[Telepat client] createAppWithName:appName keys:@[apiKey] customFields:@{} block:^(TelepatResponse *response) {
+            [[Telepat client] setApiKey:apiKey];
+            TelepatApp *resultedApp = [response getObjectOfType:[TelepatApp class]];
+            XCTAssertNotNil(resultedApp, @"createAppWithName didn't returned a valid application");
+            XCTAssertNotNil(resultedApp.app_id, @"createAppWithName didn't returned a valid app_id");
+            [[Telepat client] setAppId:resultedApp.app_id];
+            [[Telepat client] listAppsWithBlock:^(TelepatResponse *response) {
+                NSArray *apps = [response getObjectOfType:[TelepatApp class]];
+                XCTAssertGreaterThanOrEqual([apps count], 1, @"listAppsWithBlock: %lu applications found, expected at least 1", (unsigned long)[apps count]);
+                XCTAssertEqualObjects(resultedApp, [apps lastObject], @"listAppsWithBlock: received app is not the same like the created one");
+                TelepatApp *updatedApp = [[TelepatApp alloc] initWithDictionary:[resultedApp toDictionary] error:nil];
+                updatedApp.name = updatedAppName;
+                [[Telepat client] updateApp:resultedApp withApp:updatedApp andBlock:^(TelepatResponse *response) {
+                    XCTAssertEqual(response.status, 200, @"updateApp: app update error");
+                    [[Telepat client] createContextWithName:@"TestContext" meta:@{@"info": contextInfo} withBlock:^(TelepatResponse *response) {
+                        _createdContext = [response getObjectOfType:[TelepatContext class]];
+                        XCTAssertNotNil([response getObjectOfType:[TelepatContext class]], @"createContextWithName: The server returned an invalid context");
+                        XCTAssertEqualObjects(_createdContext.meta[@"info"], contextInfo, @"createContextWithName: context info doesn't match");
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                            [[Telepat client] updateSchema:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"kTestAppSchema"] withBlock:^(TelepatResponse *response) {
+                                XCTAssertEqual(response.status, 200, @"updateSchema: server returned %d, expected 200", response.status);
+                                [[Telepat client] getSchemasWithBlock:^(TelepatResponse *response) {
+                                    XCTAssertNotNil(response.content, @"getSchemasWithBlock returned an invalid response");
                                     [expectation fulfill];
                                 }];
                             }];
-                        }];
-                    });
+                        });
+                    }];
                 }];
             }];
         }];
-    }];
+    } shouldUpdateBackend:NO];
     
-    [self waitForExpectationsWithTimeout:15.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:25.0 handler:^(NSError *error) {
         if(error) {
             XCTFail(@"Expectation Failed with error: %@", error);
         }
@@ -144,9 +154,14 @@ static NSString *apiKey = @"3406870085495689e34d878f09faf52c";
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                     [[Telepat client] listAppUsersWithBlock:^(TelepatResponse *response) {
                         XCTAssertGreaterThanOrEqual([[response getObjectOfType:[TelepatUser class]] count], 1, @"listAppUsersWithBlock: at least one user should be returned");
-                        [[Telepat client] deleteUser:username withBlock:^(TelepatResponse *response) {
-                            [[Telepat client] removeAppWithBlock:^(TelepatResponse *response) {
-                                [expectation fulfill];
+                        [[Telepat client] login:username password:password withBlock:^(TelepatResponse *response) {
+                            TelepatUser *loggedInUser = [response getObjectOfType:[TelepatUser class]];
+                            XCTAssertNotNil(loggedInUser, @"login: invalid user returned");
+                            
+                            [[Telepat client] deleteUser:username withBlock:^(TelepatResponse *response) {
+                                [[Telepat client] removeAppWithBlock:^(TelepatResponse *response) {
+                                    [expectation fulfill];
+                                }];
                             }];
                         }];
                     }];

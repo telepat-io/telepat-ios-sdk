@@ -77,6 +77,7 @@
 }
 
 - (NSString *) add:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block {
+    [object setChannel:self];
     [object setUuid:[[NSUUID UUID] UUIDString]];
     [_waitingForCreation setObject:object forKey:object.uuid];
     [[KRRest sharedClient] create:@{@"model": self.modelName,

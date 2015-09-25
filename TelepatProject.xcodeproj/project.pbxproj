@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A507315D1BB1A54600A41090 /* TelepatProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A507315C1BB1A54600A41090 /* TelepatProjectTests.m */; };
 		A5330CDF1BB1959100271E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CDE1BB1959100271E08 /* main.m */; };
 		A5330CE21BB1959100271E08 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CE11BB1959100271E08 /* AppDelegate.m */; };
 		A5330CE51BB1959100271E08 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CE41BB1959100271E08 /* ViewController.m */; };
 		A5330CE81BB1959100271E08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE61BB1959100271E08 /* Main.storyboard */; };
 		A5330CEA1BB1959100271E08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE91BB1959100271E08 /* Assets.xcassets */; };
 		A5330CED1BB1959100271E08 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CEB1BB1959100271E08 /* LaunchScreen.storyboard */; };
+		A5E259E71BB588940058E978 /* TelepatProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CF71BB1959100271E08 /* TelepatProjectTests.m */; settings = {ASSET_TAGS = (); }; };
 		B25BA84BA8ECF85DE4B14B2F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9649BD2FB4B1D6828B2F6393 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -32,8 +32,6 @@
 		9649BD2FB4B1D6828B2F6393 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		A507315A1BB1A54600A41090 /* TelepatProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepatProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A507315C1BB1A54600A41090 /* TelepatProjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TelepatProjectTests.m; sourceTree = "<group>"; };
-		A507315E1BB1A54600A41090 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A5330CDA1BB1959100271E08 /* TelepatProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelepatProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5330CDE1BB1959100271E08 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A5330CE01BB1959100271E08 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -78,22 +76,12 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		A507315B1BB1A54600A41090 /* TelepatProjectTests */ = {
-			isa = PBXGroup;
-			children = (
-				A507315C1BB1A54600A41090 /* TelepatProjectTests.m */,
-				A507315E1BB1A54600A41090 /* Info.plist */,
-			);
-			path = TelepatProjectTests;
-			sourceTree = "<group>";
-		};
 		A5330CD11BB1959100271E08 = {
 			isa = PBXGroup;
 			children = (
 				A5330CDC1BB1959100271E08 /* TelepatProject */,
 				A5330CF61BB1959100271E08 /* TelepatProjectTests */,
 				A5330D011BB1959100271E08 /* TelepatProjectUITests */,
-				A507315B1BB1A54600A41090 /* TelepatProjectTests */,
 				A5330CDB1BB1959100271E08 /* Products */,
 				1818248381CF6C079265BDA2 /* Pods */,
 				DE6F44041BE0DD8032EFB3B5 /* Frameworks */,
@@ -294,7 +282,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A507315D1BB1A54600A41090 /* TelepatProjectTests.m in Sources */,
+				A5E259E71BB588940058E978 /* TelepatProjectTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +469,7 @@
 				A50731631BB1A54700A41090 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A5330CD51BB1959100271E08 /* Build configuration list for PBXProject "TelepatProject" */ = {
 			isa = XCConfigurationList;

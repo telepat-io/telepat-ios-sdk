@@ -32,26 +32,6 @@
 }
 
 - (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject {
-//    if (![updatedObject isMemberOfClass:[self class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
-//    NSMutableArray *patch = [NSMutableArray array];
-//    
-//    NSMutableArray *patches = [NSMutableArray array];
-//    for (NSString *property in [updatedObject propertiesList]) {
-//        if (![[updatedObject valueForKey:property] isEqual:[self valueForKey:property]]) {
-//            NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
-//            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%ld/%@", self.modelName, (long)object.object_id, property];
-//            
-//            if ([object valueForKey:property] == nil) {
-//                patchDict[@"op"] = @"delete";
-//            } else {
-//                patchDict[@"op"] = @"replace";
-//                patchDict[@"value"] = [object valueForKey:property];
-//            }
-//            
-//            [patches addObject:patchDict];
-//        }
-//    }
-    
     return @{};
 }
 
@@ -71,6 +51,15 @@
     
     free(properties);
     return rv;
+}
+
+- (void) update {
+    [self updateWithBlock:nil];
+}
+
+- (void) updateWithBlock:(TelepatResponseBlock)block {
+    if (!self.channel) @throw [NSException exceptionWithName:kTelepatNoChannelError reason:[NSString stringWithFormat:@"You tried to update object %@ but it's channel is null", self] userInfo:nil];
+    [self.channel patch:self withBlock:block];
 }
 
 @end

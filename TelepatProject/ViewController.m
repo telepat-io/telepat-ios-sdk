@@ -8,6 +8,17 @@
 
 #import "ViewController.h"
 
+@interface Event : TelepatBaseObject
+
+@property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *image;
+
+@end
+
+@implementation Event
+
+@end
+
 @interface ViewController ()
 
 @end
@@ -18,18 +29,27 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    //    [[Telepat client] adminAdd:@"nitanovidiu@gmail.com" password:@"abracadabra" name:@"Ovidiu N." withBlock:^(TelepatResponse *response) {
-    //        NSLog(@"add re: %@", response);
-    //    }];
-    
-//    [[Telepat client] adminLogin:@"nitanovidiu@gmail.com" password:@"abracadabra" withBlock:^(TelepatResponse *response) {
-//        //        [[Telepat client] createAppWithName:@"iOS Test Application" fields:@{@"testdield": @"abcd"} block:^(TelepatResponse *response) {
-//        //            NSLog(@"createAppWithName response: %@", response);
-//        //        }];
-//        
-//        [[Telepat client] listAppsWithBlock:^(TelepatResponse *response) {
-//            NSLog(@"listAppsWithBlock response: %@", [response getObjectOfType:[TelepatApp class]]);
+    // Set the API key and the current application ID
+//    [[Telepat client] setApiKey:@"API_KEY"];
+//    [[Telepat client] setAppId:@"APP_ID"];
+//    
+//    [[Telepat client] login:@"username@example.com" password:@"mysecurepassword" withBlock:^(TelepatResponse *response) {
+//        [[Telepat client] getContextsWithBlock:^(TelepatResponse *response) {
+//            NSArray *contexts = [response getObjectOfType:[TelepatContext class]];
+//            TelepatContext *firstContext = contexts[0];
+//            TelepatChannel *firstChannel = [[Telepat client] subscribe:firstContext modelName:@"events" classType:[Event class] withBlock:^(TelepatResponse *response) {
+//                NSLog(@"Subscribed to %@", firstContext.name);
+//            }];
+//            
+//            Event *newEvent = [[Event alloc] init];
+//            newEvent.text = @"Hello world!";
+//            newEvent.image = @"telepat_image.png";
+//            
+//            [firstChannel add:newEvent];
+//            
+//            Event *modifiedEvent = [[Event alloc] initWithDi];
 //        }];
+//        
 //    }];
 }
 
