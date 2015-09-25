@@ -28,29 +28,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
-    // Set the API key and the current application ID
-//    [[Telepat client] setApiKey:@"API_KEY"];
-//    [[Telepat client] setAppId:@"APP_ID"];
-//    
-//    [[Telepat client] login:@"username@example.com" password:@"mysecurepassword" withBlock:^(TelepatResponse *response) {
-//        [[Telepat client] getContextsWithBlock:^(TelepatResponse *response) {
-//            NSArray *contexts = [response getObjectOfType:[TelepatContext class]];
-//            TelepatContext *firstContext = contexts[0];
-//            TelepatChannel *firstChannel = [[Telepat client] subscribe:firstContext modelName:@"events" classType:[Event class] withBlock:^(TelepatResponse *response) {
-//                NSLog(@"Subscribed to %@", firstContext.name);
-//            }];
-//            
-//            Event *newEvent = [[Event alloc] init];
-//            newEvent.text = @"Hello world!";
-//            newEvent.image = @"telepat_image.png";
-//            
-//            [firstChannel add:newEvent];
-//            
-//            Event *modifiedEvent = [[Event alloc] initWithDi];
-//        }];
-//        
-//    }];
 }
 
 - (void)didReceiveMemoryWarning {
