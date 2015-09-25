@@ -16,6 +16,7 @@
 #import "TelepatAuthorization.h"
 #import "TelepatChannel.h"
 #import "TelepatContext.h"
+#import "TelepatApp.h"
 #import "TelepatRegisterDeviceResponse.h"
 #import "TelepatOperatorFilter.h"
 #import "TelepatYapDB.h"
@@ -25,7 +26,7 @@ extern const int ddLogLevel;
 #pragma mark Keys
 
 #define kTelepatInvalidApiURL @"InvalidAPIURL"
-#define kTelepatInvalidClass @"InvalidSubclassException"
+#define kTelepatInvalidClass @"InvalidClassException"
 #define kTelepatInvalidFilterType @"InvalidFilterType"
 #define kTelepatInvalidFilterRelationType @"InvalidRelationType"
 
@@ -113,12 +114,46 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) registerDeviceWithToken:(NSString*)token shouldUpdateBackend:(BOOL)shouldUpdateBackend withBlock:(TelepatResponseBlock)block;
 
 /*
- *  Register a new account using a Facebook token
+ *  Register a new user account using a Facebook token
  *
- *  @param token The token returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
+ *  @param token The token string returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
  *  @param block A `TelepatResponseBlock` which will be called when the user registration is completed.
  */
 - (void) registerUser:(NSString *)token withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Register a new user account using an email address and a password
+ *
+ *  @param username The username of the new user
+ *  @param password The password of the newly created account
+ *  @param name The name of the user
+ *  @param block A `TelepatResponseBlock` which will be called when the user registration is completed.
+ */
+- (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Deletes an user from an app
+ *
+ *  @param username The username of the user to be deleted
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) deleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates an user from an app
+ *
+ *  @param oldUser Old, original TelepatUser
+ *  @param newUser, New, updated TelepatUser
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) updateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Gets all users of the app
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) listAppUsersWithBlock:(TelepatResponseBlock)block;
 
 /*
  *  Login with a Facebook token
@@ -147,6 +182,22 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) adminLogin:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Authorizes an admin to an application
+ *
+ *  @param username Username of the admin to authorize
+ *  @param block A `TelepatResponseBlock` which will be called when the login completed.
+ */
+- (void) authorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Deauthorizes an admin from an application
+ *
+ *  @param username Username of the admin to authorize
+ *  @param block A `TelepatResponseBlock` which will be called when the login completed.
+ */
+- (void) deauthorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Add a new admin account
  *
  *  @param username Username of the new admin
@@ -155,6 +206,22 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @param block A `TelepatResponseBlock` which will be called when the admin creation is completed.
  */
 - (void) adminAdd:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Deletes the currently logged admin.
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the admin creation is completed.
+ */
+- (void) deleteAdminWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates the currently logged admin. Every property in the request body is used to udpate the admin.
+ *
+ *  @param oldUser Old, original admin TelepatUser
+ *  @param newUser, New, updated admin TelepatUser
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) updateAdmin:(TelepatUser *)oldAdmin withUser:(TelepatUser *)newAdmin andBlock:(TelepatResponseBlock)block;
 
 /*
  *  Logout from the current account
@@ -184,7 +251,7 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 /*
  *  Unsubscribe from a channel
  *
- *  @param channel The channel to unsubscribe from
+ *  @param channel The channel to unsubscribe fromrea
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
 - (void) removeSubscription:(TelepatChannel *)channel withBlock:(TelepatResponseBlock)block;
@@ -219,6 +286,52 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (TelepatContext *) contextWithId:(NSInteger)contextId;
 
 /*
+ *  Create a new Context in the current application
+ *
+ *  @param name The name of the new context
+ *  @param meta A NSDictionary containing metainformation to be aatributed to the context
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) createContextWithName:(NSString *)name meta:(NSDictionary *)meta withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Retrieves a context
+ *
+ *  @param contextId The id of the context to retrieve
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Get all contexts
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getContextsWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Gets the model schema for an application
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getSchemasWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates the model schema
+ *
+ *  @param schema The new schema
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) updateSchema:(NSDictionary *)schema withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Get information about the logged admin
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getCurrentAdminWithBlock:(TelepatResponseBlock)block;
+
+/*
  *  Check if a user is logged in
  *
  *  @return YES if logged in, NO if not logged in
@@ -226,13 +339,13 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (BOOL) isLoggedIn;
 
 /*
- *  Creates an app for the admin.
+ *  Creates an app for the current admin.
  *
  *  @param appName The name of the application
  *  @param fields Custom fields to be added to this app
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
-- (void) createAppWithName:(NSString *)appName fields:(NSDictionary *)fields block:(TelepatResponseBlock)block;
+- (void) createAppWithName:(NSString *)appName keys:(NSArray *)keys customFields:(NSDictionary *)fields block:(TelepatResponseBlock)block;
 
 /*
  *  Lists the application for the current admin
@@ -240,5 +353,46 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
 - (void) listAppsWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Remove the current application
+ *
+ *  @param A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) removeAppWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates an app
+ *
+ *  @param oldApp Old, original `TelepatApp`
+ *  @param newApp New, updated `TelepatApp`
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) updateApp:(TelepatApp *)oldApp withApp:(TelepatApp *)newApp andBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Removes a model from the application (all items of this type will be deleted)
+ *
+ *  @param modelName The name of the model
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) removeAppModel:(NSString *)modelName withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Removes a context and all associated objects
+ *
+ *  @param contextId The ID of the context to be deleted
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) removeContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates the context object
+ *
+ *  @param oldContext Old, original `TelepatContext`
+ *  @param newContext New, updated `TelepatContext`
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) updateContext:(TelepatContext *)oldContext withContext:(TelepatContext *)newContext andBlock:(TelepatResponseBlock)block;
 
 @end

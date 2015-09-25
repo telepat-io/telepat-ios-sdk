@@ -10,10 +10,11 @@
 
 @interface TelepatContext : TelepatBaseObject
 
-@property (nonatomic) NSInteger context_id;
+@property (nonatomic) NSString *context_id;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic) NSInteger state;
 @property (nonatomic, strong) NSString *application_id;
-@property (nonatomic, strong) NSString *type;
+@property (nonatomic, strong) NSString<Optional> *type;
+@property (nonatomic, strong) NSDictionary<Optional> *meta;
 
 @end

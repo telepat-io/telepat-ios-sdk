@@ -138,6 +138,34 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] registerUser:username withPassword:password name:name andBlock:^(KRResponse *response) {
+        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(registerResponse);
+    }];
+}
+
+- (void) deleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] deleteUser:username withBlock:^(KRResponse *response) {
+        TelepatResponse *deleteUserResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(deleteUserResponse);
+    }];
+}
+
+- (void) updateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] updateUser:[oldUser patchAgainst:newUser] withBlock:^(KRResponse *response) {
+        TelepatResponse *updateUserResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(updateUserResponse);
+    }];
+}
+
+- (void) listAppUsersWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] listAppUsersWithBlock:^(KRResponse *response) {
+        TelepatResponse *listAppUsersResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(listAppUsersResponse);
+    }];
+}
+
 - (void) login:(NSString *)token withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] loginWithToken:token andBlock:^(KRResponse *response) {
         [self processLoginResponse:response withBlock:block];
@@ -156,10 +184,38 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) authorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminAuthorizeWithUsername:username andBlock:^(KRResponse *response) {
+        TelepatResponse *authorizeResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(authorizeResponse);
+    }];
+}
+
+- (void) deauthorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminDeauthorizeWithUsername:username andBlock:^(KRResponse *response) {
+        TelepatResponse *deauthorizeResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(deauthorizeResponse);
+    }];
+}
+
 - (void) adminAdd:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] adminAddWithUsername:username password:password name:name withBlock:^(KRResponse *response) {
         TelepatResponse *addResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(addResponse);
+    }];
+}
+
+- (void) deleteAdminWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminDeleteWithBlock:^(KRResponse *response) {
+        TelepatResponse *deleteResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(deleteResponse);
+    }];
+}
+
+- (void) updateAdmin:(TelepatUser *)oldAdmin withUser:(TelepatUser *)newAdmin andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] updateAdmin:[oldAdmin patchAgainst:newAdmin] withBlock:^(KRResponse *response) {
+        TelepatResponse *updateAdminResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(updateAdminResponse);
     }];
 }
 
@@ -189,7 +245,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         _mServerContexts = [NSMutableDictionary dictionary];
         NSArray *contexts = [getallResponse getObjectOfType:[TelepatContext class]];
         for (TelepatContext *context in contexts) {
-            [_mServerContexts setObject:context forKey:[NSNumber numberWithLong:context.context_id]];
+            [_mServerContexts setObject:context forKey:context.context_id];
         }
         block(getallResponse);
     }];
@@ -237,6 +293,48 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     return [_mServerContexts objectForKey:[NSNumber numberWithLong:contextId]];
 }
 
+- (void) createContextWithName:(NSString *)name meta:(NSDictionary *)meta withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] createContext:name meta:meta withBlock:^(KRResponse *response) {
+        TelepatResponse *createContextResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(createContextResponse);
+    }];
+}
+
+- (void) getContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getContext:contextId withBlock:^(KRResponse *response) {
+        TelepatResponse *getContextResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getContextResponse);
+    }];
+}
+
+- (void) getContextsWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getContextsWithBlock:^(KRResponse *response) {
+        TelepatResponse *getContextsResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getContextsResponse);
+    }];
+}
+
+- (void) getSchemasWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getSchemasWithBlock:^(KRResponse *response) {
+        TelepatResponse *getSchemasResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getSchemasResponse);
+    }];
+}
+
+- (void) updateSchema:(NSDictionary *)schema withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] updateSchema:schema withBlock:^(KRResponse *response) {
+        TelepatResponse *getUpdateSchemaResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getUpdateSchemaResponse);
+    }];
+}
+
+- (void) getCurrentAdminWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getMeWithBlock:^(KRResponse *response) {
+        TelepatResponse *getMeResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getMeResponse);
+    }];
+}
+
 - (NSDictionary *) contextsMap {
     return _mServerContexts;
 }
@@ -245,8 +343,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     return [[[KRRest sharedClient] bearer] length] > 0;
 }
 
-- (void) createAppWithName:(NSString *)appName fields:(NSDictionary *)fields block:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] appCreate:appName fields:fields withBlock:^(KRResponse *response) {
+- (void) createAppWithName:(NSString *)appName keys:(NSArray *)keys customFields:(NSDictionary *)fields block:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] appCreate:appName apiKeys:keys customFields:fields withBlock:^(KRResponse *response) {
         TelepatResponse *createAppResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(createAppResponse);
     }];
@@ -256,6 +354,43 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     [[KRRest sharedClient] listAppsWithBlock:^(KRResponse *response) {
         TelepatResponse *appsListResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(appsListResponse);
+    }];
+}
+
+- (void) removeAppWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] removeAppWithBlock:^(KRResponse *response) {
+        TelepatResponse *removeAppResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(removeAppResponse);
+    }];
+}
+
+- (void) updateApp:(TelepatApp *)oldApp withApp:(TelepatApp *)newApp andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] updateApp:[oldApp patchAgainst:newApp] withBlock:^(KRResponse *response) {
+        TelepatResponse *updateAppResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(updateAppResponse);
+    }];
+}
+
+- (void) removeAppModel:(NSString *)modelName withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] removeAppModel:modelName withBlock:^(KRResponse *response) {
+        TelepatResponse *removeModelResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(removeModelResponse);
+    }];
+}
+
+- (void) removeContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] removeContext:contextId withBlock:^(KRResponse *response) {
+        TelepatResponse *removeContextResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(removeContextResponse);
+    }];
+}
+
+- (void) updateContext:(TelepatContext *)oldContext withContext:(TelepatContext *)newContext andBlock:(TelepatResponseBlock)block {
+    NSMutableDictionary *mutablePatch = [NSMutableDictionary dictionaryWithDictionary:[oldContext patchAgainst:newContext]];
+    mutablePatch[@"id"] = oldContext.context_id;
+    [[KRRest sharedClient] updateContext:[NSDictionary dictionaryWithDictionary:mutablePatch] withBlock:^(KRResponse *response) {
+        TelepatResponse *updateContextResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(updateContextResponse);
     }];
 }
 

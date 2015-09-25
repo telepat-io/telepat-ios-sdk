@@ -8,6 +8,7 @@
 
 #import <objc/runtime.h>
 #import "TelepatBaseObject.h"
+#import "Telepat.h"
 
 @implementation TelepatBaseObject
 
@@ -26,14 +27,32 @@
 - (BOOL) isEqual:(id)object {
     if (![object isMemberOfClass:[self class]]) return NO;
     TelepatBaseObject *obj = object;
-    if (obj.object_id == self.object_id) return YES;
+    if ([obj.object_id isEqualToString:self.object_id]) return YES;
     return NO;
 }
 
-- (NSComparisonResult) compare:(id)object {
-    if (![object isMemberOfClass:[self class]]) return NO;
-    TelepatBaseObject *obj = object;
-    return [[NSNumber numberWithInteger:self.object_id] compare:[NSNumber numberWithInteger:obj.object_id]];
+- (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject {
+//    if (![updatedObject isMemberOfClass:[self class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
+//    NSMutableArray *patch = [NSMutableArray array];
+//    
+//    NSMutableArray *patches = [NSMutableArray array];
+//    for (NSString *property in [updatedObject propertiesList]) {
+//        if (![[updatedObject valueForKey:property] isEqual:[self valueForKey:property]]) {
+//            NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
+//            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%ld/%@", self.modelName, (long)object.object_id, property];
+//            
+//            if ([object valueForKey:property] == nil) {
+//                patchDict[@"op"] = @"delete";
+//            } else {
+//                patchDict[@"op"] = @"replace";
+//                patchDict[@"value"] = [object valueForKey:property];
+//            }
+//            
+//            [patches addObject:patchDict];
+//        }
+//    }
+    
+    return @{};
 }
 
 - (NSArray *) propertiesList {

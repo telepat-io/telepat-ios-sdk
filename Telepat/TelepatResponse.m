@@ -63,7 +63,7 @@
         for (NSDictionary *dict in (NSArray *)self.content) {
             obj = [[classType alloc] initWithDictionary:dict error:&err];
             if (err) DDLogError(@"%@", err.userInfo);
-            [array addObject:obj];
+            else [array addObject:obj];
         }
         obj = array;
     }

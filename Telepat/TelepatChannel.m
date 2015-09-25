@@ -32,9 +32,9 @@
 
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                                              @"context": [NSNumber numberWithLong:self.context.context_id],
+                                                                                                                                              @"context": self.context.context_id,
                                                                                                                                               @"model": self.modelName}]}];
-    if (self.user) [params[@"channel"] setObject:@(self.user.user_id) forKey:@"user"];
+    if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
     if (self.opFilter) [params[@"channel"] setObject:[self.opFilter toDictionary] forKey:@"filters"];
     
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
@@ -58,7 +58,7 @@
 
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block {
     NSDictionary *params = @{@"channel": @{
-                                     @"context": [NSNumber numberWithLong:self.context.context_id],
+                                     @"context": self.context.context_id,
                                      @"model": self.modelName}};
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/unsubscribe"]
                      parameters:params
@@ -80,7 +80,7 @@
     [object setUuid:[[NSUUID UUID] UUIDString]];
     [_waitingForCreation setObject:object forKey:object.uuid];
     [[KRRest sharedClient] create:@{@"model": self.modelName,
-                                    @"context": @(self.context.context_id),
+                                    @"context": self.context.context_id,
                                     @"content": [object toDictionary]} withBlock:^(KRResponse *response) {
                                         if (block) {
                                             TelepatResponse *addResponse = [[TelepatResponse alloc] initWithResponse:response];
@@ -120,8 +120,8 @@
     
     [object setUuid:[[NSUUID UUID] UUIDString]];
     [[KRRest sharedClient] update:@{@"model": self.modelName,
-                                    @"context": @(self.context.context_id),
-                                    @"id": @(object.object_id),
+                                    @"context": self.context.context_id,
+                                    @"id": object.object_id,
                                     @"patch": patches} withBlock:^(KRResponse *response) {
                                         if (block) {
                                             TelepatResponse *patchResponse = [[TelepatResponse alloc] initWithResponse:response];
@@ -130,6 +130,18 @@
                                     }];
     
     return object.uuid;
+}
+
+- (void) countWithBlock:(void (^)(TelepatResponse *response))block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                                                              @"context": self.context.context_id,
+                                                                                                                                              @"model": self.modelName}]}];
+    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
+    
+    [[KRRest sharedClient] count:params withBlock:^(KRResponse *response) {
+        TelepatResponse *countResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(countResponse);
+    }];
 }
 
 - (void) processNotification:(TelepatTransportNotification *)notification {
@@ -149,7 +161,7 @@
             NSArray *pathComponents = [notification.path pathComponents];
             NSString *modelName = pathComponents[0];
             if (![modelName isEqualToString:self.modelName]) return;
-            NSInteger objectId = [pathComponents[1] integerValue];
+            NSString *objectId = pathComponents[1];
             NSString *propertyName = pathComponents[2];
             if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                 id updatedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
@@ -167,7 +179,7 @@
             NSArray *pathComponents = [notification.path pathComponents];
             NSString *modelName = pathComponents[0];
             if (![modelName isEqualToString:self.modelName]) return;
-            NSInteger objectId = [pathComponents[1] integerValue];
+            NSString *objectId = pathComponents[1];
              if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                  TelepatBaseObject *deletedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
@@ -187,7 +199,7 @@
     [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
 }
 
-- (id) retrieveObjectWithID:(NSInteger)object_id {
+- (id) retrieveObjectWithID:(NSString *)object_id {
     return [[[Telepat client] dbInstance] getObjectWithID:object_id fromChannel:[self subscriptionIdentifier]];
 }
 
@@ -195,10 +207,10 @@
     if (self.context == nil || self.modelName == nil) return nil;
     NSString *subid = @"blg";
     if (self.context) {
-        subid = [NSString stringWithFormat:@"%@:%ld", subid, (long)self.context.context_id];
+        subid = [NSString stringWithFormat:@"%@:%@", subid, self.context.context_id];
     }
     if (self.user) {
-        subid = [NSString stringWithFormat:@"%@:users:%ld", subid, (long)self.user.user_id];
+        subid = [NSString stringWithFormat:@"%@:users:%@", subid, self.user.user_id];
     }
     if (self.modelName) {
         subid = [NSString stringWithFormat:@"%@:%@", subid, self.modelName];

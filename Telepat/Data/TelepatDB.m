@@ -15,11 +15,11 @@
     mustOverride();
 }
 
-- (BOOL) objectWithID:(NSInteger)objectID existsInChannel:(NSString *) channelIdenfier {
+- (BOOL) objectWithID:(NSString *)objectID existsInChannel:(NSString *) channelIdenfier {
     mustOverride();
 }
 
-- (id) getObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier {
+- (id) getObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier {
     mustOverride();
 }
 
@@ -43,7 +43,7 @@
     mustOverride();
 }
 
-- (void) deleteObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier {
+- (void) deleteObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier {
     mustOverride();
 }
 

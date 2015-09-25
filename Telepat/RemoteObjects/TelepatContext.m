@@ -17,7 +17,7 @@
 
 - (BOOL) isEqual:(id)object {
     if (![object isKindOfClass:[TelepatContext class]]) return NO;
-    return ((TelepatContext*)object).context_id == self.context_id;
+    return [((TelepatContext*)object).context_id isEqualToString:self.context_id];
 }
 
 @end

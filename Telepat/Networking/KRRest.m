@@ -11,6 +11,21 @@
 #import "NSString+MD5.h"
 #import "Telepat.h"
 
+#define DebugRequest(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
+            requestType,\
+            [url absoluteString], \
+            self.manager.requestSerializer.HTTPRequestHeaders, \
+            [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding], \
+            response.statusCode, \
+            responseObject)
+#define DebugRequestError(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
+                requestType, \
+                [url absoluteString], \
+                self.manager.requestSerializer.HTTPRequestHeaders, \
+                [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding], \
+                response.statusCode, \
+                [[NSString alloc] initWithData:error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding])
+
 @implementation KRRest
 
 + (NSURL *) urlForEndpoint:(NSString*) endpoint {
@@ -70,8 +85,11 @@
     
     [self.manager GET:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"GET");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"GET");
         block([[KRResponse alloc] initWithError:error]);
     }];
 }
@@ -83,8 +101,11 @@
     
     [self.manager POST:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"POST");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"POST");
         block([[KRResponse alloc] initWithError:error]);
     }];
 }
@@ -96,8 +117,11 @@
     
     [self.manager PUT:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"PUT");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"PUT");
         block([[KRResponse alloc] initWithError:error]);
     }];
 }
@@ -109,8 +133,11 @@
     
     [self.manager PATCH:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"PATCH");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"PATCH");
         block([[KRResponse alloc] initWithError:error]);
     }];
 }
@@ -150,6 +177,29 @@
                   responseBlock:block];
 }
 
+- (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
+                     parameters:@{@"email": username,
+                                  @"password": password,
+                                  @"name": name}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) deleteUser:(NSString *)username withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/delete"]
+                     parameters:@{@"email": username}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) updateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/update"]
+                     parameters:patch
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login"]
                      parameters:@{@"access_token": token}
@@ -173,11 +223,39 @@
                   responseBlock:block];
 }
 
+- (void) adminAuthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/app/authorize"]
+                     parameters:@{@"email": username}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) adminDeauthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/app/deauthorize"]
+                     parameters:@{@"email": username}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) adminAddWithUsername:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/add"]
                      parameters:@{@"email": username,
                                   @"password": password,
                                   @"name": name}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) adminDeleteWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/delete"]
+                     parameters:@{}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) updateAdmin:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/update"]
+                     parameters:patch
                         headers:@{}
                   responseBlock:block];
 }
@@ -196,9 +274,10 @@
                  responseBlock:block];
 }
 
-- (void) appCreate:(NSString *)appName fields:(NSDictionary *)fields withBlock:(KRResponseBlock)block {
+- (void) appCreate:(NSString *)appName apiKeys:(NSArray *)keys customFields:(NSDictionary *)fields withBlock:(KRResponseBlock)block {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:fields];
     params[@"name"] = appName;
+    params[@"keys"] = keys;
     
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/app/add"]
                      parameters:[NSDictionary dictionaryWithDictionary:params]
@@ -206,8 +285,93 @@
                   responseBlock:block];
 }
 
+- (void) updateApp:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/app/update"]
+                     parameters:patch
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) listAppsWithBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/apps"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) listAppUsersWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/user/all"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) removeAppWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/app/remove"]
+                     parameters:@{}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) removeAppModel:(NSString *)modelName withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/schema/remove_model"]
+                     parameters:@{}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) removeContext:(NSString *)contextId withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/context/remove"]
+                     parameters:@{@"id": contextId}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) createContext:(NSString *)name meta:(NSDictionary *)meta withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/context/add"]
+                     parameters:@{@"name": name,
+                                  @"meta": meta}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) getContext:(NSString *)contextId withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/context"]
+                     parameters:@{@"id": contextId}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) getContextsWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/contexts"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) updateContext:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/context/update"]
+                     parameters:patch
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) getSchemasWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/schema/all"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) updateSchema:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/schema/update"]
+                     parameters:patch
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) getMeWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/me"]
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];
@@ -222,6 +386,13 @@
 
 - (void) update:(id)body withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/update"]
+                     parameters:body
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) count:(id)body withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/count"]
                      parameters:body
                         headers:@{}
                   responseBlock:block];

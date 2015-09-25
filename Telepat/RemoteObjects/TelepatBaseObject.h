@@ -10,9 +10,10 @@
 
 @interface TelepatBaseObject : JSONModel
 
-@property (nonatomic) NSInteger object_id;
+@property (nonatomic) NSString *object_id;
 @property (nonatomic) NSString<Optional> *uuid;
 
+- (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject;
 - (NSArray *) propertiesList;
 
 @end

@@ -12,14 +12,14 @@
 @interface TelepatDB : NSObject
 
 + (instancetype) database;
-- (BOOL) objectWithID:(NSInteger)objectID existsInChannel:(NSString *) channelIdenfier;
-- (id) getObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier;
+- (BOOL) objectWithID:(NSString *)objectID existsInChannel:(NSString *) channelIdenfier;
+- (id) getObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier;
 - (NSArray *) getObjectsFromChannel:(NSString *)channelIdentifier;
 - (void) setOperationsDataWithObject:(id)object forKey:(NSString *)key;
 - (id) getOperationsDataForKey:(NSString *)key defaultValue:(id)defaultValue;
 - (void) persistObject:(TelepatBaseObject *)object inChannel:(NSString *)channelIdentifier;
 - (void) persistObjects:(NSArray *)objects inChannel:(NSString *)channelIdentifier;
-- (void) deleteObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier;
+- (void) deleteObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier;
 - (void) deleteObjectsFromChannel:(NSString *)channelIdentifier;
 - (void) empty;
 - (void) close;

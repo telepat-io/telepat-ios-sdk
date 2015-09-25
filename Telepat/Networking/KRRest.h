@@ -35,15 +35,35 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 
 - (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
 - (void) registerUser:(NSString *)token andBlock:(KRResponseBlock)block;
+- (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(KRResponseBlock)block;
 - (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block;
 - (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
 - (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
+- (void) adminAuthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block;
+- (void) adminDeauthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block;
 - (void) adminAddWithUsername:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(KRResponseBlock)block;
+- (void) adminDeleteWithBlock:(KRResponseBlock)block;
+- (void) updateAdmin:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
+- (void) deleteUser:(NSString *)username withBlock:(KRResponseBlock)block;
+- (void) updateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
 - (void) logoutWithBlock:(KRResponseBlock)block;
 - (void) updateContextsWithBlock:(KRResponseBlock)block;
 - (void) create:(id)body withBlock:(KRResponseBlock)block;
 - (void) update:(id)body withBlock:(KRResponseBlock)block;
-- (void) appCreate:(NSString *)appName fields:(NSDictionary *)fields withBlock:(KRResponseBlock)block;
+- (void) count:(id)body withBlock:(KRResponseBlock)block;
+- (void) appCreate:(NSString *)appName apiKeys:(NSArray *)keys customFields:(NSDictionary *)fields withBlock:(KRResponseBlock)block;
+- (void) updateApp:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
 - (void) listAppsWithBlock:(KRResponseBlock)block;
+- (void) listAppUsersWithBlock:(KRResponseBlock)block;
+- (void) removeAppWithBlock:(KRResponseBlock)block;
+- (void) removeAppModel:(NSString *)modelName withBlock:(KRResponseBlock)block;
+- (void) removeContext:(NSString *)contextId withBlock:(KRResponseBlock)block;
+- (void) createContext:(NSString *)name meta:(NSDictionary *)meta withBlock:(KRResponseBlock)block;
+- (void) getContext:(NSString *)contextId withBlock:(KRResponseBlock)block;
+- (void) getContextsWithBlock:(KRResponseBlock)block;
+- (void) updateContext:(NSDictionary *)dictionary withBlock:(KRResponseBlock)block;
+- (void) getSchemasWithBlock:(KRResponseBlock)block;
+- (void) updateSchema:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
+- (void) getMeWithBlock:(KRResponseBlock)block;
 
 @end

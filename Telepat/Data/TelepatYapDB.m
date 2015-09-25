@@ -53,11 +53,11 @@ static TelepatYapDB *telepatdb;
     return [NSString stringWithFormat:@"%@%@", OBJECTS_PREFIX, channelIdenfier];
 }
 
-- (NSString *) getKeyForObjectID:(NSInteger)objectID inChannel:(NSString *)channelIdenfier {
-    return [NSString stringWithFormat:@"%@:%ld", [self getPrefixForChannel:channelIdenfier], (long)objectID];
+- (NSString *) getKeyForObjectID:(NSString *)objectID inChannel:(NSString *)channelIdenfier {
+    return [NSString stringWithFormat:@"%@:%@", [self getPrefixForChannel:channelIdenfier], objectID];
 }
 
-- (BOOL) objectWithID:(NSInteger)objectID existsInChannel:(NSString *) channelIdenfier {
+- (BOOL) objectWithID:(NSString *)objectID existsInChannel:(NSString *) channelIdenfier {
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     BOOL __block exists = NO;
     
@@ -70,7 +70,7 @@ static TelepatYapDB *telepatdb;
     return exists;
 }
 
-- (id) getObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier {
+- (id) getObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier {
     id __block object = nil;
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     
@@ -121,7 +121,7 @@ static TelepatYapDB *telepatdb;
     }];
 }
 
-- (void) deleteObjectWithID:(NSInteger)objectID fromChannel:(NSString *)channelIdentifier {
+- (void) deleteObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier {
     [_dbConnection readWriteWithBlock:^(YapDatabaseReadWriteTransaction *transaction) {
         [transaction removeObjectForKey:[self getKeyForObjectID:objectID inChannel:channelIdentifier] inCollection:nil];
     }];

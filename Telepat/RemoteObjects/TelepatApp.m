@@ -1,30 +1,34 @@
 //
-//  TelepatUser.m
-//  GW Sales
+//  TelepatApp.m
+//  Pods
 //
-//  Created by Ovidiu on 07/08/15.
-//  Copyright (c) 2015 Appscend. All rights reserved.
+//  Created by Ovidiu on 22/09/15.
+//
 //
 
-#import "TelepatUser.h"
+#import "TelepatApp.h"
 #import "Telepat.h"
 
-@implementation TelepatUser
+@implementation TelepatApp
 
-+ (BOOL) propertyIsOptional:(NSString *)propertyName {
-    if ([propertyName isEqualToString:@"isAdmin"]) return YES;
-    return NO;
++ (JSONKeyMapper *) keyMapper {
+    return [[JSONKeyMapper alloc] initWithDictionary:@{@"id" : @"app_id"}];
+}
+
+- (BOOL) isEqual:(id)object {
+    if (![object isKindOfClass:[TelepatApp class]]) return NO;
+    return [((TelepatApp *)object).app_id isEqualToString:self.app_id];
 }
 
 - (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject {
-    if (![updatedObject isKindOfClass:[TelepatUser class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
+    if (![updatedObject isMemberOfClass:[TelepatApp class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
     NSMutableDictionary *patch = [NSMutableDictionary dictionary];
     
     NSMutableArray *patches = [NSMutableArray array];
     for (NSString *property in [updatedObject propertiesList]) {
         if (![[updatedObject valueForKey:property] isEqual:[self valueForKey:property]]) {
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
-            patchDict[@"path"] = [NSString stringWithFormat:@"user/%@/%@", self.object_id, property];
+            patchDict[@"path"] = [NSString stringWithFormat:@"application/%@/%@", self.object_id, property];
             
             if ([updatedObject valueForKey:property] == nil) {
                 patchDict[@"op"] = @"delete";
@@ -39,10 +43,6 @@
     
     if ([patches count]) [patch setObject:patches forKey:@"patches"];
     return [NSDictionary dictionaryWithDictionary:patch];
-}
-
-- (NSString *) user_id {
-    return self.object_id;
 }
 
 @end
