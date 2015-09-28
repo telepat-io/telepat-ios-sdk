@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>07511729-A5A8-4112-9836-F1EB4A00F233</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TelepatProject</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>94C318B0B4904909C0A408130FD2E1752B9BC03E</key>
+		<string>github.com:telepat-io/telepat-ios-sdk.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TelepatProject.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>94C318B0B4904909C0A408130FD2E1752B9BC03E</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:telepat-io/telepat-ios-sdk.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>94C318B0B4904909C0A408130FD2E1752B9BC03E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>94C318B0B4904909C0A408130FD2E1752B9BC03E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Telepat</string>
+		</dict>
+	</array>
+</dict>
+</plist>
