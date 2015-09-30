@@ -4,4 +4,13 @@ xcode_scheme: TelepatProject
 osx_image: xcode7
 
 script:
-  - xcodebuild [DEFAULT_OPTIONS] CODE_SIGNING_REQUIRED=NO
+  xctool
+  -workspace TelepatProject.xcworkspace
+  -scheme TelepatProjectTests
+  -sdk iphonesimulator
+  -destination 'platform=iOS Simulator,name=iPhone 6 Plus'
+  build 
+  test
+  ONLY_ACTIVE_ARCH=NO
+  CODE_SIGN_IDENTITY=""
+  CODE_SIGNING_REQUIRED=NO
