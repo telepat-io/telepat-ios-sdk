@@ -131,8 +131,15 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }
 }
 
-- (void) registerUser:(NSString *)token withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] registerUser:token andBlock:^(KRResponse *response) {
+- (void) registerFacebookUserWithToken:(NSString *)token andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] registerUserWithFacebookToken:token andBlock:^(KRResponse *response) {
+        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(registerResponse);
+    }];
+}
+
+- (void) registerTwitterUserWithToken:(NSString *)token secret:(NSString *)secret andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] registerUserWithTwitterToken:token secret:secret andBlock:^(KRResponse *response) {
         TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(registerResponse);
     }];
@@ -166,8 +173,14 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
-- (void) login:(NSString *)token withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] loginWithToken:token andBlock:^(KRResponse *response) {
+- (void) loginWithFacebook:(NSString *)token andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] loginWithFacebookToken:token andBlock:^(KRResponse *response) {
+        [self processLoginResponse:response withBlock:block];
+    }];
+}
+
+- (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)secret andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] loginWithTwitterToken:authToken secret:secret andBlock:^(KRResponse *response) {
         [self processLoginResponse:response withBlock:block];
     }];
 }

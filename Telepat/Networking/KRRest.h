@@ -34,9 +34,11 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
 
 - (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
-- (void) registerUser:(NSString *)token andBlock:(KRResponseBlock)block;
+- (void) registerUserWithFacebookToken:(NSString *)token andBlock:(KRResponseBlock)block;
+- (void) registerUserWithTwitterToken:(NSString *)authToken secret:(NSString *)authSecret andBlock:(KRResponseBlock)block;
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(KRResponseBlock)block;
-- (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block;
+- (void) loginWithFacebookToken:(NSString*)token andBlock:(KRResponseBlock)block;
+- (void) loginWithTwitterToken:(NSString*)authToken secret:(NSString *)authSecret andBlock:(KRResponseBlock)block;
 - (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
 - (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
 - (void) adminAuthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block;

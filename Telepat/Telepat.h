@@ -114,12 +114,21 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) registerDeviceWithToken:(NSString*)token shouldUpdateBackend:(BOOL)shouldUpdateBackend withBlock:(TelepatResponseBlock)block;
 
 /*
- *  Register a new user account using a Facebook token
+ *  Register a new user account using Facebook
  *
  *  @param token The token string returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
  *  @param block A `TelepatResponseBlock` which will be called when the user registration is completed.
  */
-- (void) registerUser:(NSString *)token withBlock:(TelepatResponseBlock)block;
+- (void) registerFacebookUserWithToken:(NSString *)token andBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Register a new user account using Twitter
+ *
+ *  @param token The value of `authToken` property in TWTRSession class instance
+ *  @param secret The value of `authTokenSecret` property in TWTRSession class instance
+ *  @param block A `TelepatResponseBlock` which will be called when the user registration is completed.
+ */
+- (void) registerTwitterUserWithToken:(NSString *)token secret:(NSString *)secret andBlock:(TelepatResponseBlock)block;
 
 /*
  *  Register a new user account using an email address and a password
@@ -161,7 +170,16 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @param token The token returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
  *  @param block A `TelepatResponseBlock` which will be called when the login completed.
  */
-- (void) login:(NSString *)token withBlock:(TelepatResponseBlock)block;
+- (void) loginWithFacebook:(NSString *)token andBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Login with a Twitter token
+ *
+ *  @param authToken The value of the `authToken` property of the given `TWTRSession` instance by Twitter SDK
+ *  @param secret The value of the `authTokenSecret` property of the given `TWTRSession` instance by Twitter SDK
+ *  @param block A `TelepatResponseBlock` which will be called when the login completed.
+ */
+- (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)secret andBlock:(TelepatResponseBlock)block;
 
 /*
  *  Login with an username and a password

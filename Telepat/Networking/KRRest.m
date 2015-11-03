@@ -170,9 +170,17 @@
                   responseBlock:block];
 }
 
-- (void) registerUser:(NSString *)token andBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
+- (void) registerUserWithFacebookToken:(NSString *)token andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register-facebook"]
                      parameters:@{@"access_token": token}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) registerUserWithTwitterToken:(NSString *)authToken secret:(NSString *)authSecret andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register-twitter"]
+                     parameters:@{@"oauth_token": authToken,
+                                  @"oauth_token_secret": authSecret}
                         headers:@{}
                   responseBlock:block];
 }
@@ -200,9 +208,17 @@
                   responseBlock:block];
 }
 
-- (void) loginWithToken:(NSString*)token andBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login"]
+- (void) loginWithFacebookToken:(NSString*)token andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login-facebook"]
                      parameters:@{@"access_token": token}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) loginWithTwitterToken:(NSString*)authToken secret:(NSString *)authSecret andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login-twitter"]
+                     parameters:@{@"oauth_token": authToken,
+                                  @"oauth_token_secret": authSecret}
                         headers:@{}
                   responseBlock:block];
 }
