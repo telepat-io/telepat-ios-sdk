@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSString<Ignore> *user_id;
 @property (nonatomic, strong) NSString<Optional> *type;
-@property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString<Optional> *password;
 @property (nonatomic, strong) NSArray<Optional> *devices;
 @property (nonatomic) BOOL isAdmin;
