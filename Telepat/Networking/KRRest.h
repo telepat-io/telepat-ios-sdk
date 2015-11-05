@@ -46,7 +46,9 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) adminAddWithUsername:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(KRResponseBlock)block;
 - (void) adminDeleteWithBlock:(KRResponseBlock)block;
 - (void) updateAdmin:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
-- (void) deleteUser:(NSString *)username withBlock:(KRResponseBlock)block;
+- (void) adminDeleteUser:(NSString *)username withBlock:(KRResponseBlock)block;
+- (void) adminUpdateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
+- (void) deleteUserWithID:(NSString *)userId andUsername:(NSString *)username andBlock:(KRResponseBlock)block;
 - (void) updateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
 - (void) logoutWithBlock:(KRResponseBlock)block;
 - (void) updateContextsWithBlock:(KRResponseBlock)block;
@@ -66,6 +68,8 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) updateContext:(NSDictionary *)dictionary withBlock:(KRResponseBlock)block;
 - (void) getSchemasWithBlock:(KRResponseBlock)block;
 - (void) updateSchema:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
-- (void) getMeWithBlock:(KRResponseBlock)block;
+- (void) getCurrentAdminWithBlock:(KRResponseBlock)block;
+- (void) getCurrentUserWithBlock:(KRResponseBlock)block;
+- (void) refreshTokenWithBlock:(KRResponseBlock)block;
 
 @end

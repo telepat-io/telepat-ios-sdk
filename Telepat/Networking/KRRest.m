@@ -194,15 +194,30 @@
                   responseBlock:block];
 }
 
-- (void) deleteUser:(NSString *)username withBlock:(KRResponseBlock)block {
+- (void) adminDeleteUser:(NSString *)username withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/delete"]
                      parameters:@{@"email": username}
                         headers:@{}
                   responseBlock:block];
 }
 
-- (void) updateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+- (void) adminUpdateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/update"]
+                     parameters:patch
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) deleteUserWithID:(NSString *)userId andUsername:(NSString *)username andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/delete"]
+                     parameters:@{@"id": userId,
+                                  @"email": username}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) updateUser:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/update"]
                      parameters:patch
                         headers:@{}
                   responseBlock:block];
@@ -386,8 +401,22 @@
                   responseBlock:block];
 }
 
-- (void) getMeWithBlock:(KRResponseBlock)block {
+- (void) getCurrentAdminWithBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/me"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) getCurrentUserWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/user/me"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) refreshTokenWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/user/refresh_token"]
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];

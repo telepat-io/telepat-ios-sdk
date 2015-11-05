@@ -141,15 +141,39 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(TelepatResponseBlock)block;
 
 /*
- *  Deletes an user from an app
+ *  Deletes an user from an app as an admin
  *
  *  @param username The username of the user to be deleted
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
-- (void) deleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block;
+- (void) adminDeleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block;
 
 /*
- *  Updates an user from an app
+ *  Updates an user from an app as an admin
+ *
+ *  @param oldUser Old, original TelepatUser
+ *  @param newUser, New, updated TelepatUser
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) adminUpdateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Sends a new authentication token to the user
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) refreshTokenWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Delete a user
+ *
+ *  @param user the TelepatUser to delete
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) deleteUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates the user information
  *
  *  @param oldUser Old, original TelepatUser
  *  @param newUser, New, updated TelepatUser

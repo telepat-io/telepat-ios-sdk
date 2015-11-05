@@ -152,8 +152,29 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
-- (void) deleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] deleteUser:username withBlock:^(KRResponse *response) {
+- (void) adminDeleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminDeleteUser:username withBlock:^(KRResponse *response) {
+        TelepatResponse *deleteUserResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(deleteUserResponse);
+    }];
+}
+
+- (void) adminUpdateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] adminUpdateUser:[oldUser patchAgainst:newUser] withBlock:^(KRResponse *response) {
+        TelepatResponse *updateUserResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(updateUserResponse);
+    }];
+}
+
+- (void) refreshTokenWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] refreshTokenWithBlock:^(KRResponse *response) {
+        TelepatResponse *refreshTokenResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(refreshTokenResponse);
+    }];
+}
+
+- (void) deleteUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] deleteUserWithID:user.user_id andUsername:user.username andBlock:^(KRResponse *response) {
         TelepatResponse *deleteUserResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(deleteUserResponse);
     }];
@@ -342,7 +363,14 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) getCurrentAdminWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getMeWithBlock:^(KRResponse *response) {
+    [[KRRest sharedClient] getCurrentAdminWithBlock:^(KRResponse *response) {
+        TelepatResponse *getMeResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getMeResponse);
+    }];
+}
+
+- (void) getCurrentUserWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getCurrentUserWithBlock:^(KRResponse *response) {
         TelepatResponse *getMeResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(getMeResponse);
     }];
