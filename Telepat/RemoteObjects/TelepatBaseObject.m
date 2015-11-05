@@ -45,7 +45,7 @@
                 patchDict[@"op"] = @"delete";
             } else {
                 patchDict[@"op"] = @"replace";
-                patchDict[@"value"] = [updatedObject valueForKey:property];
+                patchDict[@"value"] = [updatedObject toDictionary][property];
             }
             
             [patches addObject:patchDict];
