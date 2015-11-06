@@ -41,12 +41,16 @@
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
             patchDict[@"path"] = [NSString stringWithFormat:@"user/%@/%@", self.object_id, property];
             
-            if ([updatedObject valueForKey:property] == nil) {
-                patchDict[@"op"] = @"delete";
-            } else {
-                patchDict[@"op"] = @"replace";
-                patchDict[@"value"] = [updatedObject toDictionary][property];
-            }
+//            if ([updatedObject valueForKey:property] == nil) {
+//                patchDict[@"op"] = @"delete";
+//            } else {
+//                patchDict[@"op"] = @"replace";
+//                patchDict[@"value"] = [updatedObject toDictionary][property];
+//            }
+            
+            id newValue = [updatedObject toDictionary][property];
+            patchDict[@"op"] = @"replace";
+            patchDict[@"value"] = newValue ? newValue : @"";
             
             [patches addObject:patchDict];
         }
