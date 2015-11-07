@@ -152,6 +152,13 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) registerUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] registerUser:[user toDictionary] withBlock:^(KRResponse *response) {
+        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(registerResponse);
+    }];
+}
+
 - (void) adminDeleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] adminDeleteUser:username withBlock:^(KRResponse *response) {
         TelepatResponse *deleteUserResponse = [[TelepatResponse alloc] initWithResponse:response];

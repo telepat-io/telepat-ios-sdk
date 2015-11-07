@@ -194,6 +194,13 @@
                   responseBlock:block];
 }
 
+- (void) registerUser:(NSDictionary *)userDict withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
+                     parameters:userDict
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) adminDeleteUser:(NSString *)username withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/delete"]
                      parameters:@{@"username": username}

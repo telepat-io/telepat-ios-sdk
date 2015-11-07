@@ -141,6 +141,14 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Register a new user account
+ *
+ *  @param user A TelepatUser or TelepatUser-like object
+ *  @param block A `TelepatResponseBlock` which will be called when the user registration is completed.
+ */
+- (void) registerUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Deletes an user from an app as an admin
  *
  *  @param username The username of the user to be deleted
