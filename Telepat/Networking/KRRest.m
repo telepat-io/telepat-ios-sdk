@@ -187,7 +187,7 @@
 
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
-                     parameters:@{@"email": username,
+                     parameters:@{@"username": username,
                                   @"password": password,
                                   @"name": name}
                         headers:@{}
@@ -196,7 +196,7 @@
 
 - (void) adminDeleteUser:(NSString *)username withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/delete"]
-                     parameters:@{@"email": username}
+                     parameters:@{@"username": username}
                         headers:@{}
                   responseBlock:block];
 }
@@ -211,7 +211,7 @@
 - (void) deleteUserWithID:(NSString *)userId andUsername:(NSString *)username andBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/delete"]
                      parameters:@{@"id": userId,
-                                  @"email": username}
+                                  @"username": username}
                         headers:@{}
                   responseBlock:block];
 }
@@ -240,7 +240,7 @@
 
 - (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login_password"]
-                     parameters:@{@"email": username,
+                     parameters:@{@"username": username,
                                   @"password": password}
                         headers:@{}
                   responseBlock:block];
