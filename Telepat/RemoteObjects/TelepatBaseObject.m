@@ -24,6 +24,12 @@
     return NO;
 }
 
+- (id) copy {
+    TelepatBaseObject *obj = [[[self class] alloc] init];
+    [obj mergeFromDictionary:[self toDictionary] useKeyMapping:YES];
+    return obj;
+}
+
 - (BOOL) isEqual:(id)object {
     if (![object isMemberOfClass:[self class]]) return NO;
     TelepatBaseObject *obj = object;
@@ -32,7 +38,7 @@
 }
 
 - (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject {
-    if (![updatedObject isKindOfClass:[TelepatUser class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
+    if (![updatedObject isKindOfClass:[TelepatBaseObject class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
     NSMutableDictionary *patch = [NSMutableDictionary dictionary];
     
     NSMutableArray *patches = [NSMutableArray array];
