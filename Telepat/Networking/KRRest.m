@@ -186,7 +186,7 @@
 }
 
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register-username"]
                      parameters:@{@"username": username,
                                   @"password": password,
                                   @"name": name}
@@ -195,7 +195,7 @@
 }
 
 - (void) registerUser:(NSDictionary *)userDict withBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register"]
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register-username"]
                      parameters:userDict
                         headers:@{}
                   responseBlock:block];
