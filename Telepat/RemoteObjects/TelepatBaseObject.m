@@ -10,6 +10,12 @@
 #import "TelepatBaseObject.h"
 #import "Telepat.h"
 
+@interface JSONModel ()
+
+-(NSArray*)__properties__;
+
+@end
+
 @implementation TelepatBaseObject
 
 + (JSONKeyMapper *)keyMapper {
@@ -43,7 +49,9 @@
     
     NSMutableArray *patches = [NSMutableArray array];
     for (NSString *property in [updatedObject propertiesList]) {
-        if (![[updatedObject valueForKey:property] isEqual:[self valueForKey:property]]) {
+        id initialValue = [self valueForKey:property];
+        id updatedValue = [updatedObject valueForKey:property];
+        if (!(initialValue == nil && updatedValue == nil) && ![updatedValue isEqual:initialValue]) {
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
             patchDict[@"path"] = [NSString stringWithFormat:@"user/%@/%@", self.object_id, property];
             
@@ -67,21 +75,12 @@
 }
 
 - (NSArray *) propertiesList {
-    unsigned count;
-    objc_property_t *properties = class_copyPropertyList([self class], &count);
-    
-    NSMutableArray *rv = [NSMutableArray array];
-    
-    unsigned i;
-    for (i = 0; i < count; i++)
-    {
-        objc_property_t property = properties[i];
-        NSString *name = [NSString stringWithUTF8String:property_getName(property)];
-        [rv addObject:name];
+    NSMutableArray *mutablePropertiesList = [NSMutableArray array];
+    for (JSONModelClassProperty *property in [self __properties__]) {
+        [mutablePropertiesList addObject:property.name];
     }
     
-    free(properties);
-    return rv;
+    return [NSArray arrayWithArray:mutablePropertiesList];
 }
 
 - (void) update {

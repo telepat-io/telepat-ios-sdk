@@ -7,6 +7,7 @@
 //
 
 #import "JSONModel.h"
+#import "JSONModelClassProperty.h"
 #define kTelepatNoChannelError @"NoChannelError"
 
 @class TelepatChannel, TelepatResponse;
