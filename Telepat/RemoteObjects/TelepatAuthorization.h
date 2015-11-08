@@ -12,6 +12,6 @@
 @interface TelepatAuthorization : TelepatBaseObject
 
 @property (nonatomic, strong) NSString *token;
-@property (nonatomic, strong) TelepatUser *user;
+@property (nonatomic, strong) TelepatUser<Optional> *user;
 
 @end
