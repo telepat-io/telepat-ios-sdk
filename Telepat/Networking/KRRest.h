@@ -12,6 +12,7 @@
 #import "KRResponse.h"
 
 #define kTelepatAPIURL @"kTelepatAPIURL"
+#define kTelepatWebSocketsURL @"kTelepatWebSocketsURL"
 
 typedef void (^KRResponseBlock)(KRResponse *response);
 

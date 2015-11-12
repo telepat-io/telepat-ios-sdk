@@ -8,92 +8,39 @@
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>1</integer>
 		</dict>
 		<key>CocoaLumberjack.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
 		</dict>
 		<key>JSONModel.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>3</integer>
 		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>4</integer>
 		</dict>
 		<key>SIOSocket.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>5</integer>
 		</dict>
 		<key>Telepat.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Telepat.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>6</integer>
-		</dict>
 		<key>YapDatabase.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>7</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
-	<dict>
-		<key>1CD46DF339F61468440791DB060889D3</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>314B2BE176F5C4013C49FD2743C25935</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>67BD9AA90ED0DC7D7709DD742CB5C5DE</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>7990A28D29A6E14AB818DA690E32B033</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9F7F1C7D84E7E5BA6301B97688B4EBB8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>AD4FA3E6AFA73F90C4EC6FDF5D65C4FF</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E0BD535E5ECA31380ED707A409D9146E</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
 </dict>
 </plist>

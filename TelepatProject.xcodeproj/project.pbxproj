@@ -13,7 +13,7 @@
 		A5330CE81BB1959100271E08 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE61BB1959100271E08 /* Main.storyboard */; };
 		A5330CEA1BB1959100271E08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE91BB1959100271E08 /* Assets.xcassets */; };
 		A5330CED1BB1959100271E08 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CEB1BB1959100271E08 /* LaunchScreen.storyboard */; };
-		A5E259E71BB588940058E978 /* TelepatProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CF71BB1959100271E08 /* TelepatProjectTests.m */; settings = {ASSET_TAGS = (); }; };
+		A5E259E71BB588940058E978 /* TelepatProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CF71BB1959100271E08 /* TelepatProjectTests.m */; };
 		B25BA84BA8ECF85DE4B14B2F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9649BD2FB4B1D6828B2F6393 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -177,6 +177,7 @@
 				A5330CD71BB1959100271E08 /* Frameworks */,
 				A5330CD81BB1959100271E08 /* Resources */,
 				808F7204968F7DF8DE5F513B /* Copy Pods Resources */,
+				FC00DECE52E94064754E2513 /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -273,6 +274,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FC00DECE52E94064754E2513 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

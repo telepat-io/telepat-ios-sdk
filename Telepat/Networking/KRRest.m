@@ -41,6 +41,9 @@
 }
 
 + (NSURL *) socketURL {
+    NSString *socketURL = [[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatWebSocketsURL];
+    if (socketURL) return [NSURL URLWithString:socketURL];
+    
     NSURL *apiURL = [NSURL URLWithString:[[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatAPIURL]];
     NSString *wsURL = [NSString stringWithFormat:@"ws://%@:80", apiURL.host];
     return [NSURL URLWithString:wsURL];
