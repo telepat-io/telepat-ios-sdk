@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "KRResponse.h"
 #import "TelepatBaseObject.h"
+#import "TelepatErrors.h"
 
 /**
  * On every request made with Telepat you will receive a `TelepatResponse` instance as an argument for response blocks. You can use this instance to retrieve the returned objects from the Telepat Sync API.
@@ -30,6 +31,11 @@
  *  The message sent from Telepat Sync API
  */
 @property (nonatomic, strong) NSString *message;
+
+/**
+ *  The code of the Telepat Error
+ */
+@property (nonatomic, strong) NSString *code;
 
 /**
  *  The error (if any) from Telepat Sync API

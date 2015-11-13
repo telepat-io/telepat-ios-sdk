@@ -28,6 +28,7 @@
             self.error = response.error;
             self.status = response.status;
             self.message = response.dict[@"message"];
+            self.code = response.dict[@"code"];
             return self;
         }
         NSError *err;
