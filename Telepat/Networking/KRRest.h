@@ -42,6 +42,8 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) loginWithFacebookToken:(NSString*)token andBlock:(KRResponseBlock)block;
 - (void) loginWithTwitterToken:(NSString*)authToken secret:(NSString *)authSecret andBlock:(KRResponseBlock)block;
 - (void) loginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
+- (void) requestPasswordResetForUsername:(NSString*)username withBlock:(KRResponseBlock)block;
+- (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(KRResponseBlock)block;
 - (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block;
 - (void) adminAuthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block;
 - (void) adminDeauthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block;

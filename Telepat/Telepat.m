@@ -219,6 +219,20 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) requestPasswordResetForUsername:(NSString *)username withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] requestPasswordResetForUsername:username withBlock:^(KRResponse *response) {
+        TelepatResponse *passwordRequestResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(passwordRequestResponse);
+    }];
+}
+
+- (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] resetPasswordWithToken:token forUserID:userID newPassword:newPassword withBlock:^(KRResponse *response) {
+        TelepatResponse *passwordResetResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(passwordResetResponse);
+    }];
+}
+
 - (void) adminLogin:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] adminLoginWithUsername:username andPassword:password withBlock:^(KRResponse *response) {
         [self processLoginResponse:response withBlock:block];

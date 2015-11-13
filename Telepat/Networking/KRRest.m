@@ -256,6 +256,23 @@
                   responseBlock:block];
 }
 
+- (void) requestPasswordResetForUsername:(NSString*)username withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/request_password_reset"]
+                     parameters:@{@"type": @"app",
+                                  @"username": username}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/password_reset"]
+                     parameters:@{@"token": token,
+                                  @"user_id": userID,
+                                  @"password": newPassword}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/login"]
                      parameters:@{@"email": username,

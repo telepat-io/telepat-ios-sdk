@@ -223,6 +223,23 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) login:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Request a password reset
+ *
+ *  @param username Username of the account to request the password reset link
+ */
+- (void) requestPasswordResetForUsername:(NSString *)username withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Reset password using a token retrieved from a password reset request
+ *
+ *  @param token The token retrieved from the password reset request
+ *  @param userID The ID of the user to reset the password
+ *  @param password The new password, in clear
+ *  @param block A `TelepatResponseBlock` which will be called when the login completed.
+ */
+- (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Authenticate an admin
  *
  *  @param username Username of the admin to authenticate
