@@ -18,8 +18,8 @@
 
 @implementation TelepatBaseObject
 
-+ (JSONKeyMapper *)keyMapper {
-    return [[JSONKeyMapper alloc] initWithDictionary:@{
++ (TelepatJSONKeyMapper *)keyMapper {
+    return [[TelepatJSONKeyMapper alloc] initWithDictionary:@{
             @"id" : @"object_id"}];
 }
 

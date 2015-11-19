@@ -175,8 +175,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 
 - (void) refreshTokenWithBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] refreshTokenWithBlock:^(KRResponse *response) {
-        TelepatResponse *refreshTokenResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(refreshTokenResponse);
+        [self processLoginResponse:response withBlock:block];
     }];
 }
 

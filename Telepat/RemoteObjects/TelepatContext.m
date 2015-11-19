@@ -10,9 +10,8 @@
 
 @implementation TelepatContext
 
-+ (JSONKeyMapper *)keyMapper {
-    return [[JSONKeyMapper alloc] initWithDictionary:@{
-        @"id" : @"context_id"}];
++ (TelepatJSONKeyMapper *)keyMapper {
+    return [[TelepatBaseObject keyMapper] newKeyMapperWithDictionary:@{@"id" : @"context_id"}];
 }
 
 - (BOOL) isEqual:(id)object {

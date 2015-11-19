@@ -8,6 +8,7 @@
 
 #import "JSONModel.h"
 #import "JSONModelClassProperty.h"
+#import "TelepatJSONKeyMapper.h"
 #define kTelepatNoChannelError @"NoChannelError"
 
 @class TelepatChannel, TelepatResponse;
@@ -19,6 +20,7 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 @property (nonatomic) NSString<Optional> *uuid;
 @property (nonatomic, weak) TelepatChannel <Ignore>*channel;
 
++ (TelepatJSONKeyMapper *)keyMapper;
 - (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject;
 - (NSArray *) propertiesList;
 - (void) update;

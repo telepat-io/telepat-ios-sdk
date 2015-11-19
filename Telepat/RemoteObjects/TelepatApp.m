@@ -11,8 +11,8 @@
 
 @implementation TelepatApp
 
-+ (JSONKeyMapper *) keyMapper {
-    return [[JSONKeyMapper alloc] initWithDictionary:@{@"id" : @"app_id"}];
++ (TelepatJSONKeyMapper *) keyMapper {
+    return [[TelepatBaseObject keyMapper] newKeyMapperWithDictionary:@{@"id" : @"app_id"}];
 }
 
 - (BOOL) isEqual:(id)object {
