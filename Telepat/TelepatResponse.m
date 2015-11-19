@@ -51,9 +51,9 @@
 }
 
 - (id) getObjectOfType:(Class)classType {
-    NSError *err;
     id obj;
     if ([self.content isKindOfClass:[NSDictionary class]]) {
+        NSError *err;
         obj = [[classType alloc] initWithDictionary:(NSDictionary*)self.content error:&err];
         if (err) {
             self.error = err;
@@ -62,6 +62,7 @@
     } else if ([self.content isKindOfClass:[NSArray class]]) {
         NSMutableArray *array = [NSMutableArray array];
         for (NSDictionary *dict in (NSArray *)self.content) {
+            NSError *err;
             obj = [[classType alloc] initWithDictionary:dict error:&err];
             if (err) DDLogError(@"%@", err.userInfo);
             else [array addObject:obj];
