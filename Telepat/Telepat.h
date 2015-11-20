@@ -316,6 +316,17 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Subscribe to a `TelepatContext`. A new `TelepatChannel` object will be instantiated and returned
+ *
+ *  @param context A `TelepatContext` to subscribe to
+ *  @param modelName The name of the model to subscribe to
+ *  @param classType The kind of objects which will be stored in the `TelepatChannel` instance. Used for instantiating the proper objects when notifications arrives.
+ *  @param filter Filters to use when subscribing
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Unsubscribe from a channel
  *
  *  @param channel The channel to unsubscribe fromrea

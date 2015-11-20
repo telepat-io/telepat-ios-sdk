@@ -314,10 +314,15 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
+    return [self subscribe:context modelName:modelName classType:classType filter:nil withBlock:block];
+}
+
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block {
     if (![classType isSubclassOfClass:[TelepatBaseObject class]])
         @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
+    if (filter) channel.opFilter = filter;
     [channel subscribeWithBlock:^(TelepatResponse *response) {
         block(response);
     }];
