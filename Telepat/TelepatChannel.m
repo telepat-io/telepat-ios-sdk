@@ -35,7 +35,7 @@
                                                                                                                                               @"context": self.context.context_id,
                                                                                                                                               @"model": self.modelName}]}];
     if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
-    if (self.opFilter) [params[@"channel"] setObject:[self.opFilter toDictionary] forKey:@"filters"];
+    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
     
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
                      parameters:params
