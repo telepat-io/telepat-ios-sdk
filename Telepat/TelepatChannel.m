@@ -233,7 +233,7 @@
     }
     if (self.opFilter) {
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[_opFilter toDictionary] options:0 error:nil];
-        subid = [NSString stringWithFormat:@"%@:%@", subid, [jsonData base64EncodedStringWithOptions:0]];
+        subid = [NSString stringWithFormat:@"%@:filter:%@", subid, [jsonData base64EncodedStringWithOptions:0]];
     }
     
     return subid;
