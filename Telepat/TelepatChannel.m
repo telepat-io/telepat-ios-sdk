@@ -221,9 +221,9 @@
 
 - (NSString *) subscriptionIdentifier {
     if (self.context == nil || self.modelName == nil) return nil;
-    NSString *subid = @"blg";
+    NSString *subid = [NSString stringWithFormat:@"blg:%@", self.context.application_id];
     if (self.context) {
-        subid = [NSString stringWithFormat:@"%@:%@", subid, self.context.context_id];
+        subid = [NSString stringWithFormat:@"%@:context:%@", subid, self.context.context_id];
     }
     if (self.user) {
         subid = [NSString stringWithFormat:@"%@:users:%@", subid, self.user.user_id];
