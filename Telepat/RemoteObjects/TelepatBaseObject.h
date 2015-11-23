@@ -19,6 +19,8 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 @property (nonatomic) NSString *object_id;
 @property (nonatomic) NSString<Optional> *uuid;
 @property (nonatomic, weak) TelepatChannel <Ignore>*channel;
+@property (nonatomic, strong) NSDate<Optional> *created;
+@property (nonatomic, strong) NSDate<Optional> *modified;
 
 + (TelepatJSONKeyMapper *)keyMapper;
 - (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject;
