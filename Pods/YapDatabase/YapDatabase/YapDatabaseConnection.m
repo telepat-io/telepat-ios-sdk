@@ -21,6 +21,8 @@
 #import <UIKit/UIKit.h>
 #endif
 
+#include "yap_vfs_shim.h"
+
 #if ! __has_feature(objc_arc)
 #warning This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
@@ -51,6 +53,23 @@ NS_INLINE BOOL YDBIsMainThread()
 }
 
 #endif
+
+static const char * const yap_vfs_shim_name = "yap_vfs_shim";
+
+static void yapNotifyDidRead(yap_file *file)
+{
+	__unsafe_unretained YapDatabaseConnection *connection =
+	          (__bridge YapDatabaseConnection *)file->yap_database_connection;
+	
+	if (connection)
+	{
+		if (connection->needsMarkSqlLevelSharedReadLock)
+			[connection markSqlLevelSharedReadLockAcquired];
+	}
+	
+	file->xNotifyDidRead = NULL;
+}
+
 
 @implementation YapDatabaseConnection {
 @private
@@ -145,6 +164,11 @@ NS_INLINE BOOL YDBIsMainThread()
 		ydb_NSThread_Class = [NSThread class];
 		
 	#endif
+		
+		// Register the yap_vfs shim with sqlite.
+		// This only needs to be done once.
+		
+		yap_vfs_shim_register(yap_vfs_shim_name, NULL);
 	}
 }
 
@@ -216,7 +240,7 @@ NS_INLINE BOOL YDBIsMainThread()
 			
 			int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_PRIVATECACHE;
 			
-			int status = sqlite3_open_v2([database.databasePath UTF8String], &db, flags, NULL);
+			int status = sqlite3_open_v2([database.databasePath UTF8String], &db, flags, yap_vfs_shim_name);
 			if (status != SQLITE_OK)
 			{
 				// Sometimes the open function returns a db to allow us to query it for the error message
@@ -350,6 +374,17 @@ NS_INLINE BOOL YDBIsMainThread()
 	
 	if (db)
 	{
+		if (main_file)
+		{
+			main_file->yap_database_connection = NULL;
+			main_file->xNotifyDidRead = NULL;
+		}
+		if (wal_file)
+		{
+			wal_file->yap_database_connection = NULL;
+			wal_file->xNotifyDidRead = NULL;
+		}
+		
 		if (![database connectionPoolEnqueue:db])
 		{
 			int status = sqlite3_close(db);
@@ -1774,7 +1809,7 @@ NS_INLINE BOOL YDBIsMainThread()
 **/
 - (void)preReadTransaction:(YapDatabaseReadTransaction *)transaction
 {
-	// Pre-Read-Transaction: Step 1 of 3
+	// Pre-Read-Transaction: Step 1 of 4
 	//
 	// Execute "BEGIN TRANSACTION" on database connection.
 	// This is actually a deferred transaction, meaning the sqlite connection won't actually
@@ -1788,7 +1823,7 @@ NS_INLINE BOOL YDBIsMainThread()
 		
 	dispatch_sync(database->snapshotQueue, ^{ @autoreleasepool {
 		
-		// Pre-Read-Transaction: Step 2 of 3
+		// Pre-Read-Transaction: Step 2 of 4
 		//
 		// Update our connection state within the state table.
 		//
@@ -1825,19 +1860,24 @@ NS_INLINE BOOL YDBIsMainThread()
 		
 		NSAssert(myState != nil, @"Missing state in database->connectionStates");
 		
-		// Pre-Read-Transaction: Step 3 of 3
+		// Pre-Read-Transaction: Step 3 of 4
 		//
 		// Update our in-memory data (caches, etc) if needed.
 		
-		if (hasActiveWriteTransaction || longLivedReadTransaction)
+		if (hasActiveWriteTransaction || longLivedReadTransaction || wal_file == NULL)
 		{
+			// If there is a write transaction in progress,
+			// then it's not safe to proceed until we acquire a "sql-level" snapshot.
+			//
 			// If this is for a longLivedReadTransaction,
 			// then we need to immediately acquire a "sql-level" snapshot.
 			//
-			// Otherwise if there is a write transaction in progress,
-			// then it's not safe to proceed until we acquire a "sql-level" snapshot.
+			// If sqlite hasn't opened the wal_file yet,
+			// then we need to invoke the sql machinery so we can get access to it.
+			// We need the wal_file in order to properly receive notifications of
+			// when sqlite acquires an "sql-level" snapshot.
 			//
-			// During this process we need to ensure that our "yap-level" snapshot of the in-memory data (caches, etc)
+			// During this process we ensure that our "yap-level" snapshot of the in-memory data (caches, etc)
 			// is in sync with our "sql-level" snapshot of the database.
 			//
 			// We can check this by comparing the connection's snapshot ivar with
@@ -1910,6 +1950,40 @@ NS_INLINE BOOL YDBIsMainThread()
 		myState->lastTransactionSnapshot = snapshot;
 		myState->lastTransactionTime = mach_absolute_time();
 	}});
+	
+	// Pre-Read-Transaction: Step 4 of 4
+	//
+	// Enable sqlite VFS shim listeners for read notifications (if needed).
+	//
+	// Note: Code above performs the following:
+	//     if (hasActiveWriteTransaction || longLivedReadTransaction || wal_file == NULL)
+	//
+	// So we initialize the 'wal_file' here, if we haven't already.
+	
+	if (main_file == NULL)
+	{
+		sqlite3_file_control(db, "main", SQLITE_FCNTL_FILE_POINTER, &main_file);
+		if (main_file) {
+			main_file->yap_database_connection = (__bridge void *)self;
+		}
+	}
+	if (wal_file == NULL) // <- See note above
+	{
+		wal_file = yap_file_wal_find(main_file);
+		if (wal_file)
+		{
+			wal_file->yap_database_connection = (__bridge void *)self;
+		}
+	}
+	
+	if (needsMarkSqlLevelSharedReadLock)
+	{
+		if (main_file)
+			main_file->xNotifyDidRead = yapNotifyDidRead;
+		
+		if (wal_file)
+			wal_file->xNotifyDidRead = yapNotifyDidRead;
+	}
 }
 
 /**
@@ -1919,7 +1993,7 @@ NS_INLINE BOOL YDBIsMainThread()
 **/
 - (void)postReadTransaction:(YapDatabaseReadTransaction *)transaction
 {
-	// Post-Read-Transaction: Step 1 of 4
+	// Post-Read-Transaction: Step 1 of 5
 	//
 	// 1. Execute "COMMIT TRANSACTION" on database connection.
 	// If we had acquired "sql-level" shared read lock, this will release associated resources.
@@ -1927,12 +2001,23 @@ NS_INLINE BOOL YDBIsMainThread()
 	
 	[transaction commitTransaction];
 	
+	// Post-Read-Transaction: Step 2 of 5
+	//
+	// Disable sqlite VFS shim listeners for read notifications (if needed).
+	
+	if (main_file)
+		main_file->xNotifyDidRead = NULL;
+	
+	if (wal_file)
+		wal_file->xNotifyDidRead = NULL;
+	
+	
 	__block uint64_t minSnapshot = 0;
 	__block YapDatabaseConnectionState *writeStateToSignal = nil;
 	
 	dispatch_sync(database->snapshotQueue, ^{ @autoreleasepool {
 		
-		// Post-Read-Transaction: Step 2 of 4
+		// Post-Read-Transaction: Step 3 of 5
 		//
 		// Update our connection state within the state table.
 		//
@@ -1996,7 +2081,7 @@ NS_INLINE BOOL YDBIsMainThread()
 		YDBLogVerbose(@"YapDatabaseConnection(%p) completing read-only transaction.", self);
 	}});
 	
-	// Post-Read-Transaction: Step 3 of 4
+	// Post-Read-Transaction: Step 4 of 5
 	//
 	// Check to see if this connection has been holding back the checkpoint process.
 	// That is, was this connection the last active connection on an old snapshot?
@@ -2016,7 +2101,7 @@ NS_INLINE BOOL YDBIsMainThread()
 		}];
 	}
 	
-	// Post-Read-Transaction: Step 4 of 4
+	// Post-Read-Transaction: Step 5 of 5
 	//
 	// If we discovered a blocked write transaction,
 	// and it was blocked waiting on us (because we had a "yap-level" snapshot without an "sql-level" snapshot),
@@ -2740,7 +2825,7 @@ NS_INLINE BOOL YDBIsMainThread()
 	
 	__block YapDatabaseConnectionState *writeStateToSignal = nil;
 	
-	dispatch_sync(database->snapshotQueue, ^{ @autoreleasepool {
+	dispatch_block_t block = ^{ @autoreleasepool {
 		
 		// Update our connection state within the state table.
 		//
@@ -2782,7 +2867,12 @@ NS_INLINE BOOL YDBIsMainThread()
 		{
 			writeStateToSignal = blockedWriteState;
 		}
-	}});
+	}};
+	
+	if (dispatch_get_specific(database->IsOnSnapshotQueueKey))
+		block();
+	else
+		dispatch_sync(database->snapshotQueue, block);
 	
 	needsMarkSqlLevelSharedReadLock = NO;
 	

@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'FF1E22A2117FB56F4A887379'
+               BlueprintIdentifier = 'CB91FE36F6EC8C65167192FF'
                BlueprintName = 'SIOSocket'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libSIOSocket.a'>

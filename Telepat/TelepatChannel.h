@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "TelepatContext.h"
+#import "TelepatCountResult.h"
 #import "TelepatTransportNotification.h"
 #import "TelepatOperatorFilter.h"
 #import "TelepatUser.h"
@@ -56,6 +57,16 @@
  *  @param objectType The desired class of the objects that will be emitted in this channel
  */
 - (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context objectType:(Class)objectType;
+
+/**
+ *  Instantiate a new instance of `TelepatChannel` with filters
+ *
+ *  @param modelName The model name of the desired objects
+ *  @param context The context where the desired objects live in
+ *  @param filter Filters to use when creating the `TelepatChannel` object
+ *  @param objectType The desired class of the objects that will be emitted in this channel
+ */
+- (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context filter:(TelepatOperatorFilter*)filter objectType:(Class)objectType;
 
 /**
  *  Subscribe to this channel
@@ -117,7 +128,7 @@
  *
  *  @param block A block which will be called when the add request was completed
  */
-- (void) countWithBlock:(void (^)(TelepatResponse *response))block;
+- (void) countWithBlock:(void (^)(TelepatCountResult *result))block;
 
 /**
  *  Get the current subscription identifier

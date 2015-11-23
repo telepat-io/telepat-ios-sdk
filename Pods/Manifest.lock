@@ -36,9 +36,9 @@ PODS:
     - JSONModel (~> 1.1.0)
     - SIOSocket (~> 0.2.0)
     - YapDatabase (~> 2.7.0)
-  - YapDatabase (2.7.4):
-    - YapDatabase/standard (= 2.7.4)
-  - YapDatabase/standard (2.7.4):
+  - YapDatabase (2.7.6):
+    - YapDatabase/standard (= 2.7.6)
+  - YapDatabase/standard (2.7.6):
     - CocoaLumberjack (~> 2)
 
 DEPENDENCIES:
@@ -54,6 +54,6 @@ SPEC CHECKSUMS:
   JSONModel: 216584d0311b053ff714f1d6cb700dbf890847bc
   SIOSocket: 2facc0bd02ae72d98c223634a46dd8ebdf9be321
   Telepat: 230bc26dca25cf0a6ef7650ea77c3a47c5bb18d9
-  YapDatabase: 41d80eefb2959fc7cf064c487f2bfa3cf68a5704
+  YapDatabase: 00e5a5d1b5dba1bd540ef644576233b5612e6122
 
 COCOAPODS: 0.39.0

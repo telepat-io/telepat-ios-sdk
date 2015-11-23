@@ -30,6 +30,17 @@
     return self;
 }
 
+- (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context filter:(TelepatOperatorFilter*)filter objectType:(Class)objectType {
+    if (self = [super init]) {
+        _modelName = modelName;
+        _context = context;
+        _opFilter = filter;
+        _objectType = objectType;
+    }
+    
+    return self;
+}
+
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
                                                                                                                                               @"context": self.context.context_id,
@@ -137,7 +148,7 @@
     return object.uuid;
 }
 
-- (void) countWithBlock:(void (^)(TelepatResponse *response))block {
+- (void) countWithBlock:(void (^)(TelepatCountResult *result))block {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
                                                                                                                                               @"context": self.context.context_id,
                                                                                                                                               @"model": self.modelName}]}];
@@ -145,7 +156,7 @@
     
     [[KRRest sharedClient] count:params withBlock:^(KRResponse *response) {
         TelepatResponse *countResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(countResponse);
+        block([countResponse getObjectOfType:[TelepatCountResult class]]);
     }];
 }
 

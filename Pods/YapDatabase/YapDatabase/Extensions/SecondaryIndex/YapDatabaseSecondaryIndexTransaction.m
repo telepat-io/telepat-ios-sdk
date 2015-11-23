@@ -1198,21 +1198,14 @@ static NSString *const ext_key_version_deprecated = @"version";
 	BOOL stop = NO;
 	YapMutationStackItem_Bool *mutation = [parentConnection->mutationStack push]; // mutation during enum protection
 	
-	int status = sqlite3_step(statement);
-	if (status == SQLITE_ROW)
+	int status;
+	while ((status = sqlite3_step(statement)) == SQLITE_ROW)
 	{
-		if (databaseTransaction->connection->needsMarkSqlLevelSharedReadLock)
-			[databaseTransaction->connection markSqlLevelSharedReadLockAcquired];
+		int64_t rowid = sqlite3_column_int64(statement, SQLITE_COLUMN_START);
 		
-		do
-		{
-			int64_t rowid = sqlite3_column_int64(statement, SQLITE_COLUMN_START);
+		block(rowid, &stop);
 			
-			block(rowid, &stop);
-			
-			if (stop || mutation.isMutated) break;
-			
-		} while ((status = sqlite3_step(statement)) == SQLITE_ROW);
+		if (stop || mutation.isMutated) break;
 	}
 	
 	if ((status != SQLITE_DONE) && !stop && !mutation.isMutated)
@@ -1318,6 +1311,117 @@ static NSString *const ext_key_version_deprecated = @"version";
 	return result;
 }
 
+- (BOOL)_enumerateIndexedValuesInColumn:(NSString *)column
+                          matchingQuery:(YapDatabaseQuery *)query
+                             usingBlock:(void (^)(id indexedValue, BOOL *stop))block
+{
+	if (column == nil) return NO;
+	if (query == nil) return NO;
+	if (query.isAggregateQuery) return NO;
+
+	// Create full query using given filtering clause(s)
+
+	NSString *fullQueryString =
+	  [NSString stringWithFormat:@"SELECT \"%@\" AS IndexedValue FROM \"%@\" %@;",
+	  column, [self tableName], query.queryString];
+
+	// Turn query into compiled sqlite statement (using cache if possible)
+
+	sqlite3_stmt *statement = [self prepareQueryString:fullQueryString];
+	if (statement == NULL)
+	{
+		return NO;
+	}
+
+	// Bind query parameters appropriately.
+
+	[self bindQueryParameters:query.queryParameters forStatement:statement withOffset:SQLITE_BIND_START];
+
+	// Enumerate query results
+
+	BOOL stop = NO;
+	YapMutationStackItem_Bool *mutation = [parentConnection->mutationStack push]; // mutation during enum protection
+
+	int status;
+	while ((status = sqlite3_step(statement)) == SQLITE_ROW)
+	{
+		int columnType = sqlite3_column_type(statement, SQLITE_COLUMN_START);
+		id indexedValue = nil;
+
+		switch(columnType) {
+			case SQLITE_INTEGER:
+			{
+				int64_t value = sqlite3_column_int64(statement, SQLITE_COLUMN_START);
+				indexedValue = @(value);
+				break;
+			}
+			
+			case SQLITE_FLOAT:
+			{
+				double value = sqlite3_column_double(statement, SQLITE_COLUMN_START);
+				indexedValue = @(value);
+				break;
+			}
+
+			case SQLITE_TEXT:
+			{
+				const unsigned char *text = sqlite3_column_text(statement, SQLITE_COLUMN_START);
+				int textSize = sqlite3_column_bytes(statement, SQLITE_COLUMN_START);
+				indexedValue = [[NSString alloc] initWithBytes:text length:textSize encoding:NSUTF8StringEncoding];
+				break;
+			}
+
+			case SQLITE_BLOB:
+			{
+				const void *value = sqlite3_column_blob(statement, SQLITE_COLUMN_START);
+				int valueSize = sqlite3_column_bytes(statement, SQLITE_COLUMN_START);
+				indexedValue = [[NSData alloc] initWithBytes:value length:valueSize];
+				break;
+			}
+		}
+		
+		block(indexedValue, &stop);
+
+		if (stop || mutation.isMutated) break;
+	}
+
+	if ((status != SQLITE_DONE) && !stop && !mutation.isMutated)
+	{
+		YDBLogError(@"%@ - sqlite_step error: %d %s", THIS_METHOD,
+					status, sqlite3_errmsg(databaseTransaction->connection->db));
+	}
+
+	sqlite3_clear_bindings(statement);
+	sqlite3_reset(statement);
+
+	if (!stop & mutation.isMutated)
+	{
+		@throw [self mutationDuringEnumerationException];
+	}
+
+	return (status == SQLITE_DONE);
+}
+
+- (BOOL)enumerateIndexedValuesInColumn:(NSString *)column
+                         matchingQuery:(YapDatabaseQuery *)query
+                            usingBlock:(void(^)(id indexedValue, BOOL *stop))block
+{
+	BOOL result = [self _enumerateIndexedValuesInColumn:column
+	                                      matchingQuery:query
+	                                         usingBlock:^(id indexedValue, BOOL *stop)
+	{
+		if (block == NULL) // Query test : caller still wants BOOL result
+		{
+			*stop = YES;
+			return; // from block
+		}
+
+		block(indexedValue, stop);
+	}];
+
+	return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Standard Query - Count
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1350,9 +1454,6 @@ static NSString *const ext_key_version_deprecated = @"version";
 	int status = sqlite3_step(statement);
 	if (status == SQLITE_ROW)
 	{
-		if (databaseTransaction->connection->needsMarkSqlLevelSharedReadLock)
-			[databaseTransaction->connection markSqlLevelSharedReadLockAcquired];
-		
 		count = (NSUInteger)sqlite3_column_int64(statement, SQLITE_COLUMN_START);
 	}
 	else if (status == SQLITE_ERROR)
@@ -1401,9 +1502,6 @@ static NSString *const ext_key_version_deprecated = @"version";
 	int status = sqlite3_step(statement);
 	if (status == SQLITE_ROW)
 	{
-		if (databaseTransaction->connection->needsMarkSqlLevelSharedReadLock)
-			[databaseTransaction->connection markSqlLevelSharedReadLockAcquired];
-		
 		int column_idx = SQLITE_COLUMN_START;
 		int column_type = sqlite3_column_type(statement, column_idx);
 		
