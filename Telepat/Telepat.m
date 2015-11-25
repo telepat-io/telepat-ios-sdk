@@ -348,8 +348,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     return [_subscriptions.allKeys containsObject:channelIdentifier];
 }
 
-- (TelepatContext *) contextWithId:(NSInteger)contextId {
-    return [_mServerContexts objectForKey:[NSNumber numberWithLong:contextId]];
+- (TelepatContext *) contextWithId:(NSString *)contextId {
+    return [_mServerContexts objectForKey:contextId];
 }
 
 - (void) createContextWithName:(NSString *)name meta:(NSDictionary *)meta withBlock:(TelepatResponseBlock)block {
