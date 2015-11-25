@@ -25,6 +25,7 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 + (TelepatJSONKeyMapper *)keyMapper;
 - (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject;
 - (NSArray *) propertiesList;
+- (void) setValue:(id<NSObject>)value forProperty:(NSString *)propertyName;
 - (void) update;
 - (void) updateWithBlock:(TelepatResponseBlock)block;
 

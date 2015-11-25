@@ -13,6 +13,7 @@
 @interface JSONModel ()
 
 -(NSArray*)__properties__;
+- (BOOL)__customSetValue:(id<NSObject>)value forProperty:(JSONModelClassProperty*)property;
 
 @end
 
@@ -81,6 +82,12 @@
     }
     
     return [NSArray arrayWithArray:mutablePropertiesList];
+}
+
+- (void) setValue:(id<NSObject>)value forProperty:(NSString *)propertyName {
+    NSMutableDictionary *origDict = [NSMutableDictionary dictionaryWithDictionary:[self toDictionary]];
+    [origDict setValue:value forKey:[[[self class] keyMapper] convertValue:propertyName isImportingToModel:YES]];
+    [self mergeFromDictionary:origDict useKeyMapping:YES];
 }
 
 - (void) update {
