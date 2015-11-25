@@ -181,9 +181,10 @@
             NSString *propertyName = pathComponents[2];
             if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                 id updatedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
-                [updatedObject setValue:notification.value forKey:propertyName];
+                NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
+                [updatedObject setValue:notification.value forKey:transformedPropertyName];
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectUpdated object:self userInfo:@{kNotificationObject: updatedObject,
-                                                                                                                              kNotificationPropertyName: propertyName,
+                                                                                                                              kNotificationPropertyName: transformedPropertyName,
                                                                                                                               kNotificationValue: notification.value,
                                                                                                                               kNotificationOrigin: @(notification.origin)}];
                 [self persistObject:updatedObject];
