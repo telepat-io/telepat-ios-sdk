@@ -68,9 +68,12 @@
 }
 
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block {
-    NSDictionary *params = @{@"channel": @{
-                                     @"context": self.context.context_id,
-                                     @"model": self.modelName}};
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                                                              @"context": self.context.context_id,
+                                                                                                                                              @"model": self.modelName}]}];
+    if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
+    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
+    
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/unsubscribe"]
                      parameters:params
                         headers:@{}
