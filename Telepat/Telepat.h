@@ -358,10 +358,18 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 /*
  *  Get the context with specified ID
  *
- *  @param contextId The numeric ID of context to return
+ *  @param contextId The ID of context to return
  *  @return The context with specified ID or nil, if a context with that ID doesn't exists.
  */
 - (TelepatContext *) contextWithId:(NSString *)contextId;
+
+/*
+ *  Get the context with specified ID
+ *
+ *  @param contextId The identifier of context to return
+ *  @return The context with specified identifier or nil, if a context with that identifier doesn't exists.
+ */
+- (TelepatContext *) contextWithIdentifier:(NSString *)identifier;
 
 /*
  *  Create a new Context in the current application

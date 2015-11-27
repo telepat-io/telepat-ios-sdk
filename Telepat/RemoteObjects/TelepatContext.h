@@ -17,4 +17,6 @@
 @property (nonatomic, strong) NSString<Optional> *type;
 @property (nonatomic, strong) NSDictionary<Optional> *meta;
 
+- (NSString *) contextIdentifier;
+
 @end

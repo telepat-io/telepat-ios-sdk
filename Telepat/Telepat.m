@@ -352,6 +352,13 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     return [_mServerContexts objectForKey:contextId];
 }
 
+- (TelepatContext *) contextWithIdentifier:(NSString *)identifier {
+    for (TelepatContext *context in _mServerContexts) {
+        if ([[_mServerContexts[context] contextIdentifier] isEqualToString:identifier]) return context;
+    }
+    return nil;
+}
+
 - (void) createContextWithName:(NSString *)name meta:(NSDictionary *)meta withBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] createContext:name meta:meta withBlock:^(KRResponse *response) {
         TelepatResponse *createContextResponse = [[TelepatResponse alloc] initWithResponse:response];
@@ -489,6 +496,12 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         createdTransportNotification.subscription = ndict[@"subscription"];
         createdTransportNotification.guid = ndict[@"guid"];
         
+        TelepatContext *context = [self contextWithIdentifier:ndict[@"subscription"]];
+        if (context) {
+            [self processNotification:createdTransportNotification];
+            continue;
+        }
+        
         TelepatChannel *channel = [self channelWithSubscription:ndict[@"subscription"]];
         [channel processNotification:createdTransportNotification];
     }
@@ -500,6 +513,12 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         updatedTransportNotification.origin = origin;
         updatedTransportNotification.value = ndict[@"value"];
         updatedTransportNotification.path = ndict[@"path"];
+        
+        TelepatContext *context = [self contextWithIdentifier:ndict[@"subscription"]];
+        if (context) {
+            [self processNotification:updatedTransportNotification];
+            continue;
+        }
         
         TelepatChannel *channel = [self channelWithSubscription:ndict[@"subscription"]];
         [channel processNotification:updatedTransportNotification];
@@ -513,8 +532,59 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         deletedTransportNotification.value = nil;
         deletedTransportNotification.path = ndict[@"path"];
         
+        TelepatContext *context = [self contextWithIdentifier:ndict[@"subscription"]];
+        if (context) {
+            [self processNotification:deletedTransportNotification];
+            continue;
+        }
+        
         TelepatChannel *channel = [self channelWithSubscription:ndict[@"subscription"]];
         [channel processNotification:deletedTransportNotification];
+    }
+}
+
+- (void) processNotification:(TelepatTransportNotification *)notification {
+    switch (notification.type) {
+        case TelepatNotificationTypeObjectAdded: {
+            TelepatContext *context = [[TelepatContext alloc] initWithDictionary:notification.value error:nil];
+            if (context) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextAdded object:self userInfo:@{kNotificationObject: context,
+                                                                                                                      kNotificationOriginalContent: notification.value,
+                                                                                                                      kNotificationOrigin: @(notification.origin)}];
+                [_mServerContexts setObject:context forKey:context.context_id];
+            }
+            break;
+        }
+            
+        case TelepatNotificationTypeObjectUpdated: {
+            if (notification.value == nil || ([notification.value isKindOfClass:[NSString class]] && [notification.value length] == 0)) return;
+            NSArray *pathComponents = [notification.path pathComponents];
+            NSString *objectId = pathComponents[1];
+            NSString *propertyName = pathComponents[2];
+            TelepatContext *updatedContext = [_mServerContexts objectForKey:objectId];
+            NSString *transformedPropertyName = [[[updatedContext class] keyMapper] convertValue:propertyName isImportingToModel:NO];
+            [updatedContext setValue:notification.value forProperty:transformedPropertyName];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextUpdated object:self userInfo:@{kNotificationObject: updatedContext,
+                                                                                                                    kNotificationOriginalContent: notification.value,
+                                                                                                                    kNotificationPropertyName: transformedPropertyName,
+                                                                                                                    kNotificationValue: notification.value,
+                                                                                                                    kNotificationOrigin: @(notification.origin)}];
+            break;
+        }
+            
+        case TelepatNotificationTypeObjectDeleted: {
+            NSArray *pathComponents = [notification.path pathComponents];
+            NSString *objectId = pathComponents[1];
+            TelepatContext *deletedContext = [_mServerContexts objectForKey:objectId];
+            [_mServerContexts removeObjectForKey:deletedContext.context_id];
+            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedContext,
+                                                                                                                          kNotificationOriginalContent: notification.value,
+                                                                                                                          kNotificationOrigin: @(notification.origin)}];
+            break;
+        }
+            
+        default:
+            break;
     }
 }
 
