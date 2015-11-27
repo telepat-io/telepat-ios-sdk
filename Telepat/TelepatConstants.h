@@ -43,4 +43,19 @@ extern NSString *const TelepatChannelObjectUpdated;
  */
 extern NSString *const TelepatChannelObjectDeleted;
 
+/**
+ *  Posted when a new TelepatContext was added
+ */
+extern NSString *const TelepatContextAdded;
+
+/**
+ *  Posted when an existing TelepatContext was updated
+ */
+extern NSString *const TelepatContextUpdated;
+
+/**
+ *  Posted when an existing TelepatContext was deleted
+ */
+extern NSString *const TelepatContextDeleted;
+
 #endif

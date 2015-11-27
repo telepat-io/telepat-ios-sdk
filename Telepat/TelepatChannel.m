@@ -166,6 +166,7 @@
             id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
             if (obj) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
+                                                                                                                            kNotificationOriginalContent: notification.value,
                                                                                                                             kNotificationOrigin: @(notification.origin)}];
                 [self persistObject:obj];
             }
@@ -184,6 +185,7 @@
                 NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
                 [updatedObject setValue:notification.value forProperty:transformedPropertyName];
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectUpdated object:self userInfo:@{kNotificationObject: updatedObject,
+                                                                                                                              kNotificationOriginalContent: notification.value,
                                                                                                                               kNotificationPropertyName: transformedPropertyName,
                                                                                                                               kNotificationValue: notification.value,
                                                                                                                               kNotificationOrigin: @(notification.origin)}];
@@ -202,6 +204,7 @@
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
                  
                  [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedObject,
+                                                                                                                               kNotificationOriginalContent: notification.value,
                                                                                                                                kNotificationOrigin: @(notification.origin)}];
              }
             break;

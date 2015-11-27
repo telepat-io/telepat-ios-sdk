@@ -10,6 +10,10 @@
 
 NSString *const TelepatRemoteNotificationReceived = @"remoteNotification";
 
+NSString *const TelepatContextAdded = @"telepatContextAdded";
+NSString *const TelepatContextUpdated = @"telepatContextUpdated";
+NSString *const TelepatContextDeleted = @"telepatContextDeleted";
+
 NSString *const TelepatChannelObjectAdded = @"telepatObjectAdded";
 NSString *const TelepatChannelObjectUpdated = @"telepatObjectUpdated";
 NSString *const TelepatChannelObjectDeleted = @"telepatObjectDeleted";

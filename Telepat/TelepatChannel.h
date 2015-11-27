@@ -14,6 +14,7 @@
 #import "TelepatUser.h"
 
 #define kNotificationObject @"object"
+#define kNotificationOriginalContent @"originalContent"
 #define kNotificationPropertyName @"propertyName"
 #define kNotificationValue @"value"
 
