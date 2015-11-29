@@ -86,7 +86,13 @@
 
 - (void) setValue:(id<NSObject>)value forProperty:(NSString *)propertyName {
     NSMutableDictionary *origDict = [NSMutableDictionary dictionaryWithDictionary:[self toDictionary]];
-    [origDict setValue:value forKey:[[[self class] keyMapper] convertValue:propertyName isImportingToModel:YES]];
+    if ([origDict[propertyName] isKindOfClass:[NSDictionary class]] && [value isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *mutableSubdict = [NSMutableDictionary dictionaryWithDictionary:origDict[propertyName]];
+        [mutableSubdict addEntriesFromDictionary:(NSDictionary *)value];
+        [origDict setValue:[NSDictionary dictionaryWithDictionary:mutableSubdict] forKey:[[[self class] keyMapper] convertValue:propertyName isImportingToModel:YES]];
+    } else {
+        [origDict setValue:value forKey:[[[self class] keyMapper] convertValue:propertyName isImportingToModel:YES]];
+    }
     [self mergeFromDictionary:origDict useKeyMapping:YES];
 }
 
