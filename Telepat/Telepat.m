@@ -353,8 +353,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (TelepatContext *) contextWithIdentifier:(NSString *)identifier {
-    for (TelepatContext *context in _mServerContexts) {
-        if ([[_mServerContexts[context] contextIdentifier] isEqualToString:identifier]) return context;
+    for (NSString *contextId in _mServerContexts) {
+        if ([[_mServerContexts[contextId] contextIdentifier] isEqualToString:identifier]) return _mServerContexts[contextId];
     }
     return nil;
 }
@@ -548,7 +548,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         case TelepatNotificationTypeObjectAdded: {
             TelepatContext *context = [[TelepatContext alloc] initWithDictionary:notification.value error:nil];
             if (context) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextAdded object:self userInfo:@{kNotificationObject: context,
+                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextAdded object:context userInfo:@{kNotificationObject: context,
                                                                                                                       kNotificationOriginalContent: notification.value,
                                                                                                                       kNotificationOrigin: @(notification.origin)}];
                 [_mServerContexts setObject:context forKey:context.context_id];
@@ -564,7 +564,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             TelepatContext *updatedContext = [_mServerContexts objectForKey:objectId];
             NSString *transformedPropertyName = [[[updatedContext class] keyMapper] convertValue:propertyName isImportingToModel:NO];
             [updatedContext setValue:notification.value forProperty:transformedPropertyName];
-            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextUpdated object:self userInfo:@{kNotificationObject: updatedContext,
+            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextUpdated object:updatedContext userInfo:@{kNotificationObject: updatedContext,
                                                                                                                     kNotificationOriginalContent: notification.value,
                                                                                                                     kNotificationPropertyName: transformedPropertyName,
                                                                                                                     kNotificationValue: notification.value,
@@ -577,7 +577,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             NSString *objectId = pathComponents[1];
             TelepatContext *deletedContext = [_mServerContexts objectForKey:objectId];
             [_mServerContexts removeObjectForKey:deletedContext.context_id];
-            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedContext,
+            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:deletedContext userInfo:@{kNotificationObject: deletedContext,
                                                                                                                           kNotificationOriginalContent: notification.value,
                                                                                                                           kNotificationOrigin: @(notification.origin)}];
             break;
