@@ -578,7 +578,6 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             TelepatContext *deletedContext = [_mServerContexts objectForKey:objectId];
             [_mServerContexts removeObjectForKey:deletedContext.context_id];
             [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:deletedContext userInfo:@{kNotificationObject: deletedContext,
-                                                                                                                          kNotificationOriginalContent: notification.value,
                                                                                                                           kNotificationOrigin: @(notification.origin)}];
             break;
         }

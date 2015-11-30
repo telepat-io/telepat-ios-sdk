@@ -207,7 +207,6 @@
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
                  
                  [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedObject,
-                                                                                                                               kNotificationOriginalContent: notification.value,
                                                                                                                                kNotificationOrigin: @(notification.origin)}];
              }
             break;
