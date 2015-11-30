@@ -61,6 +61,11 @@
 @property (nonatomic, strong) NSString *parentId;
 
 /**
+ *  The id of the channel item
+ */
+@property (nonatomic, strong) NSString *objectId;
+
+/**
  *  Instantiate a new instance of `TelepatChannel`
  *
  *  @param modelName The model name of the desired objects
@@ -78,6 +83,17 @@
  *  @param objectType The desired class of the objects that will be emitted in this channel
  */
 - (id) initWithModelName:(NSString *)modelName context:(TelepatContext *)context filter:(TelepatOperatorFilter*)filter objectType:(Class)objectType;
+
+/**
+ *  Instantiate a new instance of `TelepatChannel` with a parent model and id
+ *
+ *  @param parentModel The parent's model name
+ *  @param parentId    The parent's id
+ *  @param objectType  The desired class of the objects that will be emitted in this channel
+ *
+ *  @return A new instance of `TelepatChannel`
+ */
+- (id) initWithModelName:(NSString *)modelName parentModel:(NSString *)parentModel parentId:(NSString *)parentId objectType:(Class)objectType;
 
 /**
  *  Subscribe to this channel

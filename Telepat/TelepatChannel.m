@@ -41,6 +41,17 @@
     return self;
 }
 
+- (id) initWithModelName:(NSString *)modelName parentModel:(NSString *)parentModel parentId:(NSString *)parentId objectType:(Class)objectType {
+    if (self = [super init]) {
+        _modelName = modelName;
+        _parentModelName = parentModel;
+        _parentId = parentId;
+        _objectType = objectType;
+    }
+    
+    return self;
+}
+
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
                      parameters:[self paramsForSubscription]
@@ -74,13 +85,11 @@
 }
 
 - (NSDictionary *) paramsForSubscription {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                                              @"context": self.context.context_id,
-                                                                                                                                              @"model": self.modelName}]}];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{@"model": self.modelName}]}];
+    if (self.context) [params[@"channel"] setObject:self.context.context_id forKey:@"context"];
     if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
     if (self.parentId && self.parentModelName) {
         [params[@"channel"] setObject:@{@"id": self.parentId, @"model": self.parentModelName} forKey:@"parent"];
-        [params[@"channel"] removeObjectForKey:@"context"];
     }
     if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
     
@@ -224,18 +233,44 @@
     return [[[Telepat client] dbInstance] getObjectWithID:object_id fromChannel:[self subscriptionIdentifier]];
 }
 
+- (NSInteger) channelMask {
+    NSInteger mask = 0;
+    if (self.context)
+        mask += 1;
+    if (self.user)
+        mask += 2;
+    if (self.modelName)
+        mask += 4;
+    if (self.parentId && self.parentModelName)
+        mask += 8;
+    if (self.objectId)
+        mask += 16;
+    return mask;
+}
+
 - (NSString *) subscriptionIdentifier {
-    if (self.context == nil || self.modelName == nil) return nil;
-    NSString *subid = [NSString stringWithFormat:@"blg:%@", self.context.application_id];
-    if (self.context) {
-        subid = [NSString stringWithFormat:@"%@:context:%@", subid, self.context.context_id];
+    NSString *subid = [NSString stringWithFormat:@"blg"];
+    switch ([self channelMask]) {
+        case 4:
+            subid = [NSString stringWithFormat:@"%@:%@:%@", subid, [[Telepat client] appId], self.modelName];
+            break;
+        case 5:
+            subid = [NSString stringWithFormat:@"%@:%@:context:%@:%@", subid, [[Telepat client] appId], self.context.context_id, self.modelName];
+            break;
+        case 7:
+            subid = [NSString stringWithFormat:@"%@:%@:context:%@:users:%@:%@", subid, [[Telepat client] appId], self.context.context_id, self.user.user_id, self.modelName];
+            break;
+        case 12:
+            subid = [NSString stringWithFormat:@"%@:%@:%@:%@:%@", subid, [[Telepat client] appId], self.parentModelName, self.parentId, self.modelName];
+            break;
+        case 14:
+            subid = [NSString stringWithFormat:@"%@:%@:users:%@:%@:%@:%@", subid, [[Telepat client] appId], self.user.user_id, self.parentModelName, self.parentId, self.modelName];
+            break;
+        case 20:
+            subid = [NSString stringWithFormat:@"%@:%@:%@:%@", subid, [[Telepat client] appId], self.modelName, self.objectId];
+            break;
     }
-    if (self.user) {
-        subid = [NSString stringWithFormat:@"%@:users:%@", subid, self.user.user_id];
-    }
-    if (self.modelName) {
-        subid = [NSString stringWithFormat:@"%@:%@", subid, self.modelName];
-    }
+    
     if (self.opFilter) {
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[_opFilter toDictionary] options:0 error:nil];
         subid = [NSString stringWithFormat:@"%@:filter:%@", subid, [jsonData base64EncodedStringWithOptions:0]];
