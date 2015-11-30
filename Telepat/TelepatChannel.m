@@ -153,12 +153,7 @@
 }
 
 - (void) countWithBlock:(void (^)(TelepatCountResult *result))block {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                                              @"context": self.context.context_id,
-                                                                                                                                              @"model": self.modelName}]}];
-    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
-    
-    [[KRRest sharedClient] count:params withBlock:^(KRResponse *response) {
+    [[KRRest sharedClient] count:[self paramsForSubscription] withBlock:^(KRResponse *response) {
         TelepatResponse *countResponse = [[TelepatResponse alloc] initWithResponse:response];
         block([countResponse getObjectOfType:[TelepatCountResult class]]);
     }];
