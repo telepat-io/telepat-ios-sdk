@@ -51,6 +51,16 @@
 @property (nonatomic, strong) TelepatOperatorFilter *opFilter;
 
 /**
+ *  The model name of the parent object, if any
+ */
+@property (nonatomic, strong) NSString *parentModelName;
+
+/**
+ *  The id of the parent object, if any
+ */
+@property (nonatomic, strong) NSString *parentId;
+
+/**
  *  Instantiate a new instance of `TelepatChannel`
  *
  *  @param modelName The model name of the desired objects

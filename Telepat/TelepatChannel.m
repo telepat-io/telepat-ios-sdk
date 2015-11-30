@@ -42,19 +42,12 @@
 }
 
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                                              @"context": self.context.context_id,
-                                                                                                                                              @"model": self.modelName}]}];
-    if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
-    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
-    
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
-                     parameters:params
+                     parameters:[self paramsForSubscription]
                         headers:@{}
                   responseBlock:^(KRResponse *response) {
                       TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
                       if (response.status == 200) {
-                          TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
                           if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
                               for (NSDictionary *dict in subscribeResponse.content) {
                                   [self processNotification:[TelepatTransportNotification notificationOfType:TelepatNotificationTypeObjectAdded withValue:dict path:@"/" origin:TelepatNotificationOriginSubscribe]];
@@ -68,14 +61,8 @@
 }
 
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                                                                              @"context": self.context.context_id,
-                                                                                                                                              @"model": self.modelName}]}];
-    if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
-    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
-    
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/unsubscribe"]
-                     parameters:params
+                     parameters:[self paramsForSubscription]
                         headers:@{}
                   responseBlock:^(KRResponse *response) {
                       TelepatResponse *unsubscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
@@ -84,6 +71,20 @@
                       }
                       block(unsubscribeResponse);
                   }];
+}
+
+- (NSDictionary *) paramsForSubscription {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                                                                                              @"context": self.context.context_id,
+                                                                                                                                              @"model": self.modelName}]}];
+    if (self.user) [params[@"channel"] setObject:self.user.user_id forKey:@"user"];
+    if (self.parentId && self.parentModelName) {
+        [params[@"channel"] setObject:@{@"id": self.parentId, @"model": self.parentModelName} forKey:@"parent"];
+        [params[@"channel"] removeObjectForKey:@"context"];
+    }
+    if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
+    
+    return [NSDictionary dictionaryWithDictionary:params];
 }
 
 - (NSString *) add:(TelepatBaseObject *)object {
@@ -167,6 +168,7 @@
     switch (notification.type) {
         case TelepatNotificationTypeObjectAdded: {
             id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
+            ((TelepatBaseObject*)obj).channel = self;
             if (obj) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
                                                                                                                             kNotificationOriginalContent: notification.value,
@@ -187,6 +189,7 @@
                 id updatedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                 NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
                 [updatedObject setValue:notification.value forProperty:transformedPropertyName];
+                ((TelepatBaseObject*)updatedObject).channel = self;
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectUpdated object:self userInfo:@{kNotificationObject: updatedObject,
                                                                                                                               kNotificationOriginalContent: notification.value,
                                                                                                                               kNotificationPropertyName: transformedPropertyName,
@@ -205,6 +208,7 @@
              if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                  TelepatBaseObject *deletedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
+                 ((TelepatBaseObject*)deletedObject).channel = self;
                  
                  [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectDeleted object:self userInfo:@{kNotificationObject: deletedObject,
                                                                                                                                kNotificationOrigin: @(notification.origin)}];
