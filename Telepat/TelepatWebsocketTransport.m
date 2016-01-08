@@ -36,12 +36,16 @@ static TelepatWebsocketTransport *sharedClient;
         [self.socket on:@"welcome" callback:^(NSArray *args) {
             NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
             NSLog(@"Welcomed with sessionID: %@", sessionID);
-            block(sessionID);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(sessionID);
+            });
         }];
         
         [self.socket on:@"message" callback:^(NSArray *args) {
             NSLog(@"Websockets: message");
-            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatRemoteNotificationReceived object:args[0] userInfo:@{@"source": @(TelepatNotificationOriginWebsockets)}];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatRemoteNotificationReceived object:args[0] userInfo:@{@"source": @(TelepatNotificationOriginWebsockets)}];
+            });
         }];
     }];
 }

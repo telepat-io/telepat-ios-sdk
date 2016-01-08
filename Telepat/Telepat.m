@@ -13,7 +13,7 @@
 #import "NSData+HexString.h"
 
 #ifdef DEBUG
-const int ddLogLevel = LOG_LEVEL_VERBOSE;
+const int ddLogLevel = LOG_LEVEL_DEBUG;
 #else
 const int ddLogLevel = LOG_LEVEL_ERROR;
 #endif

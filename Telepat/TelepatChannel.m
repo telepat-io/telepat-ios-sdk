@@ -226,7 +226,9 @@
 }
 
 - (void) persistObject:(id)object {
-    [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
+    });
 }
 
 - (id) retrieveObjectWithID:(NSString *)object_id {
