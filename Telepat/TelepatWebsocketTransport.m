@@ -36,6 +36,11 @@ static TelepatWebsocketTransport *sharedClient;
         [self.socket on:@"welcome" callback:^(NSArray *args) {
             NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
             NSLog(@"Welcomed with sessionID: %@", sessionID);
+            NSString *deviceId = [[Telepat client] appId];
+            NSString *application_id = [[Telepat client] appId];
+            NSDictionary *object = @{@"deviceId": deviceId, @"application_id": application_id};
+            SIOParameterArray *params = @[[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding]];
+            [self.socket emit:@"bindDevice" args:params];
             dispatch_async(dispatch_get_main_queue(), ^{
                 block(sessionID);
             });
