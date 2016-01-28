@@ -168,6 +168,16 @@
     }];
 }
 
+- (void) average:(NSString *)field withBlock:(void (^)(TelepatAggregationResult *result))block {
+    NSMutableDictionary *requestDict = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
+    NSDictionary *aggregationDict = @{@"avg": @{@"field": field}};
+    [requestDict setObject:aggregationDict forKey:@"aggregation"];
+    [[KRRest sharedClient] count:requestDict withBlock:^(KRResponse *response) {
+        TelepatResponse *averageResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block([averageResponse getObjectOfType:[TelepatAggregationResult class]]);
+    }];
+}
+
 - (void) processNotification:(TelepatTransportNotification *)notification {
     switch (notification.type) {
         case TelepatNotificationTypeObjectAdded: {

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "TelepatContext.h"
 #import "TelepatCountResult.h"
+#import "TelepatAggregationResult.h"
 #import "TelepatTransportNotification.h"
 #import "TelepatOperatorFilter.h"
 #import "TelepatUser.h"
@@ -153,9 +154,17 @@
 /**
  *  Gets the object count of a certain filter/subscription
  *
- *  @param block A block which will be called when the add request was completed
+ *  @param block A block which will be called when the count request was completed
  */
 - (void) countWithBlock:(void (^)(TelepatCountResult *result))block;
+
+/**
+ *  Get the arithmetic average of a field
+ *
+ *  @param field The field name
+ *  @param block A block which will be called when the aggregation request was completed
+ */
+- (void) average:(NSString *)field withBlock:(void (^)(TelepatAggregationResult *result))block;
 
 /**
  *  Get the current subscription identifier
