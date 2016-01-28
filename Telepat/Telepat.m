@@ -67,8 +67,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     return self;
 }
 
-- (NSString *) deviceID:(NSString *)string {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"device_id"];
+- (NSString *) deviceID {
+    return [[KRRest sharedClient] device_id];
 }
 
 - (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {

@@ -75,6 +75,13 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 + (void) setApplicationId:(NSString *)clientAppId apiKey:(NSString *)clientApiKey;
 
 /**
+ *  Get the current device ID
+ *
+ *  @return A `NSString` with the device ID
+ */
+- (NSString *) deviceID;
+
+/**
  *  Get the current device description
  *
  *  @return A string describing the current device
