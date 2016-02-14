@@ -33,17 +33,38 @@ static TelepatWebsocketTransport *sharedClient;
             NSLog(@"Websockets: connection succeeded");
         };
         
+        self.socket.onDisconnect = ^void() {
+            NSLog(@"Websockets: disconnected");
+        };
+        
+        self.socket.onError = ^void(NSDictionary *errorInfo) {
+            NSLog(@"Websockets: error %@", errorInfo);
+        };
+        
+        self.socket.onReconnect = ^void(NSInteger numberOfAttempts) {
+            NSLog(@"Websockets: reconnect (%d attempts)", numberOfAttempts);
+        };
+        
+        self.socket.onReconnectionAttempt = ^void(NSInteger numberOfAttempts) {
+            NSLog(@"Websockets: attempting reconnection (%d attempts)", numberOfAttempts);
+        };
+        
+        self.socket.onReconnectionError = ^void(NSDictionary *errorInfo) {
+            NSLog(@"Websockets: reconnection error %@", errorInfo);
+        };
+        
         [self.socket on:@"welcome" callback:^(NSArray *args) {
-            NSString *sessionID = [self __getValue:@"session_id" fromArgs:args];
-            NSLog(@"Welcomed with session_id: %@", sessionID);
-            NSString *deviceId = [[Telepat client] appId];
-            NSString *application_id = [[Telepat client] appId];
-            NSDictionary *object = @{@"device_id": deviceId, @"application_id": application_id};
-            SIOParameterArray *params = @[[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding]];
-            [self.socket emit:@"bind_device" args:params];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                block(sessionID);
-            });
+            NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
+            NSLog(@"Welcomed with sessionID: %@", sessionID);
+            block(sessionID);
+//            NSString *deviceId = [[Telepat client] appId];
+//            NSString *application_id = [[Telepat client] appId];
+//            NSDictionary *object = @{@"deviceId": deviceId, @"application_id": application_id};
+//            SIOParameterArray *params = @[[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding]];
+//            [self.socket emit:@"bindDevice" args:params];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                block(sessionID);
+//            });
         }];
         
         [self.socket on:@"message" callback:^(NSArray *args) {

@@ -58,16 +58,25 @@
                         headers:@{}
                   responseBlock:^(KRResponse *response) {
                       TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
-                      if (response.status == 200) {
-                          if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
-                              for (NSDictionary *dict in subscribeResponse.content) {
-                                  [self processNotification:[TelepatTransportNotification notificationOfType:TelepatNotificationTypeObjectAdded withValue:dict path:@"/" origin:TelepatNotificationOriginSubscribe]];
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                          if (response.status == 200) {
+                              if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
+                                  for (NSDictionary *dict in subscribeResponse.content) {
+                                      id obj = [[_objectType alloc] initWithDictionary:dict error:nil];
+                                      [self persistObject:obj];
+                                  }
+                              } else {
+                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
+                                  [self persistObject:obj];
                               }
+                              
+                              [[Telepat client] registerSubscription:self];
                           }
                           
-                          [[Telepat client] registerSubscription:self];
-                      }
-                      block(subscribeResponse);
+                          dispatch_async(dispatch_get_main_queue(), ^{
+                              block(subscribeResponse);
+                          });
+                      });
                   }];
 }
 
@@ -184,9 +193,11 @@
             id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
             ((TelepatBaseObject*)obj).channel = self;
             if (obj) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
-                                                                                                                            kNotificationOriginalContent: notification.value,
-                                                                                                                            kNotificationOrigin: @(notification.origin)}];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
+                                                                                                                                kNotificationOriginalContent: notification.value,
+                                                                                                                                kNotificationOrigin: @(notification.origin)}];
+                });
                 [self persistObject:obj];
             }
             break;
