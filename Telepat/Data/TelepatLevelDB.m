@@ -72,12 +72,10 @@ NSString *const OBJECTS_PREFIX = @"TP_OBJECTS_";
 - (void) setOperationsDataWithObject:(id)object forKey:(NSString *)key {
     if (object) {
         [_dbInstance setObject:object forKey:[NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key]];
-        NSLog(@"set object %@ for key %@", NSStringFromClass([object class]), [NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key]);
     }
 }
 
 - (id) getOperationsDataForKey:(NSString *)key defaultValue:(id)defaultValue {
-    NSLog(@"get object %@", [NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key]);
     return [self getData:[NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key] defaultValue:defaultValue];
 }
 

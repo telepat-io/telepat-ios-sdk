@@ -126,6 +126,7 @@
     
     NSMutableArray *patches = [NSMutableArray array];
     for (NSString *property in [object propertiesList]) {
+        if ([property isEqualToString:@"uuid"]) continue;
         if (![[object valueForKey:property] isEqual:[oldObject valueForKey:property]]) {
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
             patchDict[@"path"] = [NSString stringWithFormat:@"%@/%ld/%@", self.modelName, (long)object.object_id, property];
@@ -151,7 +152,7 @@
     [[KRRest sharedClient] update:@{@"model": self.modelName,
                                     @"context": self.context.context_id,
                                     @"id": object.object_id,
-                                    @"patch": patches} withBlock:^(KRResponse *response) {
+                                    @"patches": patches} withBlock:^(KRResponse *response) {
                                         if (block) {
                                             TelepatResponse *patchResponse = [[TelepatResponse alloc] initWithResponse:response];
                                             block(patchResponse);
