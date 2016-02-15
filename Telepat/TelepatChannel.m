@@ -138,7 +138,7 @@
         if ([property isEqualToString:@"uuid"]) continue;
         if (![[object valueForKey:property] isEqual:[oldObject valueForKey:property]]) {
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
-            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%ld/%@", self.modelName, (long)object.object_id, property];
+            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%@/%@", self.modelName, object.object_id, property];
             
 //            if ([object valueForKey:property] == nil) {
 //                patchDict[@"op"] = @"delete";
