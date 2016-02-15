@@ -135,6 +135,7 @@
     
     NSMutableArray *patches = [NSMutableArray array];
     for (NSString *property in [object propertiesList]) {
+        if ([property isEqualToString:@"uuid"]) continue;
         if (![[object valueForKey:property] isEqual:[oldObject valueForKey:property]]) {
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
             patchDict[@"path"] = [NSString stringWithFormat:@"%@/%ld/%@", self.modelName, (long)object.object_id, property];
@@ -160,7 +161,7 @@
     [[KRRest sharedClient] update:@{@"model": self.modelName,
                                     @"context": self.context.context_id,
                                     @"id": object.object_id,
-                                    @"patch": patches} withBlock:^(KRResponse *response) {
+                                    @"patches": patches} withBlock:^(KRResponse *response) {
                                         if (block) {
                                             TelepatResponse *patchResponse = [[TelepatResponse alloc] initWithResponse:response];
                                             block(patchResponse);
@@ -247,9 +248,7 @@
 }
 
 - (void) persistObject:(id)object {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
-    });
+    [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
 }
 
 - (id) retrieveObjectWithID:(NSString *)object_id {

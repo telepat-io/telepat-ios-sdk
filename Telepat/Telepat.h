@@ -19,7 +19,7 @@
 #import "TelepatApp.h"
 #import "TelepatRegisterDeviceResponse.h"
 #import "TelepatOperatorFilter.h"
-#import "TelepatYapDB.h"
+#import "TelepatLevelDB.h"
 
 extern const int ddLogLevel;
 

@@ -12,10 +12,9 @@
 
 @property (nonatomic) NSString *context_id;
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic) NSInteger state;
+@property (nonatomic, strong) NSString *state;
 @property (nonatomic, strong) NSString *application_id;
 @property (nonatomic, strong) NSString<Optional> *type;
-@property (nonatomic, strong) NSDictionary<Optional> *meta;
 
 - (NSString *) contextIdentifier;
 
