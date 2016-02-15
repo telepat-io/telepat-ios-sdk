@@ -9,11 +9,12 @@
 #import <sys/utsname.h>
 #import <CommonCrypto/CommonDigest.h>
 #import "Telepat.h"
+#import "TelepatLevelDB.h"
 #import "TelepatWebsocketTransport.h"
 #import "NSData+HexString.h"
 
 #ifdef DEBUG
-const int ddLogLevel = LOG_LEVEL_DEBUG;
+const int ddLogLevel = LOG_LEVEL_ERROR;
 #else
 const int ddLogLevel = LOG_LEVEL_ERROR;
 #endif
@@ -60,7 +61,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor greenColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
         [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor redColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
         
-        _dbInstance = [TelepatYapDB database];
+        _dbInstance = [TelepatLevelDB database];
         [[KRRest sharedClient] setDevice_id:[_dbInstance getOperationsDataForKey:kUDID defaultValue:@""]];
     }
     

@@ -181,14 +181,18 @@
 - (void) processNotification:(TelepatTransportNotification *)notification {
     switch (notification.type) {
         case TelepatNotificationTypeObjectAdded: {
-            id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
-            ((TelepatBaseObject*)obj).channel = self;
-            if (obj) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
-                                                                                                                            kNotificationOriginalContent: notification.value,
-                                                                                                                            kNotificationOrigin: @(notification.origin)}];
-                [self persistObject:obj];
-            }
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
+                ((TelepatBaseObject*)obj).channel = self;
+                if (obj) {
+                    [self persistObject:obj];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
+                                                                                                                                    kNotificationOriginalContent: notification.value,
+                                                                                                                                    kNotificationOrigin: @(notification.origin)}];
+                    });
+                }
+            });
             break;
         }
             
@@ -236,9 +240,7 @@
 }
 
 - (void) persistObject:(id)object {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
-    });
+    [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
 }
 
 - (id) retrieveObjectWithID:(NSString *)object_id {
