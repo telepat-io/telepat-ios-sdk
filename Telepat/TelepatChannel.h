@@ -19,6 +19,12 @@
 #define kNotificationPropertyName @"propertyName"
 #define kNotificationValue @"value"
 
+typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
+    TelepatChannelSortModeNone,
+    TelepatChannelSortModeAscending,
+    TelepatChannelSortModeDescending
+};
+
 @class TelepatResponse;
 
 /**
@@ -70,6 +76,14 @@
  *  Instantiate a new instance of `TelepatChannel`
  *
  *  @param modelName The model name of the desired objects
+ *  @param objectType The desired class of the objects that will be emitted in this channel
+ */
+- (id) initWithModelName:(NSString *)modelName objectType:(Class)objectType;
+
+/**
+ *  Instantiate a new instance of `TelepatChannel` with a context
+ *
+ *  @param modelName The model name of the desired objects
  *  @param context The context where the desired objects live in
  *  @param objectType The desired class of the objects that will be emitted in this channel
  */
@@ -109,6 +123,14 @@
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block;
+
+/**
+ *  Configure the channel to sort after a property value
+ *
+ *  @param sortedProperty A `NSString` naming the property which will be sorted
+ *  @param sortOrder The sorting order, ascedent or descendent
+ */
+- (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortMode)order;
 
 /**
  *  Process a `TelepatTransportNotification` received from the update channel (e.g. Websockets)

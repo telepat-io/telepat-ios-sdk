@@ -11,6 +11,7 @@
 
 @implementation TelepatChannel {
     NSMutableDictionary *_waitingForCreation;
+    NSMutableDictionary *_sortingDict;
 }
 
 - (id) init {
@@ -18,6 +19,14 @@
         _waitingForCreation = [NSMutableDictionary dictionary];
     }
     
+    return self;
+}
+
+- (id) initWithModelName:(NSString *)modelName objectType:(Class)objectType {
+    if (self = [super init]) {
+        _modelName = modelName;
+        _objectType = objectType;
+    }
     return self;
 }
 
@@ -93,6 +102,24 @@
                   }];
 }
 
+- (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortMode)order {
+    _sortingDict = [NSMutableDictionary dictionary];
+    NSDictionary *orderDict;
+    if (order == TelepatChannelSortModeAscending) {
+        orderDict = @{@"order": @"asc"};
+    } else if (order == TelepatChannelSortModeDescending) {
+        orderDict = @{@"order": @"desc"};
+    } else {
+        orderDict = nil;
+    }
+    
+    if (orderDict) {
+        _sortingDict[sortedProperty] = orderDict;
+    } else {
+        _sortingDict = nil;
+    }
+}
+
 - (NSDictionary *) paramsForSubscription {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"channel": [NSMutableDictionary dictionaryWithDictionary:@{@"model": self.modelName}]}];
     if (self.context) [params[@"channel"] setObject:self.context.context_id forKey:@"context"];
@@ -101,6 +128,7 @@
         [params[@"channel"] setObject:@{@"id": self.parentId, @"model": self.parentModelName} forKey:@"parent"];
     }
     if (self.opFilter) [params setObject:[self.opFilter toDictionary] forKey:@"filters"];
+    if (_sortingDict) [params setObject:_sortingDict forKey:@"sort"];
     
     return [NSDictionary dictionaryWithDictionary:params];
 }
