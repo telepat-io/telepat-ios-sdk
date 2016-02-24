@@ -77,6 +77,8 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) updateSchema:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
 - (void) getCurrentAdminWithBlock:(KRResponseBlock)block;
 - (void) getCurrentUserWithBlock:(KRResponseBlock)block;
+- (void) getUserMetadataWithBlock:(KRResponseBlock)block;
+- (void) updateUserMetadata:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
 - (void) refreshTokenWithBlock:(KRResponseBlock)block;
 
 @end

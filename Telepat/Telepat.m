@@ -473,6 +473,21 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) getUserMetadataWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getUserMetadataWithBlock:^(KRResponse *response) {
+        TelepatResponse *userMetadataResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(userMetadataResponse);
+    }];
+}
+
+- (void) updateUserMetadata:(TelepatUserMetadata *)oldMetadata withUserMetadata:(TelepatUserMetadata *)newMetadata andBlock:(TelepatResponseBlock)block {
+    NSDictionary *patch = [oldMetadata patchAgainst:newMetadata];
+    [[KRRest sharedClient] updateUserMetadata:patch withBlock:^(KRResponse *response) {
+        TelepatResponse *userMetadataUpdateResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(userMetadataUpdateResponse);
+    }];
+}
+
 - (void) setApiKey:(NSString *)apiKey {
     NSData *dataIn = [apiKey dataUsingEncoding:NSASCIIStringEncoding];
     NSMutableData *dataOut = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];

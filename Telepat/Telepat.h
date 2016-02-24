@@ -496,4 +496,20 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  */
 - (void) updateContext:(TelepatContext *)oldContext withContext:(TelepatContext *)newContext andBlock:(TelepatResponseBlock)block;
 
+/*
+ *  Get current's user metadata info
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getUserMetadataWithBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Updates the user metadata
+ *
+ *  @param oldMetadata Old, original TelepatUserMetadata
+ *  @param newMetadata, New, updated TelepatUserMetadata
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) updateUserMetadata:(TelepatUserMetadata *)oldMetadata withUserMetadata:(TelepatUserMetadata *)newMetadata andBlock:(TelepatResponseBlock)block;
+
 @end

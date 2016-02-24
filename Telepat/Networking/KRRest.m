@@ -219,6 +219,7 @@
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/register-username"]
                      parameters:@{@"username": username,
+                                  @"email": username,
                                   @"password": password,
                                   @"name": name}
                         headers:@{}
@@ -492,6 +493,20 @@
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];
+}
+
+- (void) getUserMetadataWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/user/metadata"]
+                    parameters:@{}
+                       headers:@{}
+                 responseBlock:block];
+}
+
+- (void) updateUserMetadata:(NSDictionary *)patch withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/update_metadata"]
+                     parameters:patch
+                        headers:@{}
+                  responseBlock:block];
 }
 
 - (void) refreshTokenWithBlock:(KRResponseBlock)block {
