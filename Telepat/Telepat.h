@@ -403,6 +403,14 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) getContextsWithBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Get all contexts within a range
+ *
+ *  @param range A `NSRange` with the start offset and the number of objects to be returned
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getContextsWithRange:(NSRange)range andBlock:(TelepatResponseBlock)block;
+
+/*
  *  Gets the model schema for an application
  *
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
