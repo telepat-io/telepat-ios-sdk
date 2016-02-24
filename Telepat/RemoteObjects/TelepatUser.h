@@ -7,6 +7,7 @@
 //
 
 #import "TelepatBaseObject.h"
+#import "TelepatUserMetadata.h"
 
 @interface TelepatUser : TelepatBaseObject
 

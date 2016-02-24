@@ -471,6 +471,19 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] sendProxiedRequest:[request toDictionary] withResponseBlock:^(KRResponse *response) {
         block(response);
+
+- (void) getUserMetadataWithBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getUserMetadataWithBlock:^(KRResponse *response) {
+        TelepatResponse *userMetadataResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(userMetadataResponse);
+    }];
+}
+
+- (void) updateUserMetadata:(TelepatUserMetadata *)oldMetadata withUserMetadata:(TelepatUserMetadata *)newMetadata andBlock:(TelepatResponseBlock)block {
+    NSDictionary *patch = [oldMetadata patchAgainst:newMetadata];
+    [[KRRest sharedClient] updateUserMetadata:patch withBlock:^(KRResponse *response) {
+        TelepatResponse *userMetadataUpdateResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(userMetadataUpdateResponse);
     }];
 }
 

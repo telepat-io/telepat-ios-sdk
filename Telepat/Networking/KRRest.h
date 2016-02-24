@@ -447,4 +447,20 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  */
 - (void) refreshTokenWithBlock:(KRResponseBlock)block;
 
+/**
+ *  Get current user's metadata info
+ *
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) getUserMetadataWithBlock:(KRResponseBlock)block;
+
+/**
+ *  Update current user's metadata info
+ *
+ *  @param patch The metadata patch
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) updateUserMetadata:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
+
+
 @end
