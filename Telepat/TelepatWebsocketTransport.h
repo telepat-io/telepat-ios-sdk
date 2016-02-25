@@ -36,6 +36,11 @@ typedef void (^TelepatWebSocketWelcomeBlock)(NSString *sessionId, NSString *serv
 - (void) connect:(NSURL *)url withBlock:(TelepatWebSocketWelcomeBlock)block;
 
 /**
+ *  Bind device
+ */
+- (void) bindDevice;
+
+/**
  *  Disconnect from the current websocket connection
  */
 - (void) disconnect;

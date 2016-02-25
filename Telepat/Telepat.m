@@ -84,6 +84,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             [[KRRest sharedClient] registerDeviceWithWebsockets:[UIDevice currentDevice] token:token serverName:serverName update:NO withBlock:^(KRResponse *response) {
                 TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
                 if (![registerResponse isError]) {
+                    [[TelepatWebsocketTransport sharedClient] bindDevice];
                     TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
                     [[KRRest sharedClient] setDevice_id:deviceIdentifier.identifier];
                     [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
@@ -95,6 +96,9 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             
             [[KRRest sharedClient] registerDeviceWithWebsockets:[UIDevice currentDevice] token:token serverName:serverName update:YES withBlock:^(KRResponse *response) {
                 TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+                if (![registerResponse isError]) {
+                    [[TelepatWebsocketTransport sharedClient] bindDevice];
+                }
                 block(registerResponse);
             }];
         }
