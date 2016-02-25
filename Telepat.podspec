@@ -16,7 +16,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/telepat-io/telepat-ios-sdk.git", :tag => s.version.to_s }
   s.source_files = "Telepat", "Telepat/**/*.{h,m}"
   s.requires_arc = true
-  s.dependency "YapDatabase", "~>2.7.0"
   s.dependency "Objective-LevelDB", "~>2.1"
   s.dependency "JSONModel", "~>1.1.0"
   s.dependency "AFNetworking", "~>2.5.0"
