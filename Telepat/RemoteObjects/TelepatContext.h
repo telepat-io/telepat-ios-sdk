@@ -11,9 +11,9 @@
 @interface TelepatContext : TelepatBaseObject
 
 @property (nonatomic) NSString *context_id;
-@property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *state;
 @property (nonatomic, strong) NSString *application_id;
+@property (nonatomic, strong) NSString<Optional> *name;
 @property (nonatomic, strong) NSString<Optional> *type;
 @property (nonatomic, strong) NSMutableDictionary<Optional> *meta;
 
