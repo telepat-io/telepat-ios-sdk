@@ -70,9 +70,15 @@ NSString *const OBJECTS_PREFIX = @"TP_OBJECTS_";
 }
 
 - (void) setOperationsDataWithObject:(id)object forKey:(NSString *)key {
-    if (object) {
+    if (object != nil) {
         [_dbInstance setObject:object forKey:[NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key]];
+    } else {
+        [_dbInstance removeObjectForKey:[NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key]];
     }
+}
+
+- (void) deleteOperationsDataForKey:(NSString *)key {
+    [_dbInstance removeObjectForKey:[NSString stringWithFormat:@"%@%@", OPERATIONS_PREFIX, key]];
 }
 
 - (id) getOperationsDataForKey:(NSString *)key defaultValue:(id)defaultValue {

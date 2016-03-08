@@ -16,6 +16,7 @@
 - (id) getObjectWithID:(NSString *)objectID fromChannel:(NSString *)channelIdentifier;
 - (NSArray *) getObjectsFromChannel:(NSString *)channelIdentifier;
 - (void) setOperationsDataWithObject:(id)object forKey:(NSString *)key;
+- (void) deleteOperationsDataForKey:(NSString *)key;
 - (id) getOperationsDataForKey:(NSString *)key defaultValue:(id)defaultValue;
 - (void) persistObject:(TelepatBaseObject *)object inChannel:(NSString *)channelIdentifier;
 - (void) persistObjects:(NSArray *)objects inChannel:(NSString *)channelIdentifier;

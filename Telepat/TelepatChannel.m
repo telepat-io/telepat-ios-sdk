@@ -329,4 +329,8 @@
     return subid;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<TelepatChannel: %p>%@</TelepatChannel>", self, [self subscriptionIdentifier]];
+}
+
 @end
