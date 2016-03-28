@@ -1,0 +1,3605 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>KRRest Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1333)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">Telepat </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">Appscend</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/api_key">api_key</option>
+		
+		<option value="//api/name/app_id">app_id</option>
+		
+		<option value="//api/name/bearer">bearer</option>
+		
+		<option value="//api/name/device_id">device_id</option>
+		
+		<option value="//api/name/socketsEnabled">socketsEnabled</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Class Methods">
+		
+		<option value="//api/name/sharedClient">+ sharedClient</option>
+		
+		<option value="//api/name/socketURL">+ socketURL</option>
+		
+		<option value="//api/name/urlForEndpoint:">+ urlForEndpoint:</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/adminAddWithUsername:password:name:withBlock:">- adminAddWithUsername:password:name:withBlock:</option>
+		
+		<option value="//api/name/adminAuthorizeWithUsername:andBlock:">- adminAuthorizeWithUsername:andBlock:</option>
+		
+		<option value="//api/name/adminDeauthorizeWithUsername:andBlock:">- adminDeauthorizeWithUsername:andBlock:</option>
+		
+		<option value="//api/name/adminDeleteUser:withBlock:">- adminDeleteUser:withBlock:</option>
+		
+		<option value="//api/name/adminDeleteWithBlock:">- adminDeleteWithBlock:</option>
+		
+		<option value="//api/name/adminLoginWithUsername:andPassword:withBlock:">- adminLoginWithUsername:andPassword:withBlock:</option>
+		
+		<option value="//api/name/adminUpdateUser:withBlock:">- adminUpdateUser:withBlock:</option>
+		
+		<option value="//api/name/appCreate:apiKeys:customFields:withBlock:">- appCreate:apiKeys:customFields:withBlock:</option>
+		
+		<option value="//api/name/count:withBlock:">- count:withBlock:</option>
+		
+		<option value="//api/name/create:withBlock:">- create:withBlock:</option>
+		
+		<option value="//api/name/createContext:meta:withBlock:">- createContext:meta:withBlock:</option>
+		
+		<option value="//api/name/deleteUserWithID:andUsername:andBlock:">- deleteUserWithID:andUsername:andBlock:</option>
+		
+		<option value="//api/name/get:parameters:headers:responseBlock:">- get:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/getContext:withBlock:">- getContext:withBlock:</option>
+		
+		<option value="//api/name/getContextsWithBlock:">- getContextsWithBlock:</option>
+		
+		<option value="//api/name/getCurrentAdminWithBlock:">- getCurrentAdminWithBlock:</option>
+		
+		<option value="//api/name/getCurrentUserWithBlock:">- getCurrentUserWithBlock:</option>
+		
+		<option value="//api/name/getSchemasWithBlock:">- getSchemasWithBlock:</option>
+		
+		<option value="//api/name/listAppUsersWithBlock:">- listAppUsersWithBlock:</option>
+		
+		<option value="//api/name/listAppsWithBlock:">- listAppsWithBlock:</option>
+		
+		<option value="//api/name/loginWithFacebookToken:andBlock:">- loginWithFacebookToken:andBlock:</option>
+		
+		<option value="//api/name/loginWithTwitterToken:secret:andBlock:">- loginWithTwitterToken:secret:andBlock:</option>
+		
+		<option value="//api/name/loginWithUsername:andPassword:withBlock:">- loginWithUsername:andPassword:withBlock:</option>
+		
+		<option value="//api/name/logoutWithBlock:">- logoutWithBlock:</option>
+		
+		<option value="//api/name/patch:parameters:headers:responseBlock:">- patch:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/post:parameters:headers:responseBlock:">- post:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/put:parameters:headers:responseBlock:">- put:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/refreshTokenWithBlock:">- refreshTokenWithBlock:</option>
+		
+		<option value="//api/name/registerDevice:token:update:withBlock:">- registerDevice:token:update:withBlock:</option>
+		
+		<option value="//api/name/registerUser:withBlock:">- registerUser:withBlock:</option>
+		
+		<option value="//api/name/registerUser:withPassword:name:andBlock:">- registerUser:withPassword:name:andBlock:</option>
+		
+		<option value="//api/name/registerUserWithFacebookToken:andBlock:">- registerUserWithFacebookToken:andBlock:</option>
+		
+		<option value="//api/name/registerUserWithTwitterToken:secret:andBlock:">- registerUserWithTwitterToken:secret:andBlock:</option>
+		
+		<option value="//api/name/removeAppModel:withBlock:">- removeAppModel:withBlock:</option>
+		
+		<option value="//api/name/removeAppWithBlock:">- removeAppWithBlock:</option>
+		
+		<option value="//api/name/removeContext:withBlock:">- removeContext:withBlock:</option>
+		
+		<option value="//api/name/requestPasswordResetForUsername:withBlock:">- requestPasswordResetForUsername:withBlock:</option>
+		
+		<option value="//api/name/resetPasswordWithToken:forUserID:newPassword:withBlock:">- resetPasswordWithToken:forUserID:newPassword:withBlock:</option>
+		
+		<option value="//api/name/sendProxiedRequest:withResponseBlock:">- sendProxiedRequest:withResponseBlock:</option>
+		
+		<option value="//api/name/update:withBlock:">- update:withBlock:</option>
+		
+		<option value="//api/name/updateAdmin:withBlock:">- updateAdmin:withBlock:</option>
+		
+		<option value="//api/name/updateApp:withBlock:">- updateApp:withBlock:</option>
+		
+		<option value="//api/name/updateContext:withBlock:">- updateContext:withBlock:</option>
+		
+		<option value="//api/name/updateContextsWithBlock:">- updateContextsWithBlock:</option>
+		
+		<option value="//api/name/updateSchema:withBlock:">- updateSchema:withBlock:</option>
+		
+		<option value="//api/name/updateUser:withBlock:">- updateUser:withBlock:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">KRRest Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>KRRest.h<br />KRRest.m</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						
+						
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/device_id" title="device_id"></a>
+	<h3 class="method-title"><code><a href="#//api/name/device_id">&nbsp;&nbsp;device_id</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores the device identifier</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSString *device_id</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Stores the device identifier</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/bearer" title="bearer"></a>
+	<h3 class="method-title"><code><a href="#//api/name/bearer">&nbsp;&nbsp;bearer</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The Authentication HTTP header</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSString *bearer</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The Authentication HTTP header</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/api_key" title="api_key"></a>
+	<h3 class="method-title"><code><a href="#//api/name/api_key">&nbsp;&nbsp;api_key</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores the API Key</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSString *api_key</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Stores the API Key</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/app_id" title="app_id"></a>
+	<h3 class="method-title"><code><a href="#//api/name/app_id">&nbsp;&nbsp;app_id</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores the Application Identifier</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSString *app_id</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Stores the Application Identifier</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/socketsEnabled" title="socketsEnabled"></a>
+	<h3 class="method-title"><code><a href="#//api/name/socketsEnabled">&nbsp;&nbsp;socketsEnabled</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Set to <code>YES</code> to enable WebSockets instead of APNs</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic) BOOL socketsEnabled</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Set to <code>YES</code> to enable WebSockets instead of APNs</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sharedClient" title="sharedClient"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sharedClient">+&nbsp;sharedClient</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Returns the KRRest singleton instance</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (instancetype)sharedClient</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>The current instance</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Returns the KRRest singleton instance</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/urlForEndpoint:" title="urlForEndpoint:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/urlForEndpoint:">+&nbsp;urlForEndpoint:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Returns the complete URL for a given endpoint</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (NSURL *)urlForEndpoint:(NSString *)<em>endpoint</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>endpoint</code></th>
+						<td><p>The endpoint to be called, e.g. &ldquo;/login&rdquo;</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>A <code>NSURL</code> object pointing to the specified endpoint</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Returns the complete URL for a given endpoint</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/socketURL" title="socketURL"></a>
+	<h3 class="method-title"><code><a href="#//api/name/socketURL">+&nbsp;socketURL</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The url to the WS server</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (NSURL *)socketURL</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>a <code>NSURL</code> object containing the address to the WS server</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The url to the WS server</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/get:parameters:headers:responseBlock:" title="get:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/get:parameters:headers:responseBlock:">&ndash;&nbsp;get:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Peform a GET request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)get:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of GET parameters</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Peform a GET request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/post:parameters:headers:responseBlock:" title="post:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/post:parameters:headers:responseBlock:">&ndash;&nbsp;post:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a POST request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)post:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a POST request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/put:parameters:headers:responseBlock:" title="put:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/put:parameters:headers:responseBlock:">&ndash;&nbsp;put:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a PUT request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)put:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a PUT request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/patch:parameters:headers:responseBlock:" title="patch:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/patch:parameters:headers:responseBlock:">&ndash;&nbsp;patch:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a PATCH request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)patch:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a PATCH request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sendProxiedRequest:withResponseBlock:" title="sendProxiedRequest:withResponseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sendProxiedRequest:withResponseBlock:">&ndash;&nbsp;sendProxiedRequest:withResponseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Peform a proxy request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)sendProxiedRequest:(NSDictionary *)<em>request</em> withResponseBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>request</code></th>
+						<td><p>A <code>TelepatProxyRequest</code> object instance configured with the necessary
+data for the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Peform a proxy request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/registerDevice:token:update:withBlock:" title="registerDevice:token:update:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/registerDevice:token:update:withBlock:">&ndash;&nbsp;registerDevice:token:update:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Register a device with a given token</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)registerDevice:(UIDevice *)<em>device</em> token:(NSString *)<em>token</em> update:(BOOL)<em>update</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>device</code></th>
+						<td><p>The <code>UIDevice</code> to be registered</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The APNs token or the token received from the WS server</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>update</code></th>
+						<td><p><code>YES</code> if the device should be updated in the backend</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Register a device with a given token</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/registerUserWithFacebookToken:andBlock:" title="registerUserWithFacebookToken:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/registerUserWithFacebookToken:andBlock:">&ndash;&nbsp;registerUserWithFacebookToken:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Register an user via Facebook</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)registerUserWithFacebookToken:(NSString *)<em>token</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The token returned by Facebook</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Register an user via Facebook</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/registerUserWithTwitterToken:secret:andBlock:" title="registerUserWithTwitterToken:secret:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/registerUserWithTwitterToken:secret:andBlock:">&ndash;&nbsp;registerUserWithTwitterToken:secret:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Register an user via Twitter</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)registerUserWithTwitterToken:(NSString *)<em>authToken</em> secret:(NSString *)<em>authSecret</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>authToken</code></th>
+						<td><p>The token returned by Twitter</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>authSecret</code></th>
+						<td><p>The authorization token secret returned by Twitter</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Register an user via Twitter</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/registerUser:withPassword:name:andBlock:" title="registerUser:withPassword:name:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/registerUser:withPassword:name:andBlock:">&ndash;&nbsp;registerUser:withPassword:name:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Register an user with an username and a password</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)registerUser:(NSString *)<em>username</em> withPassword:(NSString *)<em>password</em> name:(NSString *)<em>name</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The user&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>password</code></th>
+						<td><p>The user&rsquo;s password</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>name</code></th>
+						<td><p>The user&rsquo;s visible name</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Register an user with an username and a password</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/registerUser:withBlock:" title="registerUser:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/registerUser:withBlock:">&ndash;&nbsp;registerUser:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Register an user with an username and a password</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)registerUser:(NSDictionary *)<em>userDict</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>userDict</code></th>
+						<td><p>A <code>NSDictionary</code> containing <code>username</code>, <code>password</code> and <code>name</code> keys with their corresponding values</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Register an user with an username and a password</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/loginWithFacebookToken:andBlock:" title="loginWithFacebookToken:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/loginWithFacebookToken:andBlock:">&ndash;&nbsp;loginWithFacebookToken:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Login with a Facebook token</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)loginWithFacebookToken:(NSString *)<em>token</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The token returned by Facebook</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Login with a Facebook token</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/loginWithTwitterToken:secret:andBlock:" title="loginWithTwitterToken:secret:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/loginWithTwitterToken:secret:andBlock:">&ndash;&nbsp;loginWithTwitterToken:secret:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Login with a Twitter token</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)loginWithTwitterToken:(NSString *)<em>authToken</em> secret:(NSString *)<em>authSecret</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>authToken</code></th>
+						<td><p>The token returned by Twitter</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>authSecret</code></th>
+						<td><p>The authorization token secret returned by Twitter</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Login with a Twitter token</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/loginWithUsername:andPassword:withBlock:" title="loginWithUsername:andPassword:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/loginWithUsername:andPassword:withBlock:">&ndash;&nbsp;loginWithUsername:andPassword:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Login with a username and a password</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)loginWithUsername:(NSString *)<em>username</em> andPassword:(NSString *)<em>password</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The user&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>password</code></th>
+						<td><p>The user&rsquo;s password</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Login with a username and a password</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/requestPasswordResetForUsername:withBlock:" title="requestPasswordResetForUsername:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/requestPasswordResetForUsername:withBlock:">&ndash;&nbsp;requestPasswordResetForUsername:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Start a reset password request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)requestPasswordResetForUsername:(NSString *)<em>username</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The user&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Start a reset password request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/resetPasswordWithToken:forUserID:newPassword:withBlock:" title="resetPasswordWithToken:forUserID:newPassword:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/resetPasswordWithToken:forUserID:newPassword:withBlock:">&ndash;&nbsp;resetPasswordWithToken:forUserID:newPassword:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reset a user&rsquo;s password</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)resetPasswordWithToken:(NSString *)<em>token</em> forUserID:(NSString *)<em>userID</em> newPassword:(NSString *)<em>newPassword</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The password reset token received from the backend</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>userID</code></th>
+						<td><p>The user&rsquo;s identifier</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>newPassword</code></th>
+						<td><p>The new password</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Reset a user&rsquo;s password</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminLoginWithUsername:andPassword:withBlock:" title="adminLoginWithUsername:andPassword:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminLoginWithUsername:andPassword:withBlock:">&ndash;&nbsp;adminLoginWithUsername:andPassword:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Log in as an admin</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminLoginWithUsername:(NSString *)<em>username</em> andPassword:(NSString *)<em>password</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The admin&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>password</code></th>
+						<td><p>The admin&rsquo;s password</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Log in as an admin</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminAuthorizeWithUsername:andBlock:" title="adminAuthorizeWithUsername:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminAuthorizeWithUsername:andBlock:">&ndash;&nbsp;adminAuthorizeWithUsername:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Authorize an admin</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminAuthorizeWithUsername:(NSString *)<em>username</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The admin&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Authorize an admin</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminDeauthorizeWithUsername:andBlock:" title="adminDeauthorizeWithUsername:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminDeauthorizeWithUsername:andBlock:">&ndash;&nbsp;adminDeauthorizeWithUsername:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Deauthorize an admin</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminDeauthorizeWithUsername:(NSString *)<em>username</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The admin&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Deauthorize an admin</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminAddWithUsername:password:name:withBlock:" title="adminAddWithUsername:password:name:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminAddWithUsername:password:name:withBlock:">&ndash;&nbsp;adminAddWithUsername:password:name:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Add a new admin to the current application</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminAddWithUsername:(NSString *)<em>username</em> password:(NSString *)<em>password</em> name:(NSString *)<em>name</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The new admin&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>password</code></th>
+						<td><p>The new admin&rsquo;s password</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>name</code></th>
+						<td><p>The new admin&rsquo;s name</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Add a new admin to the current application</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminDeleteWithBlock:" title="adminDeleteWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminDeleteWithBlock:">&ndash;&nbsp;adminDeleteWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Delete an admin from the current application</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminDeleteWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Delete an admin from the current application</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateAdmin:withBlock:" title="updateAdmin:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateAdmin:withBlock:">&ndash;&nbsp;updateAdmin:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update an admin</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateAdmin:(NSDictionary *)<em>patch</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>patch</code></th>
+						<td><p>The patch body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update an admin</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminDeleteUser:withBlock:" title="adminDeleteUser:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminDeleteUser:withBlock:">&ndash;&nbsp;adminDeleteUser:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Delete an user from the current app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminDeleteUser:(NSString *)<em>username</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>User&rsquo;s username to be deleted</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Delete an user from the current app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/adminUpdateUser:withBlock:" title="adminUpdateUser:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/adminUpdateUser:withBlock:">&ndash;&nbsp;adminUpdateUser:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update an user</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)adminUpdateUser:(NSDictionary *)<em>patch</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>patch</code></th>
+						<td><p>The patch body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update an user</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/deleteUserWithID:andUsername:andBlock:" title="deleteUserWithID:andUsername:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/deleteUserWithID:andUsername:andBlock:">&ndash;&nbsp;deleteUserWithID:andUsername:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Delete an user from the current app by its identifier</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)deleteUserWithID:(NSString *)<em>userId</em> andUsername:(NSString *)<em>username</em> andBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>userId</code></th>
+						<td><p>The user&rsquo;s identifier</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>The user&rsquo;s username</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Delete an user from the current app by its identifier</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateUser:withBlock:" title="updateUser:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateUser:withBlock:">&ndash;&nbsp;updateUser:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update the current user</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateUser:(NSDictionary *)<em>patch</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>patch</code></th>
+						<td><p>The patch body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update the current user</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/logoutWithBlock:" title="logoutWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/logoutWithBlock:">&ndash;&nbsp;logoutWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Log out the current user</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)logoutWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Log out the current user</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateContextsWithBlock:" title="updateContextsWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateContextsWithBlock:">&ndash;&nbsp;updateContextsWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update contexts</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateContextsWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update contexts</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/create:withBlock:" title="create:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/create:withBlock:">&ndash;&nbsp;create:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Create an object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)create:(id)<em>body</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>body</code></th>
+						<td><p>The request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Create an object</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/update:withBlock:" title="update:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/update:withBlock:">&ndash;&nbsp;update:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update an object</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)update:(id)<em>body</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>body</code></th>
+						<td><p>The request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update an object</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/count:withBlock:" title="count:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/count:withBlock:">&ndash;&nbsp;count:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Count objects</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)count:(id)<em>body</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>body</code></th>
+						<td><p>The request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Count objects</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appCreate:apiKeys:customFields:withBlock:" title="appCreate:apiKeys:customFields:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appCreate:apiKeys:customFields:withBlock:">&ndash;&nbsp;appCreate:apiKeys:customFields:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Create an app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)appCreate:(NSString *)<em>appName</em> apiKeys:(NSArray *)<em>keys</em> customFields:(NSDictionary *)<em>fields</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>appName</code></th>
+						<td><p>The name of the newly created app</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>keys</code></th>
+						<td><p>A <code>NSArray</code> of keys to be used with this app</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>fields</code></th>
+						<td><p>A <code>NSDictionary</code> of custom fields to be added to this app</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Create an app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateApp:withBlock:" title="updateApp:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateApp:withBlock:">&ndash;&nbsp;updateApp:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update an app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateApp:(NSDictionary *)<em>patch</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>patch</code></th>
+						<td><p>The patch body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update an app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/listAppsWithBlock:" title="listAppsWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/listAppsWithBlock:">&ndash;&nbsp;listAppsWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get a list of apps</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)listAppsWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get a list of apps</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/listAppUsersWithBlock:" title="listAppUsersWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/listAppUsersWithBlock:">&ndash;&nbsp;listAppUsersWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get a list of the users belonging to the current app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)listAppUsersWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get a list of the users belonging to the current app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/removeAppWithBlock:" title="removeAppWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/removeAppWithBlock:">&ndash;&nbsp;removeAppWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Delete an application</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)removeAppWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Delete an application</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/removeAppModel:withBlock:" title="removeAppModel:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/removeAppModel:withBlock:">&ndash;&nbsp;removeAppModel:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Remove a model from the app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)removeAppModel:(NSString *)<em>modelName</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>modelName</code></th>
+						<td><p>The name of the model</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Remove a model from the app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/removeContext:withBlock:" title="removeContext:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/removeContext:withBlock:">&ndash;&nbsp;removeContext:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Remove a context from the app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)removeContext:(NSString *)<em>contextId</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>contextId</code></th>
+						<td><p>The context identifier</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Remove a context from the app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/createContext:meta:withBlock:" title="createContext:meta:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/createContext:meta:withBlock:">&ndash;&nbsp;createContext:meta:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Create a new context in the current app</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)createContext:(NSString *)<em>name</em> meta:(NSDictionary *)<em>meta</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>name</code></th>
+						<td><p>The context&rsquo;s name</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>meta</code></th>
+						<td><p>A <code>NSDictionary</code> containing meta informations for this context</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Create a new context in the current app</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getContext:withBlock:" title="getContext:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getContext:withBlock:">&ndash;&nbsp;getContext:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get a context by its identifier</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getContext:(NSString *)<em>contextId</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>contextId</code></th>
+						<td><p>The context identifier</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get a context by its identifier</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getContextsWithBlock:" title="getContextsWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getContextsWithBlock:">&ndash;&nbsp;getContextsWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get all contexts</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getContextsWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get all contexts</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateContext:withBlock:" title="updateContext:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateContext:withBlock:">&ndash;&nbsp;updateContext:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update a context</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateContext:(NSDictionary *)<em>dictionary</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>dictionary</code></th>
+						<td><p>The patch body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update a context</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getSchemasWithBlock:" title="getSchemasWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getSchemasWithBlock:">&ndash;&nbsp;getSchemasWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get the app schema</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getSchemasWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get the app schema</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateSchema:withBlock:" title="updateSchema:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateSchema:withBlock:">&ndash;&nbsp;updateSchema:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update an app&rsquo;s schema</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateSchema:(NSDictionary *)<em>patch</em> withBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>patch</code></th>
+						<td><p>The patch body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Update an app&rsquo;s schema</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getCurrentAdminWithBlock:" title="getCurrentAdminWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getCurrentAdminWithBlock:">&ndash;&nbsp;getCurrentAdminWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get the current admin</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getCurrentAdminWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get the current admin</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getCurrentUserWithBlock:" title="getCurrentUserWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getCurrentUserWithBlock:">&ndash;&nbsp;getCurrentUserWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get the current user</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getCurrentUserWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get the current user</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/refreshTokenWithBlock:" title="refreshTokenWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/refreshTokenWithBlock:">&ndash;&nbsp;refreshTokenWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Request a new authentication token</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)refreshTokenWithBlock:(KRResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Request a new authentication token</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">KRRest.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2016 Appscend. All rights reserved. Updated: 2016-03-28</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>
