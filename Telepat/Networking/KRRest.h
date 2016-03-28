@@ -18,7 +18,6 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 
 @interface KRRest : NSObject
 
-@property (nonatomic, strong) AFHTTPSessionManager *manager;
 @property (nonatomic, strong) NSString *device_id;
 @property (nonatomic, strong) NSString *bearer;
 @property (nonatomic, strong) NSString *api_key;
@@ -33,6 +32,7 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) post:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
 - (void) put:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
 - (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
+- (void) sendProxiedRequest:(NSDictionary *)request withResponseBlock:(KRResponseBlock)block;
 
 - (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
 - (void) registerUserWithFacebookToken:(NSString *)token andBlock:(KRResponseBlock)block;

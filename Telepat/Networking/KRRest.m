@@ -14,14 +14,15 @@
 #define DebugRequest(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
             requestType,\
             [url absoluteString], \
-            self.manager.requestSerializer.HTTPRequestHeaders, \
+            manager.requestSerializer.HTTPRequestHeaders, \
             [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding], \
             response.statusCode, \
             responseObject)
+
 #define DebugRequestError(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
                 requestType, \
                 [url absoluteString], \
-                self.manager.requestSerializer.HTTPRequestHeaders, \
+                manager.requestSerializer.HTTPRequestHeaders, \
                 [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding], \
                 response.statusCode, \
                 [[NSString alloc] initWithData:error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding])
@@ -54,11 +55,13 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedClient = [[KRRest alloc] init];
-        
-        NSURL *url = [NSURL URLWithString:@"/" relativeToURL:[self urlForEndpoint:@""]];
-        sharedClient.manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[url baseURL]];
     });
     return sharedClient;
+}
+
+- (AFHTTPSessionManager *) newManager {
+    NSURL *url = [NSURL URLWithString:@"/" relativeToURL:[KRRest urlForEndpoint:@""]];
+    return [[AFHTTPSessionManager alloc] initWithBaseURL:[url baseURL]];
 }
 
 #pragma mark Low level HTTP interface
@@ -74,19 +77,20 @@
     return headers;
 }
 
-- (void) applyHeaders:(NSDictionary *)newHeaders {
+- (void) applyHeaders:(NSDictionary *)newHeaders forManager:(AFHTTPSessionManager *)manager {
     NSDictionary *headers = [self mergedHeadersWithHeaders:newHeaders];
     for (NSString *key in headers) {
-        [self.manager.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
+        [manager.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
     }
 }
 
 - (void) get:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block {
-    self.manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    self.manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    [self applyHeaders:headers];
+    AFHTTPSessionManager *manager = [self newManager];
+    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers forManager:manager];
     
-    [self.manager GET:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [manager GET:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         DebugRequest(@"GET");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
@@ -98,11 +102,12 @@
 }
 
 - (void) post:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block {
-    self.manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    self.manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    [self applyHeaders:headers];
+    AFHTTPSessionManager *manager = [self newManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers forManager:manager];
     
-    [self.manager POST:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [manager POST:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         DebugRequest(@"POST");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
@@ -114,11 +119,12 @@
 }
 
 - (void) put:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block {
-    self.manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    self.manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    [self applyHeaders:headers];
+    AFHTTPSessionManager *manager = [self newManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers forManager:manager];
     
-    [self.manager PUT:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [manager PUT:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         DebugRequest(@"PUT");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
@@ -130,17 +136,34 @@
 }
 
 - (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block {
-    self.manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    self.manager.responseSerializer = [AFJSONResponseSerializer serializer];
-    [self applyHeaders:headers];
+    AFHTTPSessionManager *manager = [self newManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers forManager:manager];
     
-    [self.manager PATCH:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+    [manager PATCH:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         DebugRequest(@"PATCH");
         block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         DebugRequestError(@"PATCH");
+        block([[KRResponse alloc] initWithError:error]);
+    }];
+}
+
+- (void) sendProxiedRequest:(NSDictionary *)request withResponseBlock:(KRResponseBlock)block {
+    AFHTTPSessionManager *manager = [self newManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    manager.responseSerializer.acceptableContentTypes = nil;
+    [self applyHeaders:@{} forManager:manager];
+    
+    [manager POST:@"/proxy" parameters:request success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        block([[KRResponse alloc] initWithData:responseObject andStatus:response.statusCode]);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         block([[KRResponse alloc] initWithError:error]);
     }];
 }

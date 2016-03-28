@@ -468,6 +468,12 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     }];
 }
 
+- (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] sendProxiedRequest:[request toDictionary] withResponseBlock:^(KRResponse *response) {
+        block(response);
+    }];
+}
+
 - (void) setApiKey:(NSString *)apiKey {
     NSData *dataIn = [apiKey dataUsingEncoding:NSASCIIStringEncoding];
     NSMutableData *dataOut = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];

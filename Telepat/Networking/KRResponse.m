@@ -14,6 +14,17 @@
     if (self = [super init]) {
         self.dict = dict ? dict : @{};
         self.status = status;
+        self.data = [NSJSONSerialization dataWithJSONObject:self.dict options:NSJSONWritingPrettyPrinted error:nil];
+    }
+    
+    return self;
+}
+
+- (id) initWithData:(NSData *)data andStatus:(NSInteger)status {
+    if (self = [super init]) {
+        self.dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        self.status = status;
+        self.data = data;
     }
     
     return self;
@@ -32,11 +43,7 @@
 
 - (NSString *) asString {
     if (self.error) return [[NSString alloc] initWithData:self.error.userInfo[@"com.alamofire.serialization.response.error.data"] encoding:NSUTF8StringEncoding];
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.dict options:NSJSONWritingPrettyPrinted error:nil];
-    if (jsonData) {
-        return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    }
-    return nil;
+    return [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
 }
 
 - (NSString *) description {

@@ -24,6 +24,7 @@
 
 - (id) initWithResponse:(KRResponse *)response {
     if (self = [super init]) {
+        // Original request returned an error
         if (response.error) {
             self.error = response.error;
             self.status = response.status;
@@ -31,8 +32,10 @@
             self.code = response.dict[@"code"];
             return self;
         }
+        
         NSError *err;
         TelepatResponseModel *responseModel = [[TelepatResponseModel alloc] initWithDictionary:response.dict error:&err];
+        
         if (err) {
             self.error = err;
             return self;

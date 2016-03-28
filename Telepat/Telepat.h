@@ -20,6 +20,7 @@
 #import "TelepatRegisterDeviceResponse.h"
 #import "TelepatOperatorFilter.h"
 #import "TelepatLevelDB.h"
+#import "TelepatProxyRequest.h"
 
 extern const int ddLogLevel;
 
@@ -487,5 +488,13 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
 - (void) updateContext:(TelepatContext *)oldContext withContext:(TelepatContext *)newContext andBlock:(TelepatResponseBlock)block;
+
+/**
+ *  Sends a proxied request. See `TelepatProxyRequest` for more details
+ *
+ *  @param request The `TelepatProxyRequest` object
+ *  @param block   A `KRResponseBlock` which will be called when the request is completed.
+ */
+- (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(KRResponseBlock)block;
 
 @end

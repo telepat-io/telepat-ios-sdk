@@ -23,7 +23,7 @@
 @property (nonatomic) NSInteger status;
 
 /**
- *  The content of the response, as a JSON object
+ *  The content of the response
  */
 @property (nonatomic, strong) id content;
 
