@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <JSONModel.h>
+#import "JSONModel.h"
 
 typedef NS_ENUM(NSInteger, HTTPMethod) {
     HTTPMethodPost,
