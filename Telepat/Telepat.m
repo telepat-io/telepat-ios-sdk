@@ -14,7 +14,7 @@
 #import "NSData+HexString.h"
 
 #ifdef DEBUG
-const int ddLogLevel = LOG_LEVEL_DEBUG;
+const int ddLogLevel = LOG_LEVEL_ERROR;
 #else
 const int ddLogLevel = LOG_LEVEL_ERROR;
 #endif
