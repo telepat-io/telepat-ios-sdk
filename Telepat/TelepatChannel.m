@@ -71,7 +71,8 @@
                           if (response.status == 200) {
                               if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
                                   for (NSDictionary *dict in subscribeResponse.content) {
-                                      id obj = [[_objectType alloc] initWithDictionary:dict error:nil];
+                                      NSError *err;
+                                      id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
                                       [self persistObject:obj];
                                   }
                               } else {
