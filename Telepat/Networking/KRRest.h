@@ -124,6 +124,8 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  */
 - (void) registerDevice:(UIDevice *)device token:(NSString *)token update:(BOOL)update withBlock:(KRResponseBlock)block;
 
+- (void) registerDeviceWithWebsockets:(UIDevice *)device token:(NSString *)token serverName:(NSString *)serverName update:(BOOL)update withBlock:(KRResponseBlock)block;
+
 /**
  *  Register an user via Facebook
  *
@@ -227,7 +229,6 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  *  @param block    A `KRResponseBlock` which will be called when the request is completed
  */
 - (void) adminDeauthorizeWithUsername:(NSString *)username andBlock:(KRResponseBlock)block;
-
 /**
  *  Add a new admin to the current application
  *
@@ -357,6 +358,14 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) listAppUsersWithBlock:(KRResponseBlock)block;
 
 /**
+ *  Get a list of the users belonging to the current app
+ *
+ *  @param range The range (offset and size) of the content to be returned
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) listAppUsersWithRange:(NSRange)range andBlock:(KRResponseBlock)block;
+
+/**
  *  Delete an application
  *
  *  @param block A `KRResponseBlock` which will be called when the request is completed
@@ -402,6 +411,14 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  *  @param block A `KRResponseBlock` which will be called when the request is completed
  */
 - (void) getContextsWithBlock:(KRResponseBlock)block;
+
+/**
+ *  Get all contexts within the specified range
+ *
+ *  @param range Offset and size of the data to be returned
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) getContextsWithRange:(NSRange)range andBlock:(KRResponseBlock)block;
 
 /**
  *  Update a context
@@ -462,5 +479,27 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  */
 - (void) updateUserMetadata:(NSDictionary *)patch withBlock:(KRResponseBlock)block;
 
+/**
+ *  Get context with specified id (as an admin)
+ *
+ *  @param contextId The id of the context to retrieve
+ *  @param block     A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) adminGetContext:(NSString *)contextId withBlock:(KRResponseBlock)block;
+
+/**
+ *  Get all contexts (as an admin)
+ *
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) adminGetContextsWithBlock:(KRResponseBlock)block;
+
+/**
+ *  Get all contexts in the specified range (as an admin)
+ *
+ *  @param range Offset and size of the data to be returned
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) adminGetContextsWithRange:(NSRange)range andBlock:(KRResponseBlock)block;
 
 @end

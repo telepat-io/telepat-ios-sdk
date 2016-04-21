@@ -1,6 +1,6 @@
 {
   "name": "Telepat",
-  "version": "0.0.3",
+  "version": "0.3.0",
   "summary": "Real Time, Open Source Data Sync",
   "description": "Telepat is an open-source backend stack, designed to deliver information and information updates in real-time to clients, while allowing for flexible deployment and simple scaling.",
   "homepage": "http://telepat.io",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/telepat-io/telepat-ios-sdk.git",
-    "tag": "0.0.3"
+    "tag": "0.3.0"
   },
   "source_files": [
     "Telepat",
@@ -21,8 +21,8 @@
   ],
   "requires_arc": true,
   "dependencies": {
-    "YapDatabase": [
-      "~>2.7.0"
+    "Objective-LevelDB": [
+      "~>2.1"
     ],
     "JSONModel": [
       "~>1.1.0"

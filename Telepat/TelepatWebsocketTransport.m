@@ -54,17 +54,12 @@ static TelepatWebsocketTransport *sharedClient;
         };
         
         [self.socket on:@"welcome" callback:^(NSArray *args) {
-            NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
-            NSLog(@"Welcomed with sessionID: %@", sessionID);
-            block(sessionID);
-//            NSString *deviceId = [[Telepat client] appId];
-//            NSString *application_id = [[Telepat client] appId];
-//            NSDictionary *object = @{@"deviceId": deviceId, @"application_id": application_id};
-//            SIOParameterArray *params = @[[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding]];
-//            [self.socket emit:@"bindDevice" args:params];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                block(sessionID);
-//            });
+            NSString *sessionID = [self __getValue:@"session_id" fromArgs:args];
+            NSString *serverName = [self __getValue:@"server_name" fromArgs:args];
+            NSLog(@"Welcomed with session_id: %@", sessionID);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(sessionID, serverName);
+            });
         }];
         
         [self.socket on:@"message" callback:^(NSArray *args) {
@@ -76,8 +71,16 @@ static TelepatWebsocketTransport *sharedClient;
     }];
 }
 
+- (void) bindDevice {
+    NSString *deviceId = [[Telepat client] deviceID];
+    NSString *application_id = [[Telepat client] appId];
+    NSDictionary *object = @{@"device_id": deviceId, @"application_id": application_id};
+    SIOParameterArray *params = @[object];
+    [self.socket emit:@"bind_device" args:params];
+}
+
 - (void) disconnect {
-    NSLog(@"sockets disconnected");
+    NSLog(@"Websockets: sockets disconnected");
     [self.socket close];
 }
 

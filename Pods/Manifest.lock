@@ -29,17 +29,16 @@ PODS:
   - CocoaLumberjack/Extensions (2.2.0):
     - CocoaLumberjack/Default
   - JSONModel (1.1.2)
+  - leveldb-library (1.18.2)
+  - Objective-LevelDB (2.1.5):
+    - leveldb-library (~> 1.18.2)
   - SIOSocket (0.2.0)
-  - Telepat (0.0.3):
+  - Telepat (0.3.0):
     - AFNetworking (~> 2.5.0)
     - CocoaLumberjack (~> 2.0)
     - JSONModel (~> 1.1.0)
+    - Objective-LevelDB (~> 2.1)
     - SIOSocket (~> 0.2.0)
-    - YapDatabase (~> 2.7.0)
-  - YapDatabase (2.7.6):
-    - YapDatabase/standard (= 2.7.6)
-  - YapDatabase/standard (2.7.6):
-    - CocoaLumberjack (~> 2)
 
 DEPENDENCIES:
   - Telepat (from `./`)
@@ -52,8 +51,9 @@ SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
   JSONModel: 216584d0311b053ff714f1d6cb700dbf890847bc
+  leveldb-library: ef0453697c0fda3a9e550e5650e52976e6724548
+  Objective-LevelDB: fa075efd9d0be645aee51847cc3ee70cdadb80ce
   SIOSocket: 2facc0bd02ae72d98c223634a46dd8ebdf9be321
-  Telepat: 230bc26dca25cf0a6ef7650ea77c3a47c5bb18d9
-  YapDatabase: 00e5a5d1b5dba1bd540ef644576233b5612e6122
+  Telepat: 7cc0763a9d19cc9b29a4552fa0b991f51c0d1b97
 
 COCOAPODS: 0.39.0

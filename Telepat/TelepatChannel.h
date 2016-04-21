@@ -125,6 +125,21 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block;
 
 /**
+ *  Get all objects from this channel. This doesn't subscribe you to the notifications from Telepat
+ *
+ *  @param block A block which will be called when the request is completed.
+ */
+- (void) getAllObjects:(void (^)(NSArray *objects, TelepatResponse *response))block;
+
+/**
+ *  Get objects from this channel in the specified range. This doesn't subscribe you to the notifications from Telepat
+ *
+ *  @param range A `NSRange` specifying the offset and the limit of objects count to be returned
+ *  @param block A block which will be called when the request is completed.
+ */
+- (void) getObjectsInRange:(NSRange)range withBlock:(void (^)(NSArray *objects, TelepatResponse *response))block;
+
+/**
  *  Configure the channel to sort after a property value
  *
  *  @param sortedProperty A `NSString` naming the property which will be sorted

@@ -103,6 +103,88 @@
                   }];
 }
 
+- (void) getAllObjects:(void (^)(NSArray *objects, TelepatResponse *response))block {
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
+    mutableParams[@"no_subscribe"] = @YES;
+    
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
+                     parameters:mutableParams
+                        headers:@{}
+                  responseBlock:^(KRResponse *response) {
+                      TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                          if (response.status == 200) {
+                              NSMutableArray *returnedObjects = [NSMutableArray array];
+                              
+                              if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
+                                  for (NSDictionary *dict in subscribeResponse.content) {
+                                      id obj = [[_objectType alloc] initWithDictionary:dict error:nil];
+                                      [self persistObject:obj];
+                                      [returnedObjects addObject:obj];
+                                  }
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      block([NSArray arrayWithArray:returnedObjects], subscribeResponse);
+                                  });
+                              } else {
+                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
+                                  [self persistObject:obj];
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      block(@[obj], subscribeResponse);
+                                  });
+                              }
+                          } else {
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  block(nil, subscribeResponse);
+                              });
+                          }
+                      });
+                  }];
+}
+
+- (void) getObjectsInRange:(NSRange)range withBlock:(void (^)(NSArray *objects, TelepatResponse *response))block {
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
+    mutableParams[@"no_subscribe"] = @YES;
+    mutableParams[@"offset"] = @(range.location);
+    mutableParams[@"limit"] = @(range.length);
+    
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
+                     parameters:mutableParams
+                        headers:@{}
+                  responseBlock:^(KRResponse *response) {
+                      TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                          if (response.status == 200) {
+                              NSMutableArray *returnedObjects = [NSMutableArray array];
+                              
+                              if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
+                                  for (NSDictionary *dict in subscribeResponse.content) {
+                                      id obj = [[_objectType alloc] initWithDictionary:dict error:nil];
+                                      [self persistObject:obj];
+                                      [returnedObjects addObject:obj];
+                                  }
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      block([NSArray arrayWithArray:returnedObjects], subscribeResponse);
+                                  });
+                              } else {
+                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
+                                  [self persistObject:obj];
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      block(@[obj], subscribeResponse);
+                                  });
+                              }
+                          } else {
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  block(nil, subscribeResponse);
+                              });
+                          }
+                      });
+                  }];
+}
+
 - (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortMode)order {
     _sortingDict = [NSMutableDictionary dictionary];
     NSDictionary *orderDict;

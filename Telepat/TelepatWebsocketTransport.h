@@ -17,7 +17,7 @@ typedef void (^TelepatWebSocketMessageBlock)(id message);
 /**
  *  A block to be called everytime a welcome message comes over socket.io
  */
-typedef void (^TelepatWebSocketWelcomeBlock)(NSString *sessionId);
+typedef void (^TelepatWebSocketWelcomeBlock)(NSString *sessionId, NSString *serverName);
 
 /**
  *  `TelepatWebsocketTransport` is a alternative to get updates when using Apple's Push Notifications is not possible
@@ -34,6 +34,11 @@ typedef void (^TelepatWebSocketWelcomeBlock)(NSString *sessionId);
  *  @param block The block which will be called on "on_welcome"
  */
 - (void) connect:(NSURL *)url withBlock:(TelepatWebSocketWelcomeBlock)block;
+
+/**
+ *  Bind device
+ */
+- (void) bindDevice;
 
 /**
  *  Disconnect from the current websocket connection

@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '9F5D1926C74B2C057027B5AA'
+               BlueprintIdentifier = '6A1EACD5B743BF09B92C3EFC'
                BlueprintName = 'Telepat'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libTelepat.a'>
