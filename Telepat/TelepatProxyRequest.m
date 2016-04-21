@@ -13,9 +13,14 @@
 - (id) initWithURL:(NSURL *)url method:(HTTPMethod)method headers:(NSDictionary *)headers body:(NSString *)body {
     self = [super init];
     if (self) {
-        self.url = url;
+        NSURLComponents *urlComponents = [[NSURLComponents alloc] init];
+        urlComponents.scheme = [url scheme];
+        urlComponents.host = [url host];
+        urlComponents.path = [url path];
+        self.url = [urlComponents URL];
         self.method = method;
         self.headers = headers;
+        self.queryString = [NSString stringWithFormat:@"?%@", [url query]];
         self.body = body;
     }
     return self;
