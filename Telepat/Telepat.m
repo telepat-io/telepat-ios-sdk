@@ -471,6 +471,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] sendProxiedRequest:[request toDictionary] withResponseBlock:^(KRResponse *response) {
         block(response);
+    }];
+}
 
 - (void) getUserMetadataWithBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] getUserMetadataWithBlock:^(KRResponse *response) {
