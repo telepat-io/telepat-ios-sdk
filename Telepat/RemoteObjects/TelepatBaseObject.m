@@ -53,8 +53,9 @@
         id initialValue = [self valueForKey:property];
         id updatedValue = [updatedObject valueForKey:property];
         if (!(initialValue == nil && updatedValue == nil) && ![updatedValue isEqual:initialValue]) {
+            NSString *convertedProperty = [[[updatedObject class] keyMapper] convertValue:property isImportingToModel:YES];
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
-            patchDict[@"path"] = [NSString stringWithFormat:@"user/%@/%@", self.object_id, property];
+            patchDict[@"path"] = [NSString stringWithFormat:@"user/%@/%@", self.object_id, convertedProperty];
             
 //            if ([updatedObject valueForKey:property] == nil) {
 //                patchDict[@"op"] = @"delete";
@@ -63,7 +64,7 @@
 //                patchDict[@"value"] = [updatedObject toDictionary][property];
 //            }
             
-            id newValue = [updatedObject toDictionary][property];
+            id newValue = [updatedObject toDictionary][convertedProperty];
             patchDict[@"op"] = @"replace";
             patchDict[@"value"] = newValue ? newValue : @"";
             
