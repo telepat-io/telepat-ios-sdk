@@ -432,6 +432,13 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  */
 - (BOOL) isLoggedIn;
 
+/**
+ *  Info about logged user
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) getCurrentUserWithBlock:(TelepatResponseBlock)block;
+
 /*
  *  Creates an app for the current admin.
  *
