@@ -325,6 +325,14 @@
                   responseBlock:block];
 }
 
+- (void) linkWithFacebookToken:(NSString *)token username:(NSString *)username andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/user/login-facebook"]
+                     parameters:@{@"access_token": token,
+                                  @"username": username}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) adminLoginWithUsername:(NSString *)username andPassword:(NSString *)password withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/login"]
                      parameters:@{@"email": username,

@@ -14,7 +14,7 @@
 #import "NSData+HexString.h"
 
 #ifdef DEBUG
-const int ddLogLevel = LOG_LEVEL_ERROR;
+const int ddLogLevel = LOG_LEVEL_DEBUG;
 #else
 const int ddLogLevel = LOG_LEVEL_ERROR;
 #endif
@@ -232,6 +232,12 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     [[KRRest sharedClient] resetPasswordWithToken:token forUserID:userID newPassword:newPassword withBlock:^(KRResponse *response) {
         TelepatResponse *passwordResetResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(passwordResetResponse);
+    }];
+}
+
+- (void) linkAccountWithFacebook:(NSString *)username token:(NSString *)token withBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] linkWithFacebookToken:token username:username andBlock:^(KRResponse *response) {
+        [self processLoginResponse:response withBlock:block];
     }];
 }
 

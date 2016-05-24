@@ -164,7 +164,7 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 /**
  *  Login with a Facebook token
  *
- *  @param token The token returned by Facebook
+ *  @param token The token returned by Facebook SDK
  *  @param block A `KRResponseBlock` which will be called when the request is completed
  */
 - (void) loginWithFacebookToken:(NSString*)token andBlock:(KRResponseBlock)block;
@@ -172,7 +172,7 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 /**
  *  Login with a Twitter token
  *
- *  @param authToken  The token returned by Twitter
+ *  @param authToken  The token returned by Twitter SDK
  *  @param authSecret The authorization token secret returned by Twitter
  *  @param block      A `KRResponseBlock` which will be called when the request is completed
  */
@@ -204,6 +204,15 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  *  @param block       A `KRResponseBlock` which will be called when the request is completed
  */
 - (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(KRResponseBlock)block;
+
+/**
+ *  Link a user's account with a Facebook account
+ *
+ *  @param token    The token returned by Facebook SDK
+ *  @param username The user's username
+ *  @param block    A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) linkWithFacebookToken:(NSString *)token username:(NSString *)username andBlock:(KRResponseBlock)block;
 
 /**
  *  Log in as an admin
