@@ -247,6 +247,15 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  */
 - (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(TelepatResponseBlock)block;
 
+/**
+ *  Link a Telepat account with Facebook
+ *
+ *  @param username Username of the Telepat account to be linked
+ *  @param token    The token returned from Facebook (accessed via `[[FBSDKAccessToken currentAccessToken] tokenString]`)
+ *  @param block    A `TelepatResponseBlock` which will be called when the login completed.
+ */
+- (void) linkAccountWithFacebook:(NSString *)username token:(NSString *)token withBlock:(TelepatResponseBlock)block;
+
 /*
  *  Authenticate an admin
  *
