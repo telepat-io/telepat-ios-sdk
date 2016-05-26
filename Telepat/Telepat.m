@@ -73,19 +73,18 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {
-    [[KRRest sharedClient] setSocketsEnabled:YES];
-    
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
-    [[TelepatWebsocketTransport sharedClient] connect:[KRRest socketURL] withBlock:^(NSString *token) {
+    [[TelepatWebsocketTransport sharedClient] connect:[KRRest socketURL] withBlock:^(NSString *token, NSString *serverName) {
         if ([udid length] && !shouldUpdateBackend) {
             block(nil);
             return;
         }
         
         if (![udid length]) {
-            [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:NO withBlock:^(KRResponse *response) {
+            [[KRRest sharedClient] registerDeviceWithWebsockets:[UIDevice currentDevice] token:token serverName:serverName update:NO withBlock:^(KRResponse *response) {
                 TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
                 if (![registerResponse isError]) {
+                    [[TelepatWebsocketTransport sharedClient] bindDevice];
                     TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
                     [[KRRest sharedClient] setDevice_id:deviceIdentifier.identifier];
                     [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
@@ -95,8 +94,11 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         } else {
             [[KRRest sharedClient] setDevice_id:udid];
             
-            [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:YES withBlock:^(KRResponse *response) {
+            [[KRRest sharedClient] registerDeviceWithWebsockets:[UIDevice currentDevice] token:token serverName:serverName update:YES withBlock:^(KRResponse *response) {
                 TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
+                if (![registerResponse isError]) {
+                    [[TelepatWebsocketTransport sharedClient] bindDevice];
+                }
                 block(registerResponse);
             }];
         }
@@ -301,7 +303,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) getAll:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] updateContextsWithBlock:^(KRResponse *response) {
+    [[KRRest sharedClient] getContextsWithBlock:^(KRResponse *response) {
         TelepatResponse *getallResponse = [[TelepatResponse alloc] initWithResponse:response];
         _mServerContexts = [NSMutableDictionary dictionary];
         NSArray *contexts = [getallResponse getObjectOfType:[TelepatContext class]];
@@ -374,7 +376,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) getContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getContext:contextId withBlock:^(KRResponse *response) {
+    [[KRRest sharedClient] adminGetContext:contextId withBlock:^(KRResponse *response) {
         TelepatResponse *getContextResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(getContextResponse);
     }];
@@ -382,6 +384,13 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 
 - (void) getContextsWithBlock:(TelepatResponseBlock)block {
     [[KRRest sharedClient] getContextsWithBlock:^(KRResponse *response) {
+        TelepatResponse *getContextsResponse = [[TelepatResponse alloc] initWithResponse:response];
+        block(getContextsResponse);
+    }];
+}
+
+- (void) getContextsWithRange:(NSRange)range andBlock:(TelepatResponseBlock)block {
+    [[KRRest sharedClient] getContextsWithRange:range andBlock:^(KRResponse *response) {
         TelepatResponse *getContextsResponse = [[TelepatResponse alloc] initWithResponse:response];
         block(getContextsResponse);
     }];

@@ -178,12 +178,40 @@
     if (!update) infoDictionary[@"udid"] = [[device identifierForVendor] UUIDString];
     
     NSDictionary *persistentDictionary = @{@"type": @"ios",
-                                           @"token": self.socketsEnabled ? @"" : token,
-                                           @"active": self.socketsEnabled ? @(0) : @(1)};
+                                           @"token": token,
+                                           @"active": @(1)};
     
     NSDictionary *volatileDictionary = @{@"type": @"sockets",
-                                         @"token": self.socketsEnabled ? token : @"",
-                                         @"active": self.socketsEnabled ? @(1) : @(0)};
+                                         @"token": @"",
+                                         @"active": @(0),
+                                         @"server_name": @""};
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
+    params[@"volatile"] = volatileDictionary;
+    params[@"persistent"] = persistentDictionary;
+    
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/device/register"]
+                     parameters:params
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) registerDeviceWithWebsockets:(UIDevice *)device token:(NSString *)token serverName:(NSString *)serverName update:(BOOL)update withBlock:(KRResponseBlock)block {
+    NSMutableDictionary *infoDictionary = [NSMutableDictionary dictionaryWithDictionary:@{@"os": [device systemName],
+                                                                                          @"version": [device systemVersion],
+                                                                                          @"manufacturer": @"Apple",
+                                                                                          @"model": [device model]}];
+    if (!update) infoDictionary[@"udid"] = [[device identifierForVendor] UUIDString];
+    
+    NSDictionary *persistentDictionary = @{@"type": @"ios",
+                                           @"token": @"",
+                                           @"active": @(0)};
+    
+    NSDictionary *volatileDictionary = @{@"type": @"sockets",
+                                         @"token": token,
+                                         @"active": @(1),
+                                         @"server_name": serverName};
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
@@ -357,11 +385,19 @@
                   responseBlock:block];
 }
 
-- (void) updateContextsWithBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/context/all"]
+- (void) getContextsWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/context/all"]
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];
+}
+
+- (void) getContextsWithRange:(NSRange)range andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/context/all"]
+                     parameters:@{@"offset": @(range.location),
+                                  @"limit": @(range.length)}
+                        headers:@{}
+                  responseBlock:block];
 }
 
 - (void) appCreate:(NSString *)appName apiKeys:(NSArray *)keys customFields:(NSDictionary *)fields withBlock:(KRResponseBlock)block {
@@ -389,8 +425,16 @@
                  responseBlock:block];
 }
 
+- (void) listAppUsersWithRange:(NSRange)range andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/all"]
+                     parameters:@{@"offset": @(range.location),
+                                  @"limit": @(range.length)}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 - (void) listAppUsersWithBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/user/all"]
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/user/all"]
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];
@@ -425,18 +469,26 @@
                   responseBlock:block];
 }
 
-- (void) getContext:(NSString *)contextId withBlock:(KRResponseBlock)block {
+- (void) adminGetContext:(NSString *)contextId withBlock:(KRResponseBlock)block {
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/context"]
                      parameters:@{@"id": contextId}
                         headers:@{}
                   responseBlock:block];
 }
 
-- (void) getContextsWithBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] get:[KRRest urlForEndpoint:@"/admin/contexts"]
+- (void) adminGetContextsWithBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/contexts"]
                     parameters:@{}
                        headers:@{}
                  responseBlock:block];
+}
+
+- (void) adminGetContextsWithRange:(NSRange)range andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/admin/contexts"]
+                     parameters:@{@"offset": @(range.location),
+                                  @"limit": @(range.length)}
+                        headers:@{}
+                  responseBlock:block];
 }
 
 - (void) updateContext:(NSDictionary *)patch withBlock:(KRResponseBlock)block {

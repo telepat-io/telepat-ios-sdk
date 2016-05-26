@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, HTTPMethod) {
 @property (nonatomic, strong) NSURL *url;
 @property (nonatomic) HTTPMethod method;
 @property (nonatomic, strong) NSDictionary *headers;
+@property (nonatomic, strong) NSString *queryString;
 @property (nonatomic, strong) NSString *body;
 
 - (id) initWithURL:(NSURL *)url method:(HTTPMethod)method headers:(NSDictionary *)headers body:(NSString *)body;
