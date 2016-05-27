@@ -140,6 +140,13 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
 - (void) getObjectsInRange:(NSRange)range withBlock:(void (^)(NSArray *objects, TelepatResponse *response))block;
 
 /**
+ *  Get cached objects from this channel.
+ *
+ *  @return A list of objects contained by this channel and cached in the internal database
+ */
+- (NSArray *) getLocalObjects;
+
+/**
  *  Configure the channel to sort after a property value
  *
  *  @param sortedProperty A `NSString` naming the property which will be sorted

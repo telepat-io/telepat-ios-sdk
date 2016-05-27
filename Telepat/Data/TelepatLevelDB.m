@@ -45,6 +45,17 @@ NSString *const OBJECTS_PREFIX = @"TP_OBJECTS_";
     return [NSString stringWithFormat:@"%@:%@", [self getPrefixForChannel:channelIdenfier], objectID];
 }
 
+- (NSArray *) keysForChannel:(NSString *)channelIdentifier {
+    NSMutableArray *channelKeys = [NSMutableArray array];
+    NSArray *keys = [_dbInstance allKeys];
+    NSString *prefix = [NSString stringWithFormat:@"%@%@", OBJECTS_PREFIX, channelIdentifier];
+    for (NSData *keyData in keys) {
+        NSString *key = [[NSString alloc] initWithData:keyData encoding:NSUTF8StringEncoding];
+        if ([key hasPrefix:prefix]) [channelKeys addObject:key];
+    }
+    return [NSArray arrayWithArray:channelKeys];
+}
+
 - (BOOL) objectWithID:(NSString *)objectID existsInChannel:(NSString *) channelIdenfier {
     return [_dbInstance objectExistsForKey:[self getKeyForObjectID:objectID inChannel:channelIdenfier]];
 }
@@ -54,7 +65,7 @@ NSString *const OBJECTS_PREFIX = @"TP_OBJECTS_";
 }
 
 - (NSArray *) getObjectsFromChannel:(NSString *)channelIdentifier {
-    return [_dbInstance objectForKey:channelIdentifier];
+    return [_dbInstance objectsForKeys:[self keysForChannel:channelIdentifier] notFoundMarker:[NSNull null]];
 }
 
 - (id) getOperationsDataWithKey:(NSString *)key defaultValue:(id)defaultValue {

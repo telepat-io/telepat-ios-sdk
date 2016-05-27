@@ -185,6 +185,10 @@
                   }];
 }
 
+- (NSArray *) getLocalObjects {
+    return [[[Telepat client] dbInstance] getObjectsFromChannel:[self subscriptionIdentifier]];
+}
+
 - (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortMode)order {
     _sortingDict = [NSMutableDictionary dictionary];
     NSDictionary *orderDict;

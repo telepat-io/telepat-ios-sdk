@@ -15,6 +15,10 @@
     mustOverride();
 }
 
+- (NSArray *) keysForChannel:(NSString *)channelIdentifier {
+    mustOverride();
+}
+
 - (BOOL) objectWithID:(NSString *)objectID existsInChannel:(NSString *) channelIdenfier {
     mustOverride();
 }
