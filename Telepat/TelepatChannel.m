@@ -248,8 +248,9 @@
     for (NSString *property in [object propertiesList]) {
         if ([property isEqualToString:@"uuid"]) continue;
         if (![[object valueForKey:property] isEqual:[oldObject valueForKey:property]]) {
+            NSString *convertedProperty = [[[object class] keyMapper] convertValue:property isImportingToModel:YES];
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
-            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%@/%@", self.modelName, object.object_id, property];
+            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%@/%@", self.modelName, object.object_id, convertedProperty];
             
 //            if ([object valueForKey:property] == nil) {
 //                patchDict[@"op"] = @"delete";
@@ -257,8 +258,8 @@
 //                patchDict[@"op"] = @"replace";
 //                patchDict[@"value"] = [object valueForKey:property];
 //            }
-
-            id newValue = [object toDictionary][property];
+            
+            id newValue = [object toDictionary][convertedProperty];
             patchDict[@"op"] = @"replace";
             patchDict[@"value"] = newValue ? newValue : @"";
             
