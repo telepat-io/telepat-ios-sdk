@@ -311,11 +311,11 @@
             ((TelepatBaseObject*)obj).channel = self;
             if (obj) {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    [self persistObject:obj];
                     [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
                                                                                                                                 kNotificationOriginalContent: notification.value,
                                                                                                                                 kNotificationOrigin: @(notification.origin)}];
                 });
-                [self persistObject:obj];
             }
             break;
         }
@@ -332,12 +332,12 @@
                 NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
                 [updatedObject setValue:notification.value forProperty:transformedPropertyName];
                 ((TelepatBaseObject*)updatedObject).channel = self;
+                [self persistObject:updatedObject];
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectUpdated object:self userInfo:@{kNotificationObject: updatedObject,
                                                                                                                               kNotificationOriginalContent: notification.value,
                                                                                                                               kNotificationPropertyName: transformedPropertyName,
                                                                                                                               kNotificationValue: notification.value,
                                                                                                                               kNotificationOrigin: @(notification.origin)}];
-                [self persistObject:updatedObject];
             }
             break;
         }
