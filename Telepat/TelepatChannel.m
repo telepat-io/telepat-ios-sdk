@@ -264,6 +264,8 @@
 //            }
             
             id newValue = [object toDictionary][convertedProperty];
+            
+            if ([oldObject toDictionary][convertedProperty] == nil && newValue == nil) continue;
             patchDict[@"op"] = @"replace";
             patchDict[@"value"] = newValue ? newValue : @"";
             
