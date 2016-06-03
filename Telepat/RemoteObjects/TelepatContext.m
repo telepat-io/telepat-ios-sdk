@@ -19,6 +19,10 @@
     return [((TelepatContext*)object).context_id isEqualToString:self.context_id];
 }
 
+- (NSString *) object_id {
+    return self.context_id;
+}
+
 - (NSString *) contextIdentifier {
     return [NSString stringWithFormat:@"blg:%@:context", self.application_id];
 }
