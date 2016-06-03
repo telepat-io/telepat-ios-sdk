@@ -20,4 +20,8 @@
     return self.object_id;
 }
 
+- (void) setUser_id:(NSString<Ignore> *)user_id {
+    self.object_id = user_id;
+}
+
 @end
