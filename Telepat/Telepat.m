@@ -602,7 +602,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             NSString *propertyName = pathComponents[2];
             TelepatContext *updatedContext = [_mServerContexts objectForKey:objectId];
             NSString *transformedPropertyName = [[[updatedContext class] keyMapper] convertValue:propertyName isImportingToModel:NO];
-            if ([[updatedContext valueForKey:transformedPropertyName] isEqual:notification.value]) return;
+            if ([updatedContext respondsToSelector:NSSelectorFromString(transformedPropertyName)] && [[updatedContext valueForKey:transformedPropertyName] isEqual:notification.value]) return;
             [updatedContext setValue:notification.value forProperty:transformedPropertyName];
             [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextUpdated object:updatedContext userInfo:@{kNotificationObject: updatedContext,
                                                                                                                     kNotificationOriginalContent: notification.value,

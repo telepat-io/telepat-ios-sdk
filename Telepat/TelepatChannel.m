@@ -338,7 +338,7 @@
             if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                 id updatedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                 NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
-                if ([[updatedObject valueForKey:transformedPropertyName] isEqual:notification.value]) return;
+                if ([updatedObject respondsToSelector:NSSelectorFromString(transformedPropertyName)] && [[updatedObject valueForKey:transformedPropertyName] isEqual:notification.value]) return;
                 [updatedObject setValue:notification.value forProperty:transformedPropertyName];
                 ((TelepatBaseObject*)updatedObject).channel = self;
                 [self persistObject:updatedObject];
