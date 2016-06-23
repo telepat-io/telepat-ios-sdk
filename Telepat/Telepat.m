@@ -584,6 +584,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     switch (notification.type) {
         case TelepatNotificationTypeObjectAdded: {
             TelepatContext *context = [[TelepatContext alloc] initWithDictionary:notification.value error:nil];
+            if ([_mServerContexts objectForKey:context.context_id] != nil) return;
+            
             if (context) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextAdded object:context userInfo:@{kNotificationObject: context,
                                                                                                                       kNotificationOriginalContent: notification.value,
@@ -600,6 +602,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             NSString *propertyName = pathComponents[2];
             TelepatContext *updatedContext = [_mServerContexts objectForKey:objectId];
             NSString *transformedPropertyName = [[[updatedContext class] keyMapper] convertValue:propertyName isImportingToModel:NO];
+            if ([updatedContext respondsToSelector:NSSelectorFromString(transformedPropertyName)] && [[updatedContext valueForKey:transformedPropertyName] isEqual:notification.value]) return;
             [updatedContext setValue:notification.value forProperty:transformedPropertyName];
             [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextUpdated object:updatedContext userInfo:@{kNotificationObject: updatedContext,
                                                                                                                     kNotificationOriginalContent: notification.value,

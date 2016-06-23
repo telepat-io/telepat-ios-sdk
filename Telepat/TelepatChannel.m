@@ -73,6 +73,7 @@
                                   for (NSDictionary *dict in subscribeResponse.content) {
                                       NSError *err;
                                       id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
+                                      if (err) continue;
                                       [self persistObject:obj];
                                   }
                               } else {
@@ -118,7 +119,9 @@
                               
                               if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
                                   for (NSDictionary *dict in subscribeResponse.content) {
-                                      id obj = [[_objectType alloc] initWithDictionary:dict error:nil];
+                                      NSError *err;
+                                      id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
+                                      if (err) continue;
                                       [self persistObject:obj];
                                       [returnedObjects addObject:obj];
                                   }
@@ -309,9 +312,12 @@
 - (void) processNotification:(TelepatTransportNotification *)notification {
     switch (notification.type) {
         case TelepatNotificationTypeObjectAdded: {
-            id obj = [[_objectType alloc] initWithDictionary:notification.value error:nil];
-            ((TelepatBaseObject*)obj).channel = self;
+            NSError *err;
+            TelepatBaseObject *obj = [[_objectType alloc] initWithDictionary:notification.value error:&err];
+            obj.channel = self;
             if (obj) {
+                if ([[[Telepat client] dbInstance] objectWithID:obj.object_id existsInChannel:[self subscriptionIdentifier]]) return;
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self persistObject:obj];
                     [[NSNotificationCenter defaultCenter] postNotificationName:TelepatChannelObjectAdded object:self userInfo:@{kNotificationObject: obj,
@@ -332,6 +338,7 @@
             if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                 id updatedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                 NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
+                if ([updatedObject respondsToSelector:NSSelectorFromString(transformedPropertyName)] && [[updatedObject valueForKey:transformedPropertyName] isEqual:notification.value]) return;
                 [updatedObject setValue:notification.value forProperty:transformedPropertyName];
                 ((TelepatBaseObject*)updatedObject).channel = self;
                 [self persistObject:updatedObject];
