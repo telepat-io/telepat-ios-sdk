@@ -601,6 +601,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             NSString *objectId = pathComponents[1];
             NSString *propertyName = pathComponents[2];
             TelepatContext *updatedContext = [_mServerContexts objectForKey:objectId];
+            if (updatedContext == nil) return;
             NSString *transformedPropertyName = [[[updatedContext class] keyMapper] convertValue:propertyName isImportingToModel:NO];
             if ([updatedContext respondsToSelector:NSSelectorFromString(transformedPropertyName)] && [[updatedContext valueForKey:transformedPropertyName] isEqual:notification.value]) return;
             [updatedContext setValue:notification.value forProperty:transformedPropertyName];
@@ -616,6 +617,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             NSArray *pathComponents = [notification.path pathComponents];
             NSString *objectId = pathComponents[1];
             TelepatContext *deletedContext = [_mServerContexts objectForKey:objectId];
+            if (deletedContext == nil) return;
             [_mServerContexts removeObjectForKey:deletedContext.context_id];
             [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextDeleted object:deletedContext userInfo:@{kNotificationObject: deletedContext,
                                                                                                                           kNotificationOrigin: @(notification.origin)}];
