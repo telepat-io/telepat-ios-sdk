@@ -17,6 +17,18 @@
 
 @end
 
+@implementation JSONValueTransformer (CustomTransformer)
+
+- (NSDate *)NSDateFromNSString:(NSString*)string {
+    return [NSDate dateWithTimeIntervalSince1970:[string integerValue]];
+}
+
+- (NSNumber *)JSONObjectFromNSDate:(NSDate *)date {
+    return [NSNumber numberWithInteger:[date timeIntervalSince1970]];
+}
+
+@end
+
 @implementation TelepatBaseObject
 
 + (TelepatJSONKeyMapper *)keyMapper {
