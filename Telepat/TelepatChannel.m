@@ -254,7 +254,7 @@
     NSMutableArray *patches = [NSMutableArray array];
     for (NSString *property in [object propertiesList]) {
         if ([property isEqualToString:@"uuid"]) continue;
-        if (![[object valueForKey:property] isEqual:[oldObject valueForKey:property]]) {
+        if (![[object valueForKey:property] isEqual:[oldObject valueForKey:property]] && !([object valueForKey:property] == nil && [oldObject valueForKey:property] == nil)) {
             NSString *convertedProperty = [[[object class] keyMapper] convertValue:property isImportingToModel:YES];
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
             patchDict[@"path"] = [NSString stringWithFormat:@"%@/%@/%@", self.modelName, object.object_id, convertedProperty];
