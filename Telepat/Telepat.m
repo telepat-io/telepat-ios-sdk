@@ -617,7 +617,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             NSArray *pathComponents = [notification.path pathComponents];
             NSString *objectId = pathComponents[1];
             TelepatContext *deletedContext = [_mServerContexts objectForKey:objectId];
-            if (deletedContext == nil) return;
+            if (deletedContext == nil || deletedContext.context_id == nil) return;
             [_mServerContexts removeObjectForKey:deletedContext.context_id];
             [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextDeleted object:deletedContext userInfo:@{kNotificationObject: deletedContext,
                                                                                                                           kNotificationOrigin: @(notification.origin)}];
