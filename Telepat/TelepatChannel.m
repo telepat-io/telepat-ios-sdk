@@ -122,6 +122,7 @@
                                       NSError *err;
                                       id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
                                       if (err) continue;
+                                      ((TelepatBaseObject*) obj).channel = self;
                                       [self persistObject:obj];
                                       [returnedObjects addObject:obj];
                                   }
@@ -130,7 +131,13 @@
                                       block([NSArray arrayWithArray:returnedObjects], subscribeResponse);
                                   });
                               } else {
-                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
+                                  NSError *err;
+                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:&err];
+                                  if (err) {
+                                      block(nil, subscribeResponse);
+                                      return;
+                                  }
+                                  ((TelepatBaseObject*) obj).channel = self;
                                   [self persistObject:obj];
                                   
                                   dispatch_async(dispatch_get_main_queue(), ^{
