@@ -73,11 +73,17 @@
                                   for (NSDictionary *dict in subscribeResponse.content) {
                                       NSError *err;
                                       id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
-                                      if (err) continue;
+                                      if (err) {
+                                          [NSException raise:kTelepatDeserializeError format:@"Error while deserializing object: %@", err];
+                                      }
                                       [self persistObject:obj];
                                   }
                               } else {
-                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
+                                  NSError *err;
+                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:&err];
+                                  if (err) {
+                                      [NSException raise:kTelepatDeserializeError format:@"Error while deserializing object: %@", err];
+                                  }
                                   [self persistObject:obj];
                               }
                               
@@ -257,6 +263,7 @@
 - (NSString *) patch:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block {
     TelepatBaseObject *oldObject = [self retrieveObjectWithID:object.object_id];
     NSAssert(oldObject, @"Patch error: could not retrieve the original object.");
+    [self persistObject:object];
     
     NSMutableArray *patches = [NSMutableArray array];
     for (NSString *property in [object propertiesList]) {
@@ -292,6 +299,9 @@
                                     @"patches": patches} withBlock:^(KRResponse *response) {
                                         if (block) {
                                             TelepatResponse *patchResponse = [[TelepatResponse alloc] initWithResponse:response];
+                                            if (![patchResponse isError]) {
+                                                [self persistObject:object];
+                                            }
                                             block(patchResponse);
                                         }
                                     }];
@@ -345,7 +355,6 @@
             if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
                 id updatedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
                 NSString *transformedPropertyName = [[[updatedObject class] keyMapper] convertValue:propertyName isImportingToModel:NO];
-                if ([updatedObject respondsToSelector:NSSelectorFromString(transformedPropertyName)] && [[updatedObject valueForKey:transformedPropertyName] isEqual:notification.value]) return;
                 [updatedObject setValue:notification.value forProperty:transformedPropertyName];
                 ((TelepatBaseObject*)updatedObject).channel = self;
                 [self persistObject:updatedObject];
