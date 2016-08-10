@@ -106,6 +106,16 @@ typedef void (^KRResponseBlock)(KRResponse *response);
 - (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
 
 /**
+ *  Perform a DELETE request
+ *
+ *  @param url     The URL
+ *  @param params  A dictionary of parameters to be sent as the request body
+ *  @param headers The headers to be added to the request
+ *  @param block   A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) delete:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block;
+
+/**
  *  Peform a proxy request
  *
  *  @param request A `TelepatProxyRequest` object instance configured with the necessary
@@ -333,6 +343,14 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  *  @param block A `KRResponseBlock` which will be called when the request is completed
  */
 - (void) count:(id)body withBlock:(KRResponseBlock)block;
+
+/**
+ *  Delete an object
+ *
+ *  @param body  The request body
+ *  @param block A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) delete:(id)body withBlock:(KRResponseBlock)block;
 
 /**
  *  Create an app

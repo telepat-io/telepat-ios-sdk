@@ -187,6 +187,21 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
 - (NSString *) patch:(TelepatBaseObject *)object;
 
 /**
+ *  Delete an object in this channel
+ *
+ *  @param object Object to delete
+ */
+- (void) deleteObject:(TelepatBaseObject *)object;
+
+/**
+ *  Delete an object in this channel
+ *
+ *  @param object Object to delete
+ *  @param block  A block which will be called when the delete request was completed
+ */
+- (void) deleteObject:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block;
+
+/**
  *  Update an object in this channel
  *
  *  @param object The updated object

@@ -152,6 +152,24 @@
     }];
 }
 
+- (void) delete:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(KRResponseBlock)block {
+    AFHTTPSessionManager *manager = [self newManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.responseSerializer = [AFJSONResponseSerializer serializer];
+    manager.requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", nil];
+    [self applyHeaders:headers forManager:manager];
+    
+    [manager DELETE:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"DELETE");
+        block([[KRResponse alloc] initWithDictionary:responseObject andStatus:response.statusCode]);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"DELETE");
+        block([[KRResponse alloc] initWithError:error]);
+    }];
+}
+
 - (void) sendProxiedRequest:(NSDictionary *)request withResponseBlock:(KRResponseBlock)block {
     AFHTTPSessionManager *manager = [self newManager];
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -566,6 +584,13 @@
                      parameters:body
                         headers:@{}
                   responseBlock:block];
+}
+
+- (void) delete:(id)body withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] delete:[KRRest urlForEndpoint:@"/object/delete"]
+                       parameters:body
+                          headers:@{}
+                    responseBlock:block];
 }
 
 @end

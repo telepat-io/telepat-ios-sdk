@@ -309,6 +309,24 @@
     return object.uuid;
 }
 
+- (void) deleteObject:(TelepatBaseObject *)object {
+    [self deleteObject:object withBlock:nil];
+}
+
+- (void) deleteObject:(TelepatBaseObject *)object withBlock:(void (^)(TelepatResponse *response))block {
+    [[KRRest sharedClient] delete:@{@"model": self.modelName,
+                                    @"context": self.context.context_id,
+                                    @"id": object.object_id} withBlock:^(KRResponse *response) {
+                                        if (block) {
+                                            TelepatResponse *deleteResponse = [[TelepatResponse alloc] initWithResponse:response];
+                                            if (![deleteResponse isError]) {
+                                                [self removeObject:object.object_id];
+                                            }
+                                            block(deleteResponse);
+                                        }
+                                    }];
+}
+
 - (void) countWithBlock:(void (^)(TelepatCountResult *result))block {
     [[KRRest sharedClient] count:[self paramsForSubscription] withBlock:^(KRResponse *response) {
         TelepatResponse *countResponse = [[TelepatResponse alloc] initWithResponse:response];
@@ -390,6 +408,10 @@
 
 - (void) persistObject:(id)object {
     [[[Telepat client] dbInstance] persistObject:object inChannel:[self subscriptionIdentifier]];
+}
+
+- (void) removeObject:(NSString *)object_id {
+    [[[Telepat client] dbInstance] deleteObjectWithID:object_id fromChannel:[self subscriptionIdentifier]];
 }
 
 - (id) retrieveObjectWithID:(NSString *)object_id {
