@@ -9,7 +9,9 @@
 #import "JSONModel.h"
 #import "JSONModelClassProperty.h"
 #import "TelepatJSONKeyMapper.h"
+
 #define kTelepatNoChannelError @"NoChannelError"
+#define kTelepatDeserializeError @"DeserializeError"
 
 @class TelepatChannel, TelepatResponse;
 typedef void (^TelepatResponseBlock)(TelepatResponse *response);
