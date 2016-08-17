@@ -593,4 +593,38 @@
                     responseBlock:block];
 }
 
+- (void) appendMember:(NSDictionary *)memberObject toIndexedList:(NSString *)listName withPropertyName:(NSString *)indexedProperty andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/til/append"]
+                     parameters:@{@"listName": listName,
+                                  @"indexedProperty": indexedProperty,
+                                  @"memberObject": memberObject}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) getMembers:(NSArray *)members fromIndexedList:(NSString *)listName withPropertyName:(NSString *)indexedProperty andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/til/get"]
+                     parameters:@{@"listName": listName,
+                                  @"indexedProperty": indexedProperty,
+                                  @"members": members}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) removeMember:(NSString *)member fromIndexedList:(NSString *)listName withPropertyName:(NSString *)indexedProperty andBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/til/removeMember"]
+                     parameters:@{@"listName": listName,
+                                  @"indexedProperty": indexedProperty,
+                                  @"member": member}
+                        headers:@{}
+                  responseBlock:block];
+}
+
+- (void) removeIndexedList:(NSString *)listName withBlock:(KRResponseBlock)block {
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/til/removeList"]
+                     parameters:@{@"listName": listName}
+                        headers:@{}
+                  responseBlock:block];
+}
+
 @end
