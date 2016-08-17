@@ -529,4 +529,42 @@ typedef void (^KRResponseBlock)(KRResponse *response);
  */
 - (void) adminGetContextsWithRange:(NSRange)range andBlock:(KRResponseBlock)block;
 
+/**
+ *  Adds a member to a Telepat Indexed List
+ *
+ *  @param memberObject    (hash map) The key is the member name, the value must be a string
+ *  @param listName        Name of the list where to add the member
+ *  @param indexedProperty The field for which the list will hold indexed members
+ *  @param block           A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) appendMember:(NSDictionary *)memberObject toIndexedList:(NSString *)listName withPropertyName:(NSString *)indexedProperty andBlock:(KRResponseBlock)block;
+
+/**
+ *  Checks if a list of memebers belongs to the given indexed list
+ *
+ *  @param members         An array of strings representing the members to check for
+ *  @param listName        Name of the list where to look for the members
+ *  @param indexedProperty The field for which the list is holding indexed members
+ *  @param block           A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) getMembers:(NSArray *)members fromIndexedList:(NSString *)listName withPropertyName:(NSString *)indexedProperty andBlock:(KRResponseBlock)block;
+
+/**
+ *  Removes a member from the given indexed list
+ *
+ *  @param member          Member name to be deleted
+ *  @param listName        Name of the list from where the member will be deleted
+ *  @param indexedProperty The field for which the list is holding indexed members
+ *  @param block           A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) removeMember:(NSString *)member fromIndexedList:(NSString *)listName withPropertyName:(NSString *)indexedProperty andBlock:(KRResponseBlock)block;
+
+/**
+ *  Remove the given indexed list
+ *
+ *  @param indexName The name of the indexed list to be deleted
+ *  @param block           A `KRResponseBlock` which will be called when the request is completed
+ */
+- (void) removeIndexedList:(NSString *)listName withBlock:(KRResponseBlock)block;
+
 @end
