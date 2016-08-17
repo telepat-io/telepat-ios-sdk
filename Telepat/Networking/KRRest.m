@@ -61,7 +61,9 @@
 
 - (AFHTTPSessionManager *) newManager {
     NSURL *url = [NSURL URLWithString:@"/" relativeToURL:[KRRest urlForEndpoint:@""]];
-    return [[AFHTTPSessionManager alloc] initWithBaseURL:[url baseURL]];
+    AFHTTPSessionManager *httpManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[url baseURL]];
+    [httpManager.operationQueue setMaxConcurrentOperationCount:5];
+    return httpManager;
 }
 
 #pragma mark Low level HTTP interface
@@ -229,7 +231,7 @@
     NSDictionary *volatileDictionary = @{@"type": @"sockets",
                                          @"token": token,
                                          @"active": @(1),
-                                         @"server_name": serverName};
+                                         /*@"server_name": serverName*/};
     
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];

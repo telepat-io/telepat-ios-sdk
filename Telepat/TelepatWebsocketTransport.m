@@ -54,7 +54,7 @@ static TelepatWebsocketTransport *sharedClient;
         };
         
         [self.socket on:@"welcome" callback:^(NSArray *args) {
-            NSString *sessionID = [self __getValue:@"session_id" fromArgs:args];
+            NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
             NSString *serverName = [self __getValue:@"server_name" fromArgs:args];
             NSLog(@"Welcomed with session_id: %@", sessionID);
             dispatch_async(dispatch_get_main_queue(), ^{
