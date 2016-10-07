@@ -131,6 +131,14 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
  */
 - (void) getAllObjects:(void (^)(NSArray *objects, TelepatResponse *response))block;
 
+/*
+ *  Get a fresh copy from the backend of the specified object
+ *
+ *  @param object A `TelepatObject` to be retrieved from backend
+ *  @param block A block with the returned object as a parameter
+ */
+- (void) getObject:(TelepatBaseObject *)object withBlock:(void (^)(TelepatBaseObject *returnedObject))block;
+
 /**
  *  Get objects from this channel in the specified range. This doesn't subscribe you to the notifications from Telepat
  *
