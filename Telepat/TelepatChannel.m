@@ -201,6 +201,49 @@
                   }];
 }
 
+- (void) getObject:(TelepatBaseObject *)object withBlock:(void (^)(TelepatBaseObject *returnedObject))block {
+    NSDictionary *params = @{@"no_subscribe": @YES,
+                             @"channel": @{
+                                     @"id": object.object_id,
+                                     @"model": self.modelName
+                             }
+                           };
+    
+    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/subscribe"]
+                     parameters:params
+                        headers:@{}
+                  responseBlock:^(KRResponse *response) {
+                      TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithResponse:response];
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                          if (response.status == 200) {
+                              NSMutableArray *returnedObjects = [NSMutableArray array];
+                              
+                              if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
+                                  NSDictionary *objectDict = [subscribeResponse.content firstObject];
+                                  id obj = [[_objectType alloc] initWithDictionary:objectDict error:nil];
+                                  ((TelepatBaseObject*) obj).channel = self;
+                                  [self persistObject:obj];
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      block(obj);
+                                  });
+                              } else {
+                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
+                                  ((TelepatBaseObject*) obj).channel = self;
+                                  [self persistObject:obj];
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      block(obj);
+                                  });
+                              }
+                          } else {
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                                  block(nil);
+                              });
+                          }
+                      });
+                  }];
+}
+
 - (NSArray *) getLocalObjects {
     return [[[Telepat client] dbInstance] getObjectsFromChannel:[self subscriptionIdentifier]];
 }
