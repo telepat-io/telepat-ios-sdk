@@ -42,8 +42,8 @@
             NSDictionary *membersDict = telepatResponse.content;
             NSMutableArray *mutableMembers = [NSMutableArray array];
             for (NSString *key in membersDict) {
-                if ([[membersDict objectForKey:key] boolValue]) {
-                    [mutableMembers addObject:key];
+                if ([[membersDict objectForKey:key] isKindOfClass:[NSDictionary class]]) {
+                    [mutableMembers addObject:[membersDict objectForKey:key]];
                 }
             }
             block(telepatResponse, [NSArray arrayWithArray:mutableMembers]);
