@@ -211,6 +211,8 @@
     params[@"volatile"] = volatileDictionary;
     params[@"persistent"] = persistentDictionary;
     
+    self.socketsEnabled = NO;
+    
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/device/register"]
                      parameters:params
                         headers:@{}
@@ -237,6 +239,8 @@
     params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
     params[@"volatile"] = volatileDictionary;
     params[@"persistent"] = persistentDictionary;
+    
+    self.socketsEnabled = YES;
     
     [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/device/register"]
                      parameters:params
