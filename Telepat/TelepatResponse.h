@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "KRResponse.h"
 #import "TelepatBaseObject.h"
 #import "TelepatErrors.h"
 
@@ -43,11 +42,12 @@
 @property (nonatomic, strong) NSError *error;
 
 /**
- *  Initialize a `TelepatResponse` instance based on a `KRResponse`
+ *  Initialize a `TelepatResponse` with a dictionary and an error object
  *
- *  @param response The `KRResponse` returned by `KRRest` REST client
+ *  @param dictonary A `NSDictionary` based on data returned by Telepat
+ *  @param error A `NSError` instance, if something gone wrong
  */
-- (id) initWithResponse:(KRResponse *)response;
+- (id) initWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
 
 /**
  *  Check if the request resulted into an error

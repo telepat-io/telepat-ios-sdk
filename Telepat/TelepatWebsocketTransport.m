@@ -72,7 +72,7 @@ static TelepatWebsocketTransport *sharedClient;
 }
 
 - (void) bindDevice {
-    NSString *deviceId = [[Telepat client] deviceID];
+    NSString *deviceId = [Telepat client].deviceId;
     NSString *application_id = [[Telepat client] appId];
     NSDictionary *object = @{@"device_id": deviceId, @"application_id": application_id};
     SIOParameterArray *params = @[object];

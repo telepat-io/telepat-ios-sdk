@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DDLog.h"
 #import "DDTTYLogger.h"
-#import "KRRest.h"
 #import "TelepatConstants.h"
 #import "TelepatResponse.h"
 #import "TelepatDeviceIdentifier.h"
@@ -21,10 +20,18 @@
 #import "TelepatOperatorFilter.h"
 #import "TelepatLevelDB.h"
 #import "TelepatProxyRequest.h"
+#import "AFNetworking.h"
 
 extern const int ddLogLevel;
+typedef NS_ENUM(NSInteger, TelepatUpdatesTransportType) {
+    TelepatUpdatesTransportTypeSockets,
+    TelepatUpdatesTransportTypeiOS
+};
 
 #pragma mark Keys
+
+#define kTelepatAPIURL @"kTelepatAPIURL"
+#define kTelepatWebSocketsURL @"kTelepatWebSocketsURL"
 
 #define kTelepatInvalidApiURL @"InvalidAPIURL"
 #define kTelepatInvalidClass @"InvalidClassException"
@@ -36,7 +43,7 @@ extern const int ddLogLevel;
 /**
  *  A block used for asynchronious network requests made using `Telepat`
  */
-typedef void (^TelepatResponseBlock)(TelepatResponse *response);
+typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
 
 /**
  *  The Telepat iOS SDK provides the necessary bindings to interact with the Telepat Sync API, as well as a Apple Push Notifications transport implementation for receiving updates from a Telepat cloud instance.
@@ -54,18 +61,26 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 @property (nonatomic, strong) NSString *appId;
 
 /**
+ *  Stores the device identifier
+ */
+@property (nonatomic, strong) NSString *deviceId;
+
+/**
+ *  The `AFHTTPSessionManager` object used for HTTP requests
+ */
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
+
+/**
+ *  The kind of transport Telepat uses to receive updates
+ */
+@property (nonatomic) TelepatUpdatesTransportType updatesTransportType;
+
+/**
  *  Instantiate (if needed) and returns a `Telepat` singleton instance.
  *
  *  @return a `Telepat` singleton instance
  */
 + (Telepat *) client;
-
-/**
- *  Returns the underlying REST client which Telepat uses for REST requests
- *
- *  @return The current `KRRest` instance
- */
-+ (KRRest *) restClient;
 
 /**
  *  Set the application ID and the API key
@@ -76,11 +91,9 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 + (void) setApplicationId:(NSString *)clientAppId apiKey:(NSString *)clientApiKey;
 
 /**
- *  Get the current device ID
- *
- *  @return A `NSString` with the device ID
+ *  The Authentication HTTP header
  */
-- (NSString *) deviceID;
+@property (nonatomic, strong) NSString *bearer;
 
 /**
  *  Get the current device description
@@ -90,11 +103,77 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 + (NSString *) deviceName;
 
 /**
+ *  The url to the WS server
+ *
+ *  @return a `NSURL` object containing the address to the WS server
+ */
++ (NSURL *) socketURL;
+
+/**
  *  Get an instance of the underlying database manager
  *
  *  @return A `TelepatDB` subclass instance
  */
 - (TelepatDB *) dbInstance;
+
+/**
+ *  Returns the complete URL for a given endpoint
+ *
+ *  @param endpoint The endpoint to be called, e.g. "/login"
+ *
+ *  @return A `NSURL` object pointing to the specified endpoint
+ */
++ (NSURL *) urlForEndpoint:(NSString*) endpoint;
+
+/**
+ *  Peform a GET request
+ *
+ *  @param url     The URL
+ *  @param params  A dictionary of GET parameters
+ *  @param headers The headers to be added to the request
+ *  @param block   A `HTTPResponseBlock` which will be called when the request is completed
+ */
+- (void) get:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block;
+
+/**
+ *  Perform a POST request
+ *
+ *  @param url     The URL
+ *  @param params  A dictionary of parameters to be sent as the request body
+ *  @param headers The headers to be added to the request
+ *  @param block   A `HTTPResponseBlock` which will be called when the request is completed
+ */
+- (void) post:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block;
+
+/**
+ *  Perform a PUT request
+ *
+ *  @param url     The URL
+ *  @param params  A dictionary of parameters to be sent as the request body
+ *  @param headers The headers to be added to the request
+ *  @param block   A `HTTPResponseBlock` which will be called when the request is completed
+ */
+- (void) put:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block;
+
+/**
+ *  Perform a PATCH request
+ *
+ *  @param url     The URL
+ *  @param params  A dictionary of parameters to be sent as the request body
+ *  @param headers The headers to be added to the request
+ *  @param block   A `HTTPResponseBlock` which will be called when the request is completed
+ */
+- (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block;
+
+/**
+ *  Perform a DELETE request
+ *
+ *  @param url     The URL
+ *  @param params  A dictionary of parameters to be sent as the request body
+ *  @param headers The headers to be added to the request
+ *  @param block   A `HTTPResponseBlock` which will be called when the request is completed
+ */
+- (void) delete:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block;
 
 /**
  *  Register for receiving updates via Websockets. Use this if using Apple Push Notifications service is impossible.
@@ -219,7 +298,7 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @param secret The value of the `authTokenSecret` property of the given `TWTRSession` instance by Twitter SDK
  *  @param block A `TelepatResponseBlock` which will be called when the login completed.
  */
-- (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)secret andBlock:(TelepatResponseBlock)block;
+- (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)authSecret andBlock:(TelepatResponseBlock)block;
 
 /*
  *  Login with an username and a password
@@ -421,6 +500,34 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
 - (void) getContextsWithRange:(NSRange)range andBlock:(TelepatResponseBlock)block;
 
 /*
+ *  Create an object in a context
+ *
+ *  @param object    The `TelepatObject` to be created
+ *  @param context   The context where the new object should be created
+ *  @param modelName The model name
+ *  @param block     A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (NSString *) createObject:(TelepatBaseObject *)object inContext:(TelepatContext *)context model:(NSString *)modelName withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Update an object
+ *
+ *  @param oldObject The old version of the object
+ *  @param newObject The updated version of the object
+ *  @param block     A `TelepatResponseBlock` which will be called when the request is completed.
+ *
+ */
+- (void) updateObject:(TelepatBaseObject *)oldObject withObject:(TelepatBaseObject *)newObject withBlock:(TelepatResponseBlock)block;
+
+/**
+ *  Count objects
+ *
+ *  @param body  The request body
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed
+ */
+- (void) count:(id)body withBlock:(TelepatResponseBlock)block;
+
+/*
  *  Gets the model schema for an application
  *
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
@@ -519,7 +626,7 @@ typedef void (^TelepatResponseBlock)(TelepatResponse *response);
  *  @param request The `TelepatProxyRequest` object
  *  @param block   A `KRResponseBlock` which will be called when the request is completed.
  */
-- (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(KRResponseBlock)block;
+- (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(void (^)(NSData *responseData, NSError *error))block;
 
 /*
  *  Get current's user metadata info

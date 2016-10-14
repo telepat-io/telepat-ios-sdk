@@ -7,8 +7,7 @@
 //
 
 #import "TelepatIndexedList.h"
-#import "TelepatResponse.h"
-#import "KRRest.h"
+#import "Telepat.h"
 
 @implementation TelepatIndexedList {
     NSString *listName;
@@ -29,28 +28,37 @@
 }
 
 - (void) appendMember:(NSDictionary *)memberObject withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] appendMember:memberObject toIndexedList:listName withPropertyName:indexedProperty andBlock:^(KRResponse *response) {
-        TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (block) block(telepatResponse);
-    }];
+    [[Telepat client] post:[Telepat urlForEndpoint:@"/til/append"]
+                parameters:@{@"listName": listName,
+                             @"indexedProperty": indexedProperty,
+                             @"memberObject": memberObject}
+                   headers:@{}
+             responseBlock:^(NSDictionary *dictionary, NSError *error) {
+                 if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+             }];
 }
 
 - (void) getMembers:(NSArray *)members withBlock:(TelepatIndexedListGetMembersResponseBlock)block {
-    [[KRRest sharedClient] getMembers:members fromIndexedList:listName withPropertyName:indexedProperty andBlock:^(KRResponse *response) {
-        TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (![telepatResponse isError]) {
-            NSDictionary *membersDict = telepatResponse.content;
-            NSMutableArray *mutableMembers = [NSMutableArray array];
-            for (NSString *key in membersDict) {
-                if ([[membersDict objectForKey:key] isKindOfClass:[NSDictionary class]]) {
-                    [mutableMembers addObject:[membersDict objectForKey:key]];
-                }
-            }
-            block(telepatResponse, [NSArray arrayWithArray:mutableMembers]);
-        } else {
-            block(telepatResponse, nil);
-        }
-    }];
+    [[Telepat client] post:[Telepat urlForEndpoint:@"/til/get"]
+                parameters:@{@"listName": listName,
+                             @"indexedProperty": indexedProperty,
+                             @"members": members}
+                   headers:@{}
+             responseBlock:^(NSDictionary *dictionary, NSError *error) {
+                 TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                 if (![telepatResponse isError]) {
+                     NSDictionary *membersDict = telepatResponse.content;
+                     NSMutableArray *mutableMembers = [NSMutableArray array];
+                     for (NSString *key in membersDict) {
+                         if ([[membersDict objectForKey:key] isKindOfClass:[NSDictionary class]]) {
+                             [mutableMembers addObject:membersDict[key]];
+                         }
+                     }
+                     block(telepatResponse, [NSArray arrayWithArray:mutableMembers]);
+                 } else {
+                     block(telepatResponse, nil);
+                 }
+             }];
 }
 
 - (void) removeMember:(NSString *)memberName {
@@ -58,16 +66,30 @@
 }
 
 - (void) removeMember:(NSString *)memberName withBlock:(TelepatIndexedListRemoveMemberResponseBlock)block {
-    [[KRRest sharedClient] removeMember:memberName fromIndexedList:listName withPropertyName:indexedProperty andBlock:^(KRResponse *response) {
-        TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (![telepatResponse isError]) {
-            NSDictionary *responseDict = telepatResponse.content;
-            BOOL success = [[responseDict objectForKey:@"removed"] boolValue];
-            if (block) block(telepatResponse, success);
-        } else {
-            if (block) block(telepatResponse, NO);
-        }
-    }];
+    [[Telepat client] post:[Telepat urlForEndpoint:@"/til/removeMember"]
+                parameters:@{@"listName": listName,
+                             @"indexedProperty": indexedProperty,
+                             @"member": memberName}
+                   headers:@{}
+             responseBlock:^(NSDictionary *dictionary, NSError *error) {
+                 TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                 if (![telepatResponse isError]) {
+                     NSDictionary *responseDict = telepatResponse.content;
+                     BOOL success = [[responseDict objectForKey:@"removed"] boolValue];
+                     if (block) block(telepatResponse, success);
+                 } else {
+                     if (block) block(telepatResponse, NO);
+                 }
+             }];
+}
+
+- (void) removeIndexedList:(NSString *)listName withBlock:(TelepatResponseBlock)block {
+    [[Telepat client] post:[Telepat urlForEndpoint:@"/til/removeList"]
+                parameters:@{@"listName": listName}
+                   headers:@{}
+             responseBlock:^(NSDictionary *dictionary, NSError *error) {
+                 if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+             }];
 }
 
 - (void) removeList {
@@ -75,16 +97,19 @@
 }
 
 - (void) removeListWithBlock:(TelepatIndexedListRemoveListResponseBlock)block {
-    [[KRRest sharedClient] removeIndexedList:listName withBlock:^(KRResponse *response) {
-        TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (![telepatResponse isError]) {
-            NSDictionary *responseDict = telepatResponse.content;
-            BOOL success = [[responseDict objectForKey:@"removed"] boolValue];
-            if (block) block(telepatResponse, success);
-        } else {
-            if (block) block(telepatResponse, NO);
-        }
-    }];
+    [[Telepat client] post:[Telepat urlForEndpoint:@"/til/removeList"]
+                     parameters:@{@"listName": listName}
+                        headers:@{}
+                  responseBlock:^(NSDictionary *dictionary, NSError *error) {
+                      TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                      if (![telepatResponse isError]) {
+                          NSDictionary *responseDict = telepatResponse.content;
+                          BOOL success = [[responseDict objectForKey:@"removed"] boolValue];
+                          if (block) block(telepatResponse, success);
+                      } else {
+                          if (block) block(telepatResponse, NO);
+                      }
+                  }];
 }
 
 @end

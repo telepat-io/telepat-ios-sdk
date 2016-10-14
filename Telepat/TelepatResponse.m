@@ -22,19 +22,18 @@
 
 @implementation TelepatResponse
 
-- (id) initWithResponse:(KRResponse *)response {
+- (id) initWithDictionary:(NSDictionary *)dictionary error:(NSError *)error {
     if (self = [super init]) {
-        // Original request returned an error
-        if (response.error) {
-            self.error = response.error;
-            self.status = response.status;
-            self.message = response.dict[@"message"];
-            self.code = response.dict[@"code"];
+        if (error) {
+            self.error = error;
+            self.status = error.code;
+            self.message = dictionary[@"message"];
+            self.code = dictionary[@"code"];
             return self;
         }
         
         NSError *err;
-        TelepatResponseModel *responseModel = [[TelepatResponseModel alloc] initWithDictionary:response.dict error:&err];
+        TelepatResponseModel *responseModel = [[TelepatResponseModel alloc] initWithDictionary:dictionary error:&err];
         
         if (err) {
             self.error = err;
