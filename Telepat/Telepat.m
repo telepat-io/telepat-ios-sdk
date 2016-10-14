@@ -549,7 +549,14 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) getAll:(TelepatResponseBlock)block {
-    [self getContextsWithBlock:block];
+    [self getContextsWithBlock:^(TelepatResponse *response) {
+        _mServerContexts = [NSMutableDictionary dictionary];
+        NSArray *contexts = [response getObjectOfType:[TelepatContext class]];
+        for (TelepatContext *context in contexts) {
+            [_mServerContexts setObject:context forKey:context.context_id];
+        }
+        block(response);
+    }];
 }
 
 - (NSString *) createObject:(TelepatBaseObject *)object inContext:(TelepatContext *)context model:(NSString *)modelName withBlock:(TelepatResponseBlock)block {
