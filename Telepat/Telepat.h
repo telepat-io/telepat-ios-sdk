@@ -176,6 +176,21 @@ typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
 - (void) delete:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block;
 
 /**
+ *  Perform a HTTP request
+ *
+ *  @discussion This method performs a HTTP request while making sure that the authorization token (bearer) is valid.
+ *  If the token is expired this method calls /user/refresh_token, updates the token and repeats the request. Call this
+ *  method everytime you need to perform a request which needs a valid auth token, otherwise use other methods such
+ *  as `post:parameters:headers:responseBlock`.
+ *
+ *  @param requestType The type of the HTTP request ("GET", "POST", "PUT", "PATCH", "DELETE")
+ *  @param params  A dictionary of parameters to be sent as the request body
+ *  @param headers The headers to be added to the request
+ *  @param block   A `HTTPResponseBlock` which will be called when the request is completed
+ */
+- (void) performRequestOfType:(NSString *)requestType withURL:(NSURL *)url params:(NSDictionary *)params headers:(NSDictionary *)headers andBlock:(HTTPResponseBlock)block;
+
+/**
  *  Register for receiving updates via Websockets. Use this if using Apple Push Notifications service is impossible.
  *
  *  @param block A `TelepatResponseBlock` which will be called when the registration completed.

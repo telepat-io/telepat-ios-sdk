@@ -155,19 +155,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
         DebugRequestError(@"POST");
-        /*if (errorResponse.status == 400) {
-            [[KRRest sharedClient] refreshTokenWithBlock:^(HTTPResponse *refreshTokenResponse) {
-                if (refreshTokenResponse.status == 200) {
-                    [[KRRest sharedClient] setBearer:[[refreshTokenResponse.dict objectForKey:@"content"] objectForKey:@"token"]];
-                    NSLog(@"Updated token");
-                    [self post:url parameters:params headers:headers responseBlock:block];
-                } else {
-                    block(errorResponse);
-                }
-            }];
-        } else {
-            block(errorResponse);
-        }*/
+        if (block) block(nil, error);
     }];
 }
 
@@ -222,6 +210,39 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 
 #pragma mark - Telepat methods
 
+- (void) performRequestOfType:(NSString *)requestType withURL:(NSURL *)url params:(NSDictionary *)params headers:(NSDictionary *)headers andBlock:(HTTPResponseBlock)block {
+    HTTPResponseBlock responseBlock = ^void (NSDictionary *dictionary, NSError *error) {
+        if (error) {
+            NSLog(@"FUCKING ERROR");
+            NSData *errorResponseData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+            NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:errorResponseData options:0 error:nil];
+            if (jsonDict && [jsonDict[@"code"] isEqualToString:@"046"]) {
+                [self refreshTokenWithBlock:^(TelepatResponse *response) {
+                    NSLog(@"Retrying request...");
+                    [self performRequestOfType:requestType withURL:url params:params headers:headers andBlock:block];
+                }];
+            } else {
+                NSLog(@"Passing error...");
+                block(nil, error);
+            }
+        } else {
+            block(dictionary, error);
+        }
+    };
+    
+    if ([requestType isEqualToString:@"GET"]) {
+        [self get:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"POST"]) {
+        [self post:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"PUT"]) {
+        [self put:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"PATCH"]) {
+        [self patch:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"DELETE"]) {
+        [self delete:url parameters:params headers:headers responseBlock:responseBlock];
+    }
+}
+
 - (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
     [[TelepatWebsocketTransport sharedClient] connect:[Telepat socketURL] withBlock:^(NSString *token, NSString *serverName) {
@@ -255,21 +276,22 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
             self.deviceId = udid;
         }
         
-        [[Telepat client] post:[Telepat urlForEndpoint:@"/device/register"]
-                    parameters:params
-                       headers:@{}
-                 responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                     TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
-                     if (![registerResponse isError]) {
-                         TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
-                         if (deviceIdentifier.identifier) {
-                             self.deviceId = deviceIdentifier.identifier;
-                             [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
-                             [[TelepatWebsocketTransport sharedClient] bindDevice];
-                         }
-                     }
-                     block(registerResponse);
-                 }];
+        [self performRequestOfType:@"POST"
+                           withURL:[Telepat urlForEndpoint:@"/device/register"]
+                            params:params
+                           headers:@{}
+                          andBlock:^(NSDictionary *dictionary, NSError *error) {
+                              TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                              if (![registerResponse isError]) {
+                                  TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
+                                  if (deviceIdentifier.identifier) {
+                                      self.deviceId = deviceIdentifier.identifier;
+                                      [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
+                                      [[TelepatWebsocketTransport sharedClient] bindDevice];
+                                  }
+                              }
+                              block(registerResponse);
+                          }];
     }];
 }
 
@@ -306,69 +328,74 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         self.deviceId = udid;
     }
     
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/device/register"]
-                     parameters:params
-                        headers:@{}
-                  responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-                  }];
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/device/register"]
+                        params:params headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                      }];
 }
 
 - (void) registerFacebookUserWithToken:(NSString *)token andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/register-facebook"]
-                parameters:@{@"access_token": token}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/user/register-facebook"]
+                        params:@{@"access_token": token}
+                       headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                      }];
 }
 
 - (void) registerTwitterUserWithToken:(NSString *)token secret:(NSString *)secret andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/register-twitter"]
-                parameters:@{@"oauth_token": token,
-                             @"oauth_token_secret": secret}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/user/register-twitter"]
+                        params:@{@"oauth_token": token, @"oauth_token_secret": secret}
+                       headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                      }];
 }
 
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/register-username"]
-                parameters:@{@"username": username,
-                             @"password": password,
-                             @"name": name}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                    params:@{@"username": username,
+                                             @"password": password,
+                                             @"name": name}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) registerUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/register-username"]
-                parameters:[user toDictionary]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                    params:[user toDictionary]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminDeleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/user/delete"]
-                parameters:@{@"username": username}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                    params:@{@"username": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminUpdateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/user/update"]
-                parameters:[oldUser patchAgainst:newUser]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/user/update"]
+                                    params:[oldUser patchAgainst:newUser]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) refreshTokenWithBlock:(TelepatResponseBlock)block {
@@ -376,153 +403,175 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
                parameters:@{}
                   headers:@{}
             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                if (![loginResponse isError]) {
+                    TelepatAuthorization *tokenObj = [loginResponse getObjectOfType:[TelepatAuthorization class]];
+                    [_dbInstance setOperationsDataWithObject:tokenObj forKey:kJWT];
+                    [_dbInstance setOperationsDataWithObject:[NSDate date] forKey:kJWT_TIMESTAMP];
+                    self.bearer = tokenObj.token;
+                }
+                block(loginResponse);
             }];
 }
 
 - (void) deleteUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/delete"]
-                parameters:@{@"id": user.user_id,
-                             @"username": user.username}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/delete"]
+                                    params:@{@"id": user.user_id,
+                                             @"username": user.username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/update"]
-                parameters:[oldUser patchAgainst:newUser]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/update"]
+                                    params:[oldUser patchAgainst:newUser]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) listAppUsersWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] get:[Telepat urlForEndpoint:@"/admin/user/all"]
-               parameters:@{}
-                  headers:@{}
-            responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-            }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/user/all"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) loginWithFacebook:(NSString *)token andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/login-facebook"]
-                parameters:@{@"access_token": token}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login-facebook"]
+                                    params:@{@"access_token": token}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
+                                  }];
 }
 
 - (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)authSecret andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/login-twitter"]
-                parameters:@{@"oauth_token": authToken,
-                             @"oauth_token_secret": authSecret}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login-twitter"]
+                                    params:@{@"oauth_token": authToken,
+                                             @"oauth_token_secret": authSecret}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
+                                  }];
 }
 
 - (void) login:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/login_password"]
-                     parameters:@{@"username": username,
-                                  @"password": password}
-                        headers:@{}
-                  responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
-                  }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login_password"]
+                                    params:@{@"username": username,
+                                             @"password": password}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
+                                  }];
 }
 
 - (void) requestPasswordResetForUsername:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/request_password_reset"]
-                parameters:@{@"type": @"app",
-                             @"username": username}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/request_password_reset"]
+                                    params:@{@"type": @"app",
+                                             @"username": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/password_reset"]
-                parameters:@{@"token": token,
-                             @"user_id": userID,
-                             @"password": newPassword}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/password_reset"]
+                                    params:@{@"token": token,
+                                             @"user_id": userID,
+                                             @"password": newPassword}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) linkAccountWithFacebook:(NSString *)username token:(NSString *)token withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/login-facebook"]
-                parameters:@{@"access_token": token,
-                             @"username": username}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login-facebook"]
+                                    params:@{@"access_token": token,
+                                             @"username": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminLogin:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/login"]
-                parameters:@{@"email": username,
-                             @"password": password}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/login"]
+                                    params:@{@"email": username,
+                                             @"password": password}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) authorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/app/authorize"]
-                parameters:@{@"email": username}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/authorize"]
+                                    params:@{@"email": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) deauthorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/app/deauthorize"]
-                parameters:@{@"email": username}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/deauthorize"]
+                                    params:@{@"email": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminAdd:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/add"]
-                parameters:@{@"email": username,
-                             @"password": password,
-                             @"name": name}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/add"]
+                                    params:@{@"email": username,
+                                             @"password": password,
+                                             @"name": name}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) deleteAdminWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/delete"]
-                parameters:@{}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/delete"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateAdmin:(TelepatUser *)oldAdmin withUser:(TelepatUser *)newAdmin andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/update"]
-                     parameters:[oldAdmin patchAgainst:newAdmin]
-                        headers:@{}
-                  responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-                  }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/update"]
+                                    params:[oldAdmin patchAgainst:newAdmin]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) processLoginResponse:(TelepatResponse *)loginResponse withBlock:(TelepatResponseBlock)block {
@@ -538,14 +587,15 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) logoutWithBlock:(TelepatResponseBlock)block {
     [[TelepatWebsocketTransport sharedClient] disconnect];
     
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/logout"]
-                parameters:@{}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 TelepatResponse *logoutResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
-                 self.bearer = nil;
-                 block(logoutResponse);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/logout"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      TelepatResponse *logoutResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                                      self.bearer = nil;
+                                      block(logoutResponse);
+                                  }];
 }
 
 - (void) getAll:(TelepatResponseBlock)block {
@@ -562,33 +612,36 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (NSString *) createObject:(TelepatBaseObject *)object inContext:(TelepatContext *)context model:(NSString *)modelName withBlock:(TelepatResponseBlock)block {
     [object setChannel:self];
     [object setUuid:[[NSUUID UUID] UUIDString]];
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/object/create"]
-                parameters:@{@"model": modelName,
-                             @"context": context.context_id,
-                             @"content": [object toDictionary]}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/create"]
+                                    params:@{@"model": modelName,
+                                             @"context": context.context_id,
+                                             @"content": [object toDictionary]}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
     return object.uuid;
 }
 
 - (void) updateObject:(TelepatBaseObject *)oldObject withObject:(TelepatBaseObject *)newObject withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/object/update"]
-                parameters:[oldObject patchAgainst:newObject]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/update"]
+                                    params:[oldObject patchAgainst:newObject]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) count:(id)body withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/object/count"]
-                parameters:body
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/count"]
+                                    params:body
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
@@ -638,77 +691,85 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) createContextWithName:(NSString *)name meta:(NSDictionary *)meta withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/context/add"]
-                parameters:@{@"name": name,
-                             @"meta": meta}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context/add"]
+                                    params:@{@"name": name,
+                                             @"meta": meta}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/context"]
-                parameters:@{@"id": contextId}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context"]
+                                    params:@{@"id": contextId}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getContextsWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/context/all"]
-                parameters:@{}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/context/all"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getContextsWithRange:(NSRange)range andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/context/all"]
-                parameters:@{@"offset": @(range.location),
-                             @"limit": @(range.length)}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/context/all"]
+                                    params:@{@"offset": @(range.location),
+                                             @"limit": @(range.length)}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getSchemasWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] get:[Telepat urlForEndpoint:@"/admin/schema/all"]
-               parameters:@{}
-                  headers:@{}
-            responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-            }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/schema/all"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateSchema:(NSDictionary *)schema withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/schema/update"]
-                parameters:schema
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/schema/update"]
+                                    params:schema
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getCurrentAdminWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] get:[Telepat urlForEndpoint:@"/admin/me"]
-               parameters:@{}
-                  headers:@{}
-            responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-            }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/me"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getCurrentUserWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] get:[Telepat urlForEndpoint:@"/user/me"]
-               parameters:@{}
-                  headers:@{}
-            responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-            }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/user/me"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (NSDictionary *) contextsMap {
@@ -724,69 +785,76 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     params[@"name"] = appName;
     params[@"keys"] = keys;
     
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/app/add"]
-                parameters:[NSDictionary dictionaryWithDictionary:params]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/add"]
+                                    params:[NSDictionary dictionaryWithDictionary:params]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) listAppsWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] get:[Telepat urlForEndpoint:@"/admin/apps"]
-               parameters:@{}
-                  headers:@{}
-            responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-            }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/apps"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) removeAppWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/app/remove"]
-                parameters:@{}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/remove"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateApp:(TelepatApp *)oldApp withApp:(TelepatApp *)newApp andBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/app/update"]
-                parameters:[oldApp patchAgainst:newApp]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/update"]
+                                    params:[oldApp patchAgainst:newApp]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) removeAppModel:(NSString *)modelName withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/schema/remove_model"]
-                parameters:@{}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/schema/remove_model"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) removeContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/context/remove"]
-                parameters:@{@"id": contextId}
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context/remove"]
+                                    params:@{@"id": contextId}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateContext:(TelepatContext *)oldContext withContext:(TelepatContext *)newContext andBlock:(TelepatResponseBlock)block {
     NSMutableDictionary *mutablePatch = [NSMutableDictionary dictionaryWithDictionary:[oldContext patchAgainst:newContext]];
     mutablePatch[@"id"] = oldContext.context_id;
     
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/admin/context/update"]
-                parameters:[NSDictionary dictionaryWithDictionary:mutablePatch]
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context/update"]
+                                    params:[NSDictionary dictionaryWithDictionary:mutablePatch]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(void (^)(NSData *responseData, NSError *error))block {
@@ -803,22 +871,24 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) getUserMetadataWithBlock:(TelepatResponseBlock)block {
-    [[Telepat client] get:[Telepat urlForEndpoint:@"/user/metadata"]
-               parameters:@{}
-                  headers:@{}
-            responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-            }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/user/metadata"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateUserMetadata:(TelepatUserMetadata *)oldMetadata withUserMetadata:(TelepatUserMetadata *)newMetadata andBlock:(TelepatResponseBlock)block {
     NSDictionary *patch = [oldMetadata patchAgainst:newMetadata];
-    [[Telepat client] post:[Telepat urlForEndpoint:@"/user/update_metadata"]
-                parameters:patch
-                   headers:@{}
-             responseBlock:^(NSDictionary *dictionary, NSError *error) {
-                 block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
-             }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/update_metadata"]
+                                    params:patch
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) setApiKey:(NSString *)apiKey {
