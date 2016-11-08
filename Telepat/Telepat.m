@@ -213,16 +213,17 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) performRequestOfType:(NSString *)requestType withURL:(NSURL *)url params:(NSDictionary *)params headers:(NSDictionary *)headers andBlock:(HTTPResponseBlock)block {
     HTTPResponseBlock responseBlock = ^void (NSDictionary *dictionary, NSError *error) {
         if (error) {
-            NSLog(@"FUCKING ERROR");
             NSData *errorResponseData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-            NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:errorResponseData options:0 error:nil];
-            if (jsonDict && [jsonDict[@"code"] isEqualToString:@"046"]) {
-                [self refreshTokenWithBlock:^(TelepatResponse *response) {
-                    NSLog(@"Retrying request...");
-                    [self performRequestOfType:requestType withURL:url params:params headers:headers andBlock:block];
-                }];
+            if (errorResponseData) {
+                NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:errorResponseData options:0 error:nil];
+                if (jsonDict && [jsonDict[@"code"] isEqualToString:@"046"]) {
+                    [self refreshTokenWithBlock:^(TelepatResponse *response) {
+                        [self performRequestOfType:requestType withURL:url params:params headers:headers andBlock:block];
+                    }];
+                } else {
+                    block(nil, error);
+                }
             } else {
-                NSLog(@"Passing error...");
                 block(nil, error);
             }
         } else {
@@ -302,7 +303,10 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) registerDeviceWithToken:(NSString*)token shouldUpdateBackend:(BOOL)shouldUpdateBackend withBlock:(TelepatResponseBlock)block {
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
     
-    if ([udid length] && !shouldUpdateBackend) return;
+    if ([udid length] && !shouldUpdateBackend) {
+        block(nil);
+        return;
+    }
     
     UIDevice *device = [UIDevice currentDevice];
     NSMutableDictionary *infoDictionary = [NSMutableDictionary dictionaryWithDictionary:@{@"os": [device systemName],
@@ -330,9 +334,19 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     
     [self performRequestOfType:@"POST"
                        withURL:[Telepat urlForEndpoint:@"/device/register"]
-                        params:params headers:@{}
+                        params:params
+                       headers:@{}
                       andBlock:^(NSDictionary *dictionary, NSError *error) {
-                          block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                          TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                          if (![registerResponse isError]) {
+                              TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
+                              if (deviceIdentifier.identifier) {
+                                  self.deviceId = deviceIdentifier.identifier;
+                                  [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
+                                  [[TelepatWebsocketTransport sharedClient] bindDevice];
+                              }
+                          }
+                          block(registerResponse);
                       }];
 }
 
