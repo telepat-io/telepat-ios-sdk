@@ -13,6 +13,22 @@
 #import "TelepatWebsocketTransport.h"
 #import "NSData+HexString.h"
 
+#define DebugRequest(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
+requestType,\
+[url absoluteString], \
+self.sessionManager.requestSerializer.HTTPRequestHeaders, \
+[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding], \
+response.statusCode, \
+responseObject)
+
+#define DebugRequestError(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
+requestType, \
+[url absoluteString], \
+self.sessionManager.requestSerializer.HTTPRequestHeaders, \
+[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:params options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding], \
+response.statusCode, \
+[[NSString alloc] initWithData:error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding])
+
 #ifdef DEBUG
 const int ddLogLevel = LOG_LEVEL_DEBUG;
 #else
@@ -26,17 +42,13 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 + (Telepat *) client {
-    static Telepat *telepat = nil;
+    static Telepat *telepatClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        telepat = [[self alloc] init];
+        telepatClient = [[self alloc] init];
     });
     
-    return telepat;
-}
-
-+ (KRRest *) restClient {
-    return [KRRest sharedClient];
+    return telepatClient;
 }
 
 + (NSString *) deviceName {
@@ -52,8 +64,35 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     [[Telepat client] setApiKey:clientApiKey];
 }
 
++ (NSURL *) urlForEndpoint:(NSString*) endpoint {
+    if ([endpoint hasPrefix:@"/"]) endpoint = [endpoint substringFromIndex:1];
+    NSString *apiBaseURL = [[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatAPIURL];
+    if (apiBaseURL == nil) {
+        @throw [NSException exceptionWithName:kTelepatInvalidApiURL reason:@"Invalid Telepat API URL. Check if you added a proper value for kTelepatAPIURL in your Info.plist file" userInfo:nil];
+    }
+    if (![apiBaseURL hasSuffix:@"/"]) apiBaseURL = [NSString stringWithFormat:@"%@/", apiBaseURL];
+    NSString *finalURL = [NSString stringWithFormat:@"%@%@", apiBaseURL, endpoint];
+    
+    return [NSURL URLWithString:finalURL];
+}
+
++ (NSURL *) socketURL {
+    NSString *socketURL = [[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatWebSocketsURL];
+    if (socketURL) return [NSURL URLWithString:socketURL];
+    
+    NSURL *apiURL = [NSURL URLWithString:[[NSBundle mainBundle] objectForInfoDictionaryKey:kTelepatAPIURL]];
+    NSString *wsURL = [NSString stringWithFormat:@"ws://%@:80", apiURL.host];
+    return [NSURL URLWithString:wsURL];
+}
+
+#pragma mark - Initializer
+
 - (id) init {
     if (self = [super init]) {
+        NSURL *url = [NSURL URLWithString:@"/" relativeToURL:[Telepat urlForEndpoint:@""]];
+        self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[url baseURL]];
+        [self.sessionManager.operationQueue setMaxConcurrentOperationCount:5];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteNotificationReceived:) name:TelepatRemoteNotificationReceived object:nil];
         
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
@@ -62,48 +101,197 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor redColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
         
         _dbInstance = [TelepatLevelDB database];
-        [[KRRest sharedClient] setDevice_id:[_dbInstance getOperationsDataForKey:kUDID defaultValue:@""]];
+        self.deviceId = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
     }
     
     return self;
 }
 
-- (NSString *) deviceID {
-    return [[KRRest sharedClient] device_id];
+#pragma mark - Low level HTTP interface
+
+- (NSDictionary *) mergedHeadersWithHeaders:(NSDictionary*)newHeaders {
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"kHTTPHeaders"]];
+    [headers setObject:@"application/json" forKey:@"Content-Type"];
+    self.deviceId ? [headers setObject:self.deviceId forKey:@"X-BLGREQ-UDID"] : [headers setObject:@"" forKey:@"X-BLGREQ-UDID"];
+    if (self.bearer) [headers setObject:[NSString stringWithFormat:@"Bearer %@", self.bearer] forKey:@"Authorization"];
+    if (self.apiKey) [headers setObject:self.apiKey forKey:@"X-BLGREQ-SIGN"];
+    if (self.appId) [headers setObject:self.appId forKey:@"X-BLGREQ-APPID"];
+    [headers addEntriesFromDictionary:newHeaders];
+    return headers;
+}
+
+- (void) applyHeaders:(NSDictionary *)newHeaders {
+    NSDictionary *headers = [self mergedHeadersWithHeaders:newHeaders];
+    for (NSString *key in headers) {
+        [self.sessionManager.requestSerializer setValue:headers[key] forHTTPHeaderField:key];
+    }
+}
+
+- (void) get:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block {
+    self.sessionManager.requestSerializer = [AFHTTPRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers];
+    
+    [self.sessionManager GET:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"GET");
+        if (block) block(responseObject, nil);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"GET");
+        if (block) block(nil, error);
+    }];
+}
+
+- (void) post:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block {
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers];
+    
+    [self.sessionManager POST:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"POST");
+        if (block) block(responseObject, nil);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"POST");
+        if (block) block(nil, error);
+    }];
+}
+
+- (void) put:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block {
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers];
+    
+    [self.sessionManager PUT:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"PUT");
+        if (block) block(responseObject, nil);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"PUT");
+        if (block) block(nil, error);
+    }];
+}
+
+- (void) patch:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block {
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    [self applyHeaders:headers];
+    
+    [self.sessionManager PATCH:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"PATCH");
+        if (block) block(responseObject, nil);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"PATCH");
+        if (block) block(nil, error);
+    }];
+}
+
+- (void) delete:(NSURL*)url parameters:(id)params headers:(NSDictionary*)headers responseBlock:(HTTPResponseBlock)block {
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+    self.sessionManager.requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:@"GET", @"HEAD", nil];
+    [self applyHeaders:headers];
+    
+    [self.sessionManager DELETE:[url path] parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequest(@"DELETE");
+        if (block) block(responseObject, nil);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        DebugRequestError(@"DELETE");
+        if (block) block(nil, error);
+    }];
+}
+
+#pragma mark - Telepat methods
+
+- (void) performRequestOfType:(NSString *)requestType withURL:(NSURL *)url params:(NSDictionary *)params headers:(NSDictionary *)headers andBlock:(HTTPResponseBlock)block {
+    HTTPResponseBlock responseBlock = ^void (NSDictionary *dictionary, NSError *error) {
+        if (error) {
+            NSData *errorResponseData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+            if (errorResponseData) {
+                NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:errorResponseData options:0 error:nil];
+                if (jsonDict && [jsonDict[@"code"] isEqualToString:@"046"]) {
+                    [self refreshTokenWithBlock:^(TelepatResponse *response) {
+                        [self performRequestOfType:requestType withURL:url params:params headers:headers andBlock:block];
+                    }];
+                } else {
+                    block(nil, error);
+                }
+            } else {
+                block(nil, error);
+            }
+        } else {
+            block(dictionary, error);
+        }
+    };
+    
+    if ([requestType isEqualToString:@"GET"]) {
+        [self get:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"POST"]) {
+        [self post:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"PUT"]) {
+        [self put:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"PATCH"]) {
+        [self patch:url parameters:params headers:headers responseBlock:responseBlock];
+    } else if ([requestType isEqualToString:@"DELETE"]) {
+        [self delete:url parameters:params headers:headers responseBlock:responseBlock];
+    }
 }
 
 - (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
-    [[TelepatWebsocketTransport sharedClient] connect:[KRRest socketURL] withBlock:^(NSString *token, NSString *serverName) {
+    [[TelepatWebsocketTransport sharedClient] connect:[Telepat socketURL] withBlock:^(NSString *token, NSString *serverName) {
         if ([udid length] && !shouldUpdateBackend) {
             block(nil);
             return;
         }
+        UIDevice *device = [UIDevice currentDevice];
+        NSMutableDictionary *infoDictionary = [NSMutableDictionary dictionaryWithDictionary:@{@"os": [device systemName],
+                                                                                              @"version": [device systemVersion],
+                                                                                              @"manufacturer": @"Apple",
+                                                                                              @"model": [device model]}];
+        NSDictionary *persistentDictionary = @{@"type": @"ios",
+                                               @"token": @"",
+                                               @"active": @(0)};
+        NSDictionary *volatileDictionary = @{@"type": @"sockets",
+                                             @"token": token,
+                                             @"active": @(1),
+                                             /*@"server_name": serverName*/};
         
-        if (![udid length]) {
-            [[KRRest sharedClient] registerDeviceWithWebsockets:[UIDevice currentDevice] token:token serverName:serverName update:NO withBlock:^(KRResponse *response) {
-                TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-                if (![registerResponse isError]) {
-                    TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
-                    if (deviceIdentifier.identifier) {
-                        [[KRRest sharedClient] setDevice_id:deviceIdentifier.identifier];
-                        [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
-                        [[TelepatWebsocketTransport sharedClient] bindDevice];
-                    }
-                }
-                block(registerResponse);
-            }];
-        } else {
-            [[KRRest sharedClient] setDevice_id:udid];
-            
-            [[KRRest sharedClient] registerDeviceWithWebsockets:[UIDevice currentDevice] token:token serverName:serverName update:YES withBlock:^(KRResponse *response) {
-                TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-                if (![registerResponse isError]) {
-                    [[TelepatWebsocketTransport sharedClient] bindDevice];
-                }
-                block(registerResponse);
-            }];
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
+        params[@"volatile"] = volatileDictionary;
+        params[@"persistent"] = persistentDictionary;
+        
+        self.updatesTransportType = TelepatUpdatesTransportTypeSockets;
+        
+        if ([udid length]) {
+            infoDictionary[@"udid"] = [[device identifierForVendor] UUIDString];
+            self.deviceId = udid;
         }
+        
+        [self performRequestOfType:@"POST"
+                           withURL:[Telepat urlForEndpoint:@"/device/register"]
+                            params:params
+                           headers:@{}
+                          andBlock:^(NSDictionary *dictionary, NSError *error) {
+                              TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                              if (![registerResponse isError]) {
+                                  TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
+                                  if (deviceIdentifier.identifier) {
+                                      self.deviceId = deviceIdentifier.identifier;
+                                      [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
+                                      [[TelepatWebsocketTransport sharedClient] bindDevice];
+                                  }
+                              }
+                              block(registerResponse);
+                          }];
     }];
 }
 
@@ -114,214 +302,359 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) registerDeviceWithToken:(NSString*)token shouldUpdateBackend:(BOOL)shouldUpdateBackend withBlock:(TelepatResponseBlock)block {
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
     
-    if ([udid length] && !shouldUpdateBackend) return;
-    
-    if (![udid length]) {
-        [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:NO withBlock:^(KRResponse *response) {
-            TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-            if (![registerResponse isError]) {
-                TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
-                [[KRRest sharedClient] setDevice_id:deviceIdentifier.identifier];
-                [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
-            }
-            block(registerResponse);
-        }];
-    } else {
-        [[KRRest sharedClient] setDevice_id:udid];
-        
-        [[KRRest sharedClient] registerDevice:[UIDevice currentDevice] token:token update:YES withBlock:^(KRResponse *response) {
-            TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-            block(registerResponse);
-        }];
+    if ([udid length] && !shouldUpdateBackend) {
+        block(nil);
+        return;
     }
+    
+    UIDevice *device = [UIDevice currentDevice];
+    NSMutableDictionary *infoDictionary = [NSMutableDictionary dictionaryWithDictionary:@{@"os": [device systemName],
+                                                                                          @"version": [device systemVersion],
+                                                                                          @"manufacturer": @"Apple",
+                                                                                          @"model": [device model]}];
+    NSDictionary *persistentDictionary = @{@"type": @"ios",
+                                           @"token": token,
+                                           @"active": @(1)};
+    NSDictionary *volatileDictionary = @{@"type": @"sockets",
+                                         @"token": @"",
+                                         @"active": @(0),
+                                         /*@"server_name": serverName*/};
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
+    params[@"volatile"] = volatileDictionary;
+    params[@"persistent"] = persistentDictionary;
+    
+    self.updatesTransportType = TelepatUpdatesTransportTypeiOS;
+    
+    if ([udid length]) {
+        infoDictionary[@"udid"] = [[device identifierForVendor] UUIDString];
+        self.deviceId = udid;
+    }
+    
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/device/register"]
+                        params:params
+                       headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                          if (![registerResponse isError]) {
+                              TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
+                              if (deviceIdentifier.identifier) {
+                                  self.deviceId = deviceIdentifier.identifier;
+                                  [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
+                                  [[TelepatWebsocketTransport sharedClient] bindDevice];
+                              }
+                          }
+                          block(registerResponse);
+                      }];
 }
 
 - (void) registerFacebookUserWithToken:(NSString *)token andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] registerUserWithFacebookToken:token andBlock:^(KRResponse *response) {
-        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(registerResponse);
-    }];
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/user/register-facebook"]
+                        params:@{@"access_token": token}
+                       headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                      }];
 }
 
 - (void) registerTwitterUserWithToken:(NSString *)token secret:(NSString *)secret andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] registerUserWithTwitterToken:token secret:secret andBlock:^(KRResponse *response) {
-        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(registerResponse);
-    }];
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/user/register-twitter"]
+                        params:@{@"oauth_token": token, @"oauth_token_secret": secret}
+                       headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                      }];
 }
 
 - (void) registerUser:(NSString *)username withPassword:(NSString *)password name:(NSString *)name andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] registerUser:username withPassword:password name:name andBlock:^(KRResponse *response) {
-        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(registerResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                    params:@{@"username": username,
+                                             @"password": password,
+                                             @"name": name}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) registerUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] registerUser:[user toDictionary] withBlock:^(KRResponse *response) {
-        TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(registerResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                    params:[user toDictionary]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminDeleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminDeleteUser:username withBlock:^(KRResponse *response) {
-        TelepatResponse *deleteUserResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(deleteUserResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                    params:@{@"username": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminUpdateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminUpdateUser:[oldUser patchAgainst:newUser] withBlock:^(KRResponse *response) {
-        TelepatResponse *updateUserResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(updateUserResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/user/update"]
+                                    params:[oldUser patchAgainst:newUser]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) refreshTokenWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] refreshTokenWithBlock:^(KRResponse *response) {
-        [self processLoginResponse:response withBlock:block];
-    }];
+    [[Telepat client] get:[Telepat urlForEndpoint:@"/user/refresh_token"]
+               parameters:@{}
+                  headers:@{}
+            responseBlock:^(NSDictionary *dictionary, NSError *error) {
+                TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                if (![loginResponse isError]) {
+                    TelepatAuthorization *tokenObj = [loginResponse getObjectOfType:[TelepatAuthorization class]];
+                    [_dbInstance setOperationsDataWithObject:tokenObj forKey:kJWT];
+                    [_dbInstance setOperationsDataWithObject:[NSDate date] forKey:kJWT_TIMESTAMP];
+                    self.bearer = tokenObj.token;
+                }
+                block(loginResponse);
+            }];
 }
 
 - (void) deleteUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] deleteUserWithID:user.user_id andUsername:user.username andBlock:^(KRResponse *response) {
-        TelepatResponse *deleteUserResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(deleteUserResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/delete"]
+                                    params:@{@"id": user.user_id,
+                                             @"username": user.username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateUser:(TelepatUser *)oldUser withUser:(TelepatUser *)newUser andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] updateUser:[oldUser patchAgainst:newUser] withBlock:^(KRResponse *response) {
-        TelepatResponse *updateUserResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(updateUserResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/update"]
+                                    params:[oldUser patchAgainst:newUser]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) listAppUsersWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] listAppUsersWithBlock:^(KRResponse *response) {
-        TelepatResponse *listAppUsersResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(listAppUsersResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/user/all"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) loginWithFacebook:(NSString *)token andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] loginWithFacebookToken:token andBlock:^(KRResponse *response) {
-        [self processLoginResponse:response withBlock:block];
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login-facebook"]
+                                    params:@{@"access_token": token}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
+                                  }];
 }
 
-- (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)secret andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] loginWithTwitterToken:authToken secret:secret andBlock:^(KRResponse *response) {
-        [self processLoginResponse:response withBlock:block];
-    }];
+- (void) loginWithTwitter:(NSString *)authToken secret:(NSString *)authSecret andBlock:(TelepatResponseBlock)block {
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login-twitter"]
+                                    params:@{@"oauth_token": authToken,
+                                             @"oauth_token_secret": authSecret}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
+                                  }];
 }
 
 - (void) login:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] loginWithUsername:username andPassword:password withBlock:^(KRResponse *response) {
-        [self processLoginResponse:response withBlock:block];
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login_password"]
+                                    params:@{@"username": username,
+                                             @"password": password}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processLoginResponse:[[TelepatResponse alloc] initWithDictionary:dictionary error:error] withBlock:block];
+                                  }];
 }
 
 - (void) requestPasswordResetForUsername:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] requestPasswordResetForUsername:username withBlock:^(KRResponse *response) {
-        TelepatResponse *passwordRequestResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(passwordRequestResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/request_password_reset"]
+                                    params:@{@"type": @"app",
+                                             @"username": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) resetPasswordWithToken:(NSString *)token forUserID:(NSString *)userID newPassword:(NSString *)newPassword withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] resetPasswordWithToken:token forUserID:userID newPassword:newPassword withBlock:^(KRResponse *response) {
-        TelepatResponse *passwordResetResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(passwordResetResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/password_reset"]
+                                    params:@{@"token": token,
+                                             @"user_id": userID,
+                                             @"password": newPassword}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) linkAccountWithFacebook:(NSString *)username token:(NSString *)token withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] linkWithFacebookToken:token username:username andBlock:^(KRResponse *response) {
-        [self processLoginResponse:response withBlock:block];
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/login-facebook"]
+                                    params:@{@"access_token": token,
+                                             @"username": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminLogin:(NSString *)username password:(NSString *)password withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminLoginWithUsername:username andPassword:password withBlock:^(KRResponse *response) {
-        [self processLoginResponse:response withBlock:block];
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/login"]
+                                    params:@{@"email": username,
+                                             @"password": password}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) authorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminAuthorizeWithUsername:username andBlock:^(KRResponse *response) {
-        TelepatResponse *authorizeResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(authorizeResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/authorize"]
+                                    params:@{@"email": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) deauthorizeAdmin:(NSString *)username withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminDeauthorizeWithUsername:username andBlock:^(KRResponse *response) {
-        TelepatResponse *deauthorizeResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(deauthorizeResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/deauthorize"]
+                                    params:@{@"email": username}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) adminAdd:(NSString *)username password:(NSString *)password name:(NSString *)name withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminAddWithUsername:username password:password name:name withBlock:^(KRResponse *response) {
-        TelepatResponse *addResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(addResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/add"]
+                                    params:@{@"email": username,
+                                             @"password": password,
+                                             @"name": name}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) deleteAdminWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminDeleteWithBlock:^(KRResponse *response) {
-        TelepatResponse *deleteResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(deleteResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/delete"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateAdmin:(TelepatUser *)oldAdmin withUser:(TelepatUser *)newAdmin andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] updateAdmin:[oldAdmin patchAgainst:newAdmin] withBlock:^(KRResponse *response) {
-        TelepatResponse *updateAdminResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(updateAdminResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/update"]
+                                    params:[oldAdmin patchAgainst:newAdmin]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
-- (void) processLoginResponse:(KRResponse *)response withBlock:(TelepatResponseBlock)block {
-    TelepatResponse *loginResponse = [[TelepatResponse alloc] initWithResponse:response];
+- (void) processLoginResponse:(TelepatResponse *)loginResponse withBlock:(TelepatResponseBlock)block {
     if (![loginResponse isError]) {
         TelepatAuthorization *tokenObj = [loginResponse getObjectOfType:[TelepatAuthorization class]];
         [_dbInstance setOperationsDataWithObject:tokenObj forKey:kJWT];
         [_dbInstance setOperationsDataWithObject:[NSDate date] forKey:kJWT_TIMESTAMP];
-        [[KRRest sharedClient] setBearer:tokenObj.token];
+        self.bearer = tokenObj.token;
     }
     block(loginResponse);
 }
 
 - (void) logoutWithBlock:(TelepatResponseBlock)block {
     [[TelepatWebsocketTransport sharedClient] disconnect];
-    [[KRRest sharedClient] logoutWithBlock:^(KRResponse *response) {
-        TelepatResponse *logoutResponse = [[TelepatResponse alloc] initWithResponse:response];
-        [[KRRest sharedClient] setBearer:nil];
-        block(logoutResponse);
-    }];
+    
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/logout"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      TelepatResponse *logoutResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                                      self.bearer = nil;
+                                      block(logoutResponse);
+                                  }];
 }
 
 - (void) getAll:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getContextsWithBlock:^(KRResponse *response) {
-        TelepatResponse *getallResponse = [[TelepatResponse alloc] initWithResponse:response];
+    [self getContextsWithBlock:^(TelepatResponse *response) {
         _mServerContexts = [NSMutableDictionary dictionary];
-        NSArray *contexts = [getallResponse getObjectOfType:[TelepatContext class]];
+        NSArray *contexts = [response getObjectOfType:[TelepatContext class]];
         for (TelepatContext *context in contexts) {
             [_mServerContexts setObject:context forKey:context.context_id];
         }
-        block(getallResponse);
+        block(response);
     }];
 }
 
-- (void) create:(NSDictionary *)body {
-    [[KRRest sharedClient] post:[KRRest urlForEndpoint:@"/object/create"]
-                     parameters:body
-                        headers:@{}
-                  responseBlock:^(KRResponse *response) {
-                  }];
+- (NSString *) createObject:(TelepatBaseObject *)object inContext:(TelepatContext *)context model:(NSString *)modelName withBlock:(TelepatResponseBlock)block {
+    [object setChannel:self];
+    [object setUuid:[[NSUUID UUID] UUIDString]];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/create"]
+                                    params:@{@"model": modelName,
+                                             @"context": context.context_id,
+                                             @"content": [object toDictionary]}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
+    return object.uuid;
+}
+
+- (void) updateObject:(TelepatBaseObject *)oldObject withObject:(TelepatBaseObject *)newObject withBlock:(TelepatResponseBlock)block {
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/update"]
+                                    params:[oldObject patchAgainst:newObject]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
+}
+
+- (void) count:(id)body withBlock:(TelepatResponseBlock)block {
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/count"]
+                                    params:body
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
@@ -371,59 +704,85 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) createContextWithName:(NSString *)name meta:(NSDictionary *)meta withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] createContext:name meta:meta withBlock:^(KRResponse *response) {
-        TelepatResponse *createContextResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(createContextResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context/add"]
+                                    params:@{@"name": name,
+                                             @"meta": meta}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] adminGetContext:contextId withBlock:^(KRResponse *response) {
-        TelepatResponse *getContextResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getContextResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context"]
+                                    params:@{@"id": contextId}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getContextsWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getContextsWithBlock:^(KRResponse *response) {
-        TelepatResponse *getContextsResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getContextsResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/context/all"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getContextsWithRange:(NSRange)range andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getContextsWithRange:range andBlock:^(KRResponse *response) {
-        TelepatResponse *getContextsResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getContextsResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/context/all"]
+                                    params:@{@"offset": @(range.location),
+                                             @"limit": @(range.length)}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getSchemasWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getSchemasWithBlock:^(KRResponse *response) {
-        TelepatResponse *getSchemasResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getSchemasResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/schema/all"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateSchema:(NSDictionary *)schema withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] updateSchema:schema withBlock:^(KRResponse *response) {
-        TelepatResponse *getUpdateSchemaResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getUpdateSchemaResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/schema/update"]
+                                    params:schema
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getCurrentAdminWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getCurrentAdminWithBlock:^(KRResponse *response) {
-        TelepatResponse *getMeResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getMeResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/me"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) getCurrentUserWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getCurrentUserWithBlock:^(KRResponse *response) {
-        TelepatResponse *getMeResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(getMeResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/user/me"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (NSDictionary *) contextsMap {
@@ -431,79 +790,135 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (BOOL) isLoggedIn {
-    return [[[KRRest sharedClient] bearer] length] > 0;
+    return [self.bearer length] > 0;
 }
 
 - (void) createAppWithName:(NSString *)appName keys:(NSArray *)keys customFields:(NSDictionary *)fields block:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] appCreate:appName apiKeys:keys customFields:fields withBlock:^(KRResponse *response) {
-        TelepatResponse *createAppResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(createAppResponse);
-    }];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:fields];
+    params[@"name"] = appName;
+    params[@"keys"] = keys;
+    
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/add"]
+                                    params:[NSDictionary dictionaryWithDictionary:params]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) listAppsWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] listAppsWithBlock:^(KRResponse *response) {
-        TelepatResponse *appsListResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(appsListResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/apps"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) removeAppWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] removeAppWithBlock:^(KRResponse *response) {
-        TelepatResponse *removeAppResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(removeAppResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/remove"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateApp:(TelepatApp *)oldApp withApp:(TelepatApp *)newApp andBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] updateApp:[oldApp patchAgainst:newApp] withBlock:^(KRResponse *response) {
-        TelepatResponse *updateAppResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(updateAppResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/app/update"]
+                                    params:[oldApp patchAgainst:newApp]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) removeAppModel:(NSString *)modelName withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] removeAppModel:modelName withBlock:^(KRResponse *response) {
-        TelepatResponse *removeModelResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(removeModelResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/schema/remove_model"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) removeContext:(NSString *)contextId withBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] removeContext:contextId withBlock:^(KRResponse *response) {
-        TelepatResponse *removeContextResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(removeContextResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context/remove"]
+                                    params:@{@"id": contextId}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateContext:(TelepatContext *)oldContext withContext:(TelepatContext *)newContext andBlock:(TelepatResponseBlock)block {
     NSMutableDictionary *mutablePatch = [NSMutableDictionary dictionaryWithDictionary:[oldContext patchAgainst:newContext]];
     mutablePatch[@"id"] = oldContext.context_id;
-    [[KRRest sharedClient] updateContext:[NSDictionary dictionaryWithDictionary:mutablePatch] withBlock:^(KRResponse *response) {
-        TelepatResponse *updateContextResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(updateContextResponse);
-    }];
+    
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/admin/context/update"]
+                                    params:[NSDictionary dictionaryWithDictionary:mutablePatch]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
-- (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(KRResponseBlock)block {
-    [[KRRest sharedClient] sendProxiedRequest:[request toDictionary] withResponseBlock:^(KRResponse *response) {
-        block(response);
+- (void) sendProxiedRequest:(TelepatProxyRequest *)request withResponseBlock:(void (^)(NSData *responseData, NSError *error))block {
+    self.sessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
+    self.sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    self.sessionManager.responseSerializer.acceptableContentTypes = nil;
+    [self applyHeaders:@{}];
+    
+    [self.sessionManager POST:@"/proxy" parameters:request success:^(NSURLSessionDataTask *task, id responseObject) {
+        if (block) block(responseObject, nil);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        if (block) block(nil, error);
     }];
 }
 
 - (void) getUserMetadataWithBlock:(TelepatResponseBlock)block {
-    [[KRRest sharedClient] getUserMetadataWithBlock:^(KRResponse *response) {
-        TelepatResponse *userMetadataResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(userMetadataResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"GET"
+                                   withURL:[Telepat urlForEndpoint:@"/user/metadata"]
+                                    params:@{}
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) updateUserMetadata:(TelepatUserMetadata *)oldMetadata withUserMetadata:(TelepatUserMetadata *)newMetadata andBlock:(TelepatResponseBlock)block {
     NSDictionary *patch = [oldMetadata patchAgainst:newMetadata];
-    [[KRRest sharedClient] updateUserMetadata:patch withBlock:^(KRResponse *response) {
-        TelepatResponse *userMetadataUpdateResponse = [[TelepatResponse alloc] initWithResponse:response];
-        block(userMetadataUpdateResponse);
-    }];
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/user/update_metadata"]
+                                    params:patch
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
+}
+
+- (void) sendEmailToRecipients:(NSArray *)recipients from:(NSString *)from fromName:(NSString *)fromName subject:(NSString *)subject body:(NSString *)body withBlock:(TelepatResponseBlock)block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    params[@"recipients"] = recipients;
+    params[@"from"] = from;
+    if (fromName) params[@"fromName"] = fromName;
+    if (subject) params[@"subject"] = subject;
+    params[@"body"] = body;
+    
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/email"]
+                                    params:[NSDictionary dictionaryWithDictionary:params]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
 }
 
 - (void) setApiKey:(NSString *)apiKey {
@@ -511,13 +926,6 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     NSMutableData *dataOut = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CC_SHA256(dataIn.bytes, (CC_LONG)dataIn.length, dataOut.mutableBytes);
     _apiKey = [[NSData dataWithData:dataOut] dataToHex];
-    
-    [[KRRest sharedClient] setApi_key:self.apiKey];
-}
-
-- (void) setAppId:(NSString *)appId {
-    _appId = appId;
-    [[KRRest sharedClient] setApp_id:appId];
 }
 
 - (void) remoteNotificationReceived:(NSNotification *)notification {
