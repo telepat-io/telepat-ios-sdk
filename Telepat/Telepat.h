@@ -659,4 +659,16 @@ typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
  */
 - (void) updateUserMetadata:(TelepatUserMetadata *)oldMetadata withUserMetadata:(TelepatUserMetadata *)newMetadata andBlock:(TelepatResponseBlock)block;
 
+/*
+ *  Send an email through the Telepat API
+ *
+ *  @param recipients A `NSArray` of the email addresses of the recipients
+ *  @param from Email address of the sender
+ *  @param fromName Name of the sender (can be nil)
+ *  @param subject Subject line (can be nil)
+ *  @param body Body of the email. Can be plain text or html formatted
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
+- (void) sendEmailToRecipients:(NSArray *)recipients from:(NSString *)from fromName:(NSString *)fromName subject:(NSString *)subject body:(NSString *)body withBlock:(TelepatResponseBlock)block;
+
 @end

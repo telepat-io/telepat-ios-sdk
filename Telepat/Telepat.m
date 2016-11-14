@@ -905,6 +905,23 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
                                   }];
 }
 
+- (void) sendEmailToRecipients:(NSArray *)recipients from:(NSString *)from fromName:(NSString *)fromName subject:(NSString *)subject body:(NSString *)body withBlock:(TelepatResponseBlock)block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    params[@"recipients"] = recipients;
+    params[@"from"] = from;
+    if (fromName) params[@"fromName"] = fromName;
+    if (subject) params[@"subject"] = subject;
+    params[@"body"] = body;
+    
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/email"]
+                                    params:[NSDictionary dictionaryWithDictionary:params]
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
+                                  }];
+}
+
 - (void) setApiKey:(NSString *)apiKey {
     NSData *dataIn = [apiKey dataUsingEncoding:NSASCIIStringEncoding];
     NSMutableData *dataOut = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
