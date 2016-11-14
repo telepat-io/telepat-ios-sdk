@@ -7,12 +7,7 @@
 //
 
 #import "TelepatIndexedList.h"
-<<<<<<< HEAD
-#import "TelepatResponse.h"
-#import "KRRest.h"
-=======
 #import "Telepat.h"
->>>>>>> markiza
 
 @implementation TelepatIndexedList {
     NSString *listName;
@@ -71,18 +66,6 @@
 }
 
 - (void) removeMember:(NSString *)memberName withBlock:(TelepatIndexedListRemoveMemberResponseBlock)block {
-<<<<<<< HEAD
-    [[KRRest sharedClient] removeMember:memberName fromIndexedList:listName withPropertyName:indexedProperty andBlock:^(KRResponse *response) {
-        TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (![telepatResponse isError]) {
-            NSDictionary *responseDict = telepatResponse.content;
-            BOOL success = [[responseDict objectForKey:@"removed"] boolValue];
-            if (block) block(telepatResponse, success);
-        } else {
-            if (block) block(telepatResponse, NO);
-        }
-    }];
-=======
     [[Telepat client] post:[Telepat urlForEndpoint:@"/til/removeMember"]
                 parameters:@{@"listName": listName,
                              @"indexedProperty": indexedProperty,
@@ -107,7 +90,6 @@
              responseBlock:^(NSDictionary *dictionary, NSError *error) {
                  if (block) block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
              }];
->>>>>>> markiza
 }
 
 - (void) removeList {
@@ -115,18 +97,6 @@
 }
 
 - (void) removeListWithBlock:(TelepatIndexedListRemoveListResponseBlock)block {
-<<<<<<< HEAD
-    [[KRRest sharedClient] removeIndexedList:listName withBlock:^(KRResponse *response) {
-        TelepatResponse *telepatResponse = [[TelepatResponse alloc] initWithResponse:response];
-        if (![telepatResponse isError]) {
-            NSDictionary *responseDict = telepatResponse.content;
-            BOOL success = [[responseDict objectForKey:@"removed"] boolValue];
-            if (block) block(telepatResponse, success);
-        } else {
-            if (block) block(telepatResponse, NO);
-        }
-    }];
-=======
     [[Telepat client] post:[Telepat urlForEndpoint:@"/til/removeList"]
                      parameters:@{@"listName": listName}
                         headers:@{}
@@ -140,7 +110,6 @@
                           if (block) block(telepatResponse, NO);
                       }
                   }];
->>>>>>> markiza
 }
 
 @end
