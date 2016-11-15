@@ -16,6 +16,15 @@
     return NO;
 }
 
++ (instancetype) userWithUsername:(NSString *)username email:(NSString *)email password:(NSString *)password {
+    TelepatUser *user = [[TelepatUser alloc] init];
+    user.username = username;
+    user.password = password;
+    user.email = email;
+    
+    return user;
+}
+
 - (NSString *) user_id {
     return self.object_id;
 }

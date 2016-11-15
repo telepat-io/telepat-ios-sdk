@@ -438,12 +438,8 @@
         }
             
         case TelepatNotificationTypeObjectDeleted: {
-            NSArray *pathComponents = [notification.path pathComponents];
-            NSString *modelName = pathComponents[0];
-            if (![modelName isEqualToString:self.modelName]) return;
-            NSString *objectId = pathComponents[1];
-             if ([[[Telepat client] dbInstance] objectWithID:objectId existsInChannel:[self subscriptionIdentifier]]) {
-                 TelepatBaseObject *deletedObject = [[[Telepat client] dbInstance] getObjectWithID:objectId fromChannel:[self subscriptionIdentifier]];
+            TelepatBaseObject *deletedObject = [[TelepatBaseObject alloc] initWithDictionary:notification.value error:nil];
+             if ([[[Telepat client] dbInstance] objectWithID:deletedObject.object_id existsInChannel:[self subscriptionIdentifier]]) {
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
                  ((TelepatBaseObject*)deletedObject).channel = self;
                  

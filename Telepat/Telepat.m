@@ -246,53 +246,53 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 
 - (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
-    [[TelepatWebsocketTransport sharedClient] connect:[Telepat socketURL] withBlock:^(NSString *token, NSString *serverName) {
-        if ([udid length] && !shouldUpdateBackend) {
-            block(nil);
-            return;
-        }
-        UIDevice *device = [UIDevice currentDevice];
-        NSMutableDictionary *infoDictionary = [NSMutableDictionary dictionaryWithDictionary:@{@"os": [device systemName],
-                                                                                              @"version": [device systemVersion],
-                                                                                              @"manufacturer": @"Apple",
-                                                                                              @"model": [device model]}];
-        NSDictionary *persistentDictionary = @{@"type": @"ios",
-                                               @"token": @"",
-                                               @"active": @(0)};
-        NSDictionary *volatileDictionary = @{@"type": @"sockets",
-                                             @"token": token,
-                                             @"active": @(1),
-                                             /*@"server_name": serverName*/};
-        
-        NSMutableDictionary *params = [NSMutableDictionary dictionary];
-        params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
-        params[@"volatile"] = volatileDictionary;
-        params[@"persistent"] = persistentDictionary;
-        
-        self.updatesTransportType = TelepatUpdatesTransportTypeSockets;
-        
-        if ([udid length]) {
-            infoDictionary[@"udid"] = [[device identifierForVendor] UUIDString];
-            self.deviceId = udid;
-        }
-        
-        [self performRequestOfType:@"POST"
-                           withURL:[Telepat urlForEndpoint:@"/device/register"]
-                            params:params
-                           headers:@{}
-                          andBlock:^(NSDictionary *dictionary, NSError *error) {
-                              TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
-                              if (![registerResponse isError]) {
-                                  TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
-                                  if (deviceIdentifier.identifier) {
-                                      self.deviceId = deviceIdentifier.identifier;
-                                      [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
-                                      [[TelepatWebsocketTransport sharedClient] bindDevice];
-                                  }
+    if ([udid length] && !shouldUpdateBackend) {
+        block(nil);
+        return;
+    }
+    UIDevice *device = [UIDevice currentDevice];
+    NSMutableDictionary *infoDictionary = [NSMutableDictionary dictionaryWithDictionary:@{@"os": [device systemName],
+                                                                                          @"version": [device systemVersion],
+                                                                                          @"manufacturer": @"Apple",
+                                                                                          @"model": [device model]}];
+    NSDictionary *persistentDictionary = @{@"type": @"ios",
+                                           @"token": @"",
+                                           @"active": @(0)};
+    NSDictionary *volatileDictionary = @{@"type": @"sockets",
+                                         @"token": [NSNull null],
+                                         @"active": @(1)};
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
+    params[@"volatile"] = volatileDictionary;
+    params[@"persistent"] = persistentDictionary;
+    
+    self.updatesTransportType = TelepatUpdatesTransportTypeSockets;
+    
+    if ([udid length]) {
+        infoDictionary[@"udid"] = [[device identifierForVendor] UUIDString];
+        self.deviceId = udid;
+    }
+    
+    [self performRequestOfType:@"POST"
+                       withURL:[Telepat urlForEndpoint:@"/device/register"]
+                        params:params
+                       headers:@{}
+                      andBlock:^(NSDictionary *dictionary, NSError *error) {
+                          TelepatResponse *registerResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+                          if (![registerResponse isError]) {
+                              TelepatDeviceIdentifier *deviceIdentifier = [registerResponse getObjectOfType:[TelepatDeviceIdentifier class]];
+                              if (deviceIdentifier.identifier) {
+                                  self.deviceId = deviceIdentifier.identifier;
+                                  [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
                               }
-                              block(registerResponse);
-                          }];
-    }];
+                              [[TelepatWebsocketTransport sharedClient] connect:[Telepat socketURL] withBlock:^() {
+                                  block(registerResponse);
+                              }];
+                          } else {
+                              NSLog(@"register response: %@", registerResponse);
+                          }
+                      }];
 }
 
 - (void) registerDeviceWithToken:(NSString*)token withBlock:(TelepatResponseBlock)block {
@@ -342,7 +342,6 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
                               if (deviceIdentifier.identifier) {
                                   self.deviceId = deviceIdentifier.identifier;
                                   [_dbInstance setOperationsDataWithObject:deviceIdentifier.identifier forKey:kUDID];
-                                  [[TelepatWebsocketTransport sharedClient] bindDevice];
                               }
                           }
                           block(registerResponse);
@@ -374,7 +373,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
                                    withURL:[Telepat urlForEndpoint:@"/user/register-username"]
                                     params:@{@"username": username,
                                              @"password": password,
-                                             @"name": name}
+                                             @"name": name,
+                                             @"callbackUrl": [NSString stringWithFormat:@"telepat-%@://reset-password", self.appId]}
                                    headers:@{}
                                   andBlock:^(NSDictionary *dictionary, NSError *error) {
                                       block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
@@ -382,9 +382,11 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (void) registerUser:(TelepatUser *)user withBlock:(TelepatResponseBlock)block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[user toDictionary]];
+    params[@"callbackUrl"] = [NSString stringWithFormat:@"telepat-%@://reset-password", self.appId];
     [[Telepat client] performRequestOfType:@"POST"
                                    withURL:[Telepat urlForEndpoint:@"/user/register-username"]
-                                    params:[user toDictionary]
+                                    params:[NSDictionary dictionaryWithDictionary:params]
                                    headers:@{}
                                   andBlock:^(NSDictionary *dictionary, NSError *error) {
                                       block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
@@ -393,7 +395,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 
 - (void) adminDeleteUser:(NSString *)username withBlock:(TelepatResponseBlock)block {
     [[Telepat client] performRequestOfType:@"POST"
-                                   withURL:[Telepat urlForEndpoint:@"/user/register-username"]
+                                   withURL:[Telepat urlForEndpoint:@"/admin/user/delete"]
                                     params:@{@"username": username}
                                    headers:@{}
                                   andBlock:^(NSDictionary *dictionary, NSError *error) {
@@ -494,7 +496,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     [[Telepat client] performRequestOfType:@"POST"
                                    withURL:[Telepat urlForEndpoint:@"/user/request_password_reset"]
                                     params:@{@"type": @"app",
-                                             @"username": username}
+                                             @"username": username,
+                                             @"callbackUrl": [NSString stringWithFormat:@"telepat-%@://reset-password", self.appId]}
                                    headers:@{}
                                   andBlock:^(NSDictionary *dictionary, NSError *error) {
                                       block([[TelepatResponse alloc] initWithDictionary:dictionary error:error]);
@@ -936,57 +939,52 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     
     // process "new" notifications
     for (NSDictionary *ndict in data[@"new"]) {
-        TelepatTransportNotification *createdTransportNotification = [[TelepatTransportNotification alloc] init];
-        createdTransportNotification.type = TelepatNotificationTypeObjectAdded;
-        createdTransportNotification.origin = origin;
-        createdTransportNotification.value = ndict[@"value"];
-        createdTransportNotification.subscription = ndict[@"subscription"];
-        createdTransportNotification.guid = ndict[@"guid"];
+        TelepatTransportNotification *createdTransportNotification = [TelepatTransportNotification notificationFromDictionary:ndict withOrigin:origin];
         
-        TelepatContext *context = [self contextWithIdentifier:ndict[@"subscription"]];
-        if (context) {
-            [self processNotification:createdTransportNotification];
-            continue;
+        if ([createdTransportNotification.value isKindOfClass:[NSDictionary class]]
+            && [createdTransportNotification.value[@"type"] isEqualToString:@"context"]
+            && !createdTransportNotification.value[@"context_id"]) {
+                // This is a new context
+                [self processNotification:createdTransportNotification];
+                continue;
         }
         
-        TelepatChannel *channel = [self channelWithSubscription:ndict[@"subscription"]];
-        [channel processNotification:createdTransportNotification];
+        for (NSString *subscriptionId in ndict[@"subscriptions"]) {
+            TelepatChannel *channel = [self channelWithSubscription:subscriptionId];
+            [channel processNotification:createdTransportNotification];
+        }
     }
     
     // process "updated" notifications
     for (NSDictionary *ndict in data[@"updated"]) {
-        TelepatTransportNotification *updatedTransportNotification = [[TelepatTransportNotification alloc] init];
-        updatedTransportNotification.type = TelepatNotificationTypeObjectUpdated;
-        updatedTransportNotification.origin = origin;
-        updatedTransportNotification.value = ndict[@"value"];
-        updatedTransportNotification.path = ndict[@"path"];
+        TelepatTransportNotification *updatedTransportNotification = [TelepatTransportNotification notificationFromDictionary:ndict withOrigin:origin];
         
-        TelepatContext *context = [self contextWithIdentifier:ndict[@"subscription"]];
-        if (context) {
+        NSMutableSet *affectedSubscriptionsSet = [NSMutableSet setWithArray:ndict[@"subscriptions"]];
+        if ([affectedSubscriptionsSet intersectsSet:[NSSet setWithArray:[_mServerContexts.allValues valueForKey:@"contextIdentifier"]]]) {
             [self processNotification:updatedTransportNotification];
             continue;
         }
         
-        TelepatChannel *channel = [self channelWithSubscription:ndict[@"subscription"]];
-        [channel processNotification:updatedTransportNotification];
+        for (NSString *subscriptionId in ndict[@"subscriptions"]) {
+            TelepatChannel *channel = [self channelWithSubscription:subscriptionId];
+            [channel processNotification:updatedTransportNotification];
+        }
     }
     
     // process "deleted" notifications
     for (NSDictionary *ndict in data[@"deleted"]) {
-        TelepatTransportNotification *deletedTransportNotification = [[TelepatTransportNotification alloc] init];
-        deletedTransportNotification.type = TelepatNotificationTypeObjectDeleted;
-        deletedTransportNotification.origin = origin;
-        deletedTransportNotification.value = nil;
-        deletedTransportNotification.path = ndict[@"path"];
+        TelepatTransportNotification *deletedTransportNotification = [TelepatTransportNotification notificationFromDictionary:ndict withOrigin:origin];
         
-        TelepatContext *context = [self contextWithIdentifier:ndict[@"subscription"]];
-        if (context) {
+        NSMutableSet *affectedSubscriptionsSet = [NSMutableSet setWithArray:ndict[@"subscriptions"]];
+        if ([affectedSubscriptionsSet intersectsSet:[NSSet setWithArray:[_mServerContexts.allValues valueForKey:@"contextIdentifier"]]]) {
             [self processNotification:deletedTransportNotification];
             continue;
         }
         
-        TelepatChannel *channel = [self channelWithSubscription:ndict[@"subscription"]];
-        [channel processNotification:deletedTransportNotification];
+        for (NSString *subscriptionId in ndict[@"subscriptions"]) {
+            TelepatChannel *channel = [self channelWithSubscription:subscriptionId];
+            [channel processNotification:deletedTransportNotification];
+        }
     }
 }
 
@@ -1024,9 +1022,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         }
             
         case TelepatNotificationTypeObjectDeleted: {
-            NSArray *pathComponents = [notification.path pathComponents];
-            NSString *objectId = pathComponents[1];
-            TelepatContext *deletedContext = [_mServerContexts objectForKey:objectId];
+            TelepatContext *deletedContext = [_mServerContexts objectForKey:notification.value[@"id"]];
             if (deletedContext == nil || deletedContext.context_id == nil) return;
             [_mServerContexts removeObjectForKey:deletedContext.context_id];
             [[NSNotificationCenter defaultCenter] postNotificationName:TelepatContextDeleted object:deletedContext userInfo:@{kNotificationObject: deletedContext,

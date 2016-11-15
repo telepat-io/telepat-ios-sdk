@@ -79,15 +79,12 @@ typedef NS_ENUM(NSInteger, TelepatNotificationOrigin) {
  */
 @property (nonatomic, strong) NSString *guid;
 
-
 /**
  *  Create a new `TelepatTransportNotification`
  *
- *  @param type The notification type
- *  @param value The new or updated value
- *  @param path The JSON path of the modified property
- *  @param origin The origin of the notification
+ *  @param dict   The source dictionary
+ *  @param origin What triggered this notification
  */
-+ (instancetype) notificationOfType:(enum TelepatNotificationType)type withValue:(id)value path:(NSString *)path origin:(TelepatNotificationOrigin)origin;
++ (instancetype) notificationFromDictionary:(NSDictionary *)dict withOrigin:(TelepatNotificationOrigin)origin;
 
 @end

@@ -10,12 +10,31 @@
 
 @implementation TelepatTransportNotification
 
-+ (instancetype) notificationOfType:(enum TelepatNotificationType)type withValue:(id)value path:(NSString *)path origin:(TelepatNotificationOrigin)origin {
++ (instancetype) notificationFromDictionary:(NSDictionary *)dict withOrigin:(TelepatNotificationOrigin)origin {
     TelepatTransportNotification *transportNotification = [[TelepatTransportNotification alloc] init];
-    transportNotification.type = type;
     transportNotification.origin = origin;
-    transportNotification.value = value;
-    transportNotification.path = path;
+    
+    if ([dict[@"op"] isEqualToString:@"create"]) {
+        transportNotification.type = TelepatNotificationTypeObjectAdded;
+    } else if ([dict[@"op"] isEqualToString:@"update"]) {
+        transportNotification.type = TelepatNotificationTypeObjectUpdated;
+    } else if ([dict[@"op"] isEqualToString:@"delete"]) {
+        transportNotification.type = TelepatNotificationTypeObjectDeleted;
+    }
+    
+    if (dict[@"value"]) {
+        transportNotification.value = dict[@"value"];
+    } else if (dict[@"object"]) {
+        transportNotification.value = dict[@"object"];
+    } else if (dict[@"patch"] && dict[@"patch"][@"value"]) {
+        transportNotification.value = dict[@"patch"][@"value"];
+    }
+    
+    if (dict[@"path"]) {
+        transportNotification.path = dict[@"path"];
+    } else if (dict[@"patch"] && dict[@"patch"][@"path"]) {
+        transportNotification.path = dict[@"patch"][@"path"];
+    }
     
     return transportNotification;
 }

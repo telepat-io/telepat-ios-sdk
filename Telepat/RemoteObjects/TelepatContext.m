@@ -24,7 +24,7 @@
 }
 
 - (NSString *) contextIdentifier {
-    return [NSString stringWithFormat:@"blg:%@:context", self.application_id];
+    return [NSString stringWithFormat:@"blg:%@:context:%@", self.application_id, self.context_id];
 }
 
 @end

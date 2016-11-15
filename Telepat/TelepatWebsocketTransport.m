@@ -29,8 +29,14 @@ static TelepatWebsocketTransport *sharedClient;
     
     [SIOSocket socketWithHost:[url absoluteString] response:^(SIOSocket *socket) {
         self.socket = socket;
+        __weak typeof(self) _weakSelf = self;
         self.socket.onConnect = ^void() {
             NSLog(@"Websockets: connection succeeded");
+            NSString *deviceId = [[Telepat client] deviceId];
+            NSString *application_id = [[Telepat client] appId];
+            NSDictionary *object = @{@"device_id": deviceId, @"application_id": application_id};
+            SIOParameterArray *params = [SIOParameterArray arrayWithObject:object];
+            [_weakSelf.socket emit:@"bind_device" args:params];
         };
         
         self.socket.onDisconnect = ^void() {
@@ -53,34 +59,22 @@ static TelepatWebsocketTransport *sharedClient;
             NSLog(@"Websockets: reconnection error %@", errorInfo);
         };
         
-        [self.socket on:@"welcome" callback:^(NSArray *args) {
-            NSString *sessionID = [self __getValue:@"sessionId" fromArgs:args];
-            NSString *serverName = [self __getValue:@"server_name" fromArgs:args];
-            NSLog(@"Welcomed with session_id: %@", sessionID);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                block(sessionID, serverName);
-            });
-        }];
-        
         [self.socket on:@"message" callback:^(NSArray *args) {
             NSLog(@"Websockets: message");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatRemoteNotificationReceived object:args[0] userInfo:@{@"source": @(TelepatNotificationOriginWebsockets)}];
             });
         }];
+        
+        [self.socket on:@"ready" callback:^(SIOParameterArray *args) {
+            NSLog(@"Websockets: ready");
+            block();
+        }];
     }];
 }
 
-- (void) bindDevice {
-    NSString *deviceId = [Telepat client].deviceId;
-    NSString *application_id = [[Telepat client] appId];
-    NSDictionary *object = @{@"device_id": deviceId, @"application_id": application_id};
-    SIOParameterArray *params = @[object];
-    [self.socket emit:@"bind_device" args:params];
-}
-
 - (void) disconnect {
-    NSLog(@"Websockets: sockets disconnected");
+    NSLog(@"sockets disconnected");
     [self.socket close];
 }
 
