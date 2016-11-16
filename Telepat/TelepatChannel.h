@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 #import "TelepatContext.h"
 #import "TelepatCountResult.h"
 #import "TelepatAggregationResult.h"
@@ -19,10 +20,9 @@
 #define kNotificationPropertyName @"propertyName"
 #define kNotificationValue @"value"
 
-typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
-    TelepatChannelSortModeNone,
-    TelepatChannelSortModeAscending,
-    TelepatChannelSortModeDescending
+typedef NS_ENUM(NSInteger, TelepatChannelSortOrder) {
+    TelepatChannelSortOrderAscending,
+    TelepatChannelSortOrderDescending
 };
 
 @class TelepatResponse;
@@ -160,7 +160,16 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortMode) {
  *  @param sortedProperty A `NSString` naming the property which will be sorted
  *  @param sortOrder The sorting order, ascedent or descendent
  */
-- (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortMode)order;
+- (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortOrder)order;
+
+/**
+ *  Configure the channel to sort after a POI
+ *
+ *  @param sortedProperty A `NSString` naming the property which will be sorted
+ *  @param poi A `CLLocationCoordinate2D` representing geospatial values used for sorting
+ *  @param sortOrder The sorting order, ascedent or descendent
+ */
+- (void) setSortedProperty:(NSString *)sortedProperty poi:(CLLocationCoordinate2D)poi order:(TelepatChannelSortOrder)order;
 
 /**
  *  Process a `TelepatTransportNotification` received from the update channel (e.g. Websockets)

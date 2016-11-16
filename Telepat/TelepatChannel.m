@@ -253,16 +253,34 @@
     return [[[Telepat client] dbInstance] getObjectsFromChannel:[self subscriptionIdentifier]];
 }
 
-- (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortMode)order {
+- (void) setSortedProperty:(NSString *)sortedProperty order:(TelepatChannelSortOrder)order {
     _sortingDict = [NSMutableDictionary dictionary];
-    NSDictionary *orderDict;
-    if (order == TelepatChannelSortModeAscending) {
-        orderDict = @{@"order": @"asc"};
-    } else if (order == TelepatChannelSortModeDescending) {
-        orderDict = @{@"order": @"desc"};
-    } else {
-        orderDict = nil;
+    NSMutableDictionary *orderDict = [NSMutableDictionary dictionary];
+    if (order == TelepatChannelSortOrderAscending) {
+        orderDict[@"order"] = @"asc";
+    } else if (order == TelepatChannelSortOrderDescending) {
+        orderDict[@"order"] = @"desc";
     }
+    
+    if (orderDict) {
+        _sortingDict[sortedProperty] = orderDict;
+    } else {
+        _sortingDict = nil;
+    }
+}
+
+- (void) setSortedProperty:(NSString *)sortedProperty poi:(CLLocationCoordinate2D)poi order:(TelepatChannelSortOrder)order {
+    _sortingDict = [NSMutableDictionary dictionary];
+    NSMutableDictionary *orderDict = [NSMutableDictionary dictionary];
+    orderDict[@"type"] = @"geo";
+    if (order == TelepatChannelSortOrderAscending) {
+        orderDict[@"order"] = @"asc";
+    } else if (order == TelepatChannelSortOrderDescending) {
+        orderDict[@"order"] = @"desc";
+    }
+    
+    orderDict[@"poi"] = @{@"lat": [NSString stringWithFormat:@"%f", poi.latitude],
+                          @"long": [NSString stringWithFormat:@"%f", poi.longitude]};
     
     if (orderDict) {
         _sortingDict[sortedProperty] = orderDict;
