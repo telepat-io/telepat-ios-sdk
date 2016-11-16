@@ -255,9 +255,6 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
                                                                                           @"version": [device systemVersion],
                                                                                           @"manufacturer": @"Apple",
                                                                                           @"model": [device model]}];
-    NSDictionary *persistentDictionary = @{@"type": @"ios",
-                                           @"token": @"",
-                                           @"active": @(0)};
     NSDictionary *volatileDictionary = @{@"type": @"sockets",
                                          @"token": [NSNull null],
                                          @"active": @(1)};
@@ -265,7 +262,6 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
     params[@"volatile"] = volatileDictionary;
-    params[@"persistent"] = persistentDictionary;
     
     self.updatesTransportType = TelepatUpdatesTransportTypeSockets;
     
@@ -315,13 +311,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     NSDictionary *persistentDictionary = @{@"type": @"ios",
                                            @"token": token,
                                            @"active": @(1)};
-    NSDictionary *volatileDictionary = @{@"type": @"sockets",
-                                         @"token": @"",
-                                         @"active": @(0),
-                                         /*@"server_name": serverName*/};
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     params[@"info"] = [NSDictionary dictionaryWithDictionary:infoDictionary];
-    params[@"volatile"] = volatileDictionary;
     params[@"persistent"] = persistentDictionary;
     
     self.updatesTransportType = TelepatUpdatesTransportTypeiOS;
