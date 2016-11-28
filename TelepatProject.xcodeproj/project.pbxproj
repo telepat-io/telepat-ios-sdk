@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79907CB037C29572DCB13746 /* libPods-TelepatProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AB5EEF14C46DC2344D9E8E5 /* libPods-TelepatProject.a */; };
 		A5330CDF1BB1959100271E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CDE1BB1959100271E08 /* main.m */; };
 		A5330CE21BB1959100271E08 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CE11BB1959100271E08 /* AppDelegate.m */; };
 		A5330CE51BB1959100271E08 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CE41BB1959100271E08 /* ViewController.m */; };
@@ -14,7 +15,6 @@
 		A5330CEA1BB1959100271E08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5330CE91BB1959100271E08 /* Assets.xcassets */; };
 		A5330CED1BB1959100271E08 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5330CEB1BB1959100271E08 /* LaunchScreen.storyboard */; };
 		A5E259E71BB588940058E978 /* TelepatProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5330CF71BB1959100271E08 /* TelepatProjectTests.m */; };
-		B25BA84BA8ECF85DE4B14B2F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9649BD2FB4B1D6828B2F6393 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,7 +28,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		0AFA243A6EC041B902B4A326 /* Pods-TelepatProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TelepatProject.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TelepatProject/Pods-TelepatProject.debug.xcconfig"; sourceTree = "<group>"; };
+		2F4A0BC8A15A2D3A639D8BF6 /* Pods-TelepatProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TelepatProject.release.xcconfig"; path = "Pods/Target Support Files/Pods-TelepatProject/Pods-TelepatProject.release.xcconfig"; sourceTree = "<group>"; };
+		3AB5EEF14C46DC2344D9E8E5 /* libPods-TelepatProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TelepatProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9649BD2FB4B1D6828B2F6393 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		A507315A1BB1A54600A41090 /* TelepatProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepatProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B25BA84BA8ECF85DE4B14B2F /* libPods.a in Frameworks */,
+				79907CB037C29572DCB13746 /* libPods-TelepatProject.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,8 +72,9 @@
 		1818248381CF6C079265BDA2 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */,
 				A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */,
+				0AFA243A6EC041B902B4A326 /* Pods-TelepatProject.debug.xcconfig */,
+				2F4A0BC8A15A2D3A639D8BF6 /* Pods-TelepatProject.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				9649BD2FB4B1D6828B2F6393 /* libPods.a */,
+				3AB5EEF14C46DC2344D9E8E5 /* libPods-TelepatProject.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -172,12 +176,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5330D071BB1959100271E08 /* Build configuration list for PBXNativeTarget "TelepatProject" */;
 			buildPhases = (
-				2A514BC97CDD5C41F55DA1A3 /* Check Pods Manifest.lock */,
+				2A514BC97CDD5C41F55DA1A3 /* [CP] Check Pods Manifest.lock */,
 				A5330CD61BB1959100271E08 /* Sources */,
 				A5330CD71BB1959100271E08 /* Frameworks */,
 				A5330CD81BB1959100271E08 /* Resources */,
-				808F7204968F7DF8DE5F513B /* Copy Pods Resources */,
-				FC00DECE52E94064754E2513 /* Embed Pods Frameworks */,
+				808F7204968F7DF8DE5F513B /* [CP] Copy Pods Resources */,
+				FC00DECE52E94064754E2513 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -203,6 +207,7 @@
 					};
 					A5330CD91BB1959100271E08 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 5RAG6G47CV;
 					};
 				};
 			};
@@ -246,49 +251,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2A514BC97CDD5C41F55DA1A3 /* Check Pods Manifest.lock */ = {
+		2A514BC97CDD5C41F55DA1A3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		808F7204968F7DF8DE5F513B /* Copy Pods Resources */ = {
+		808F7204968F7DF8DE5F513B /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TelepatProject/Pods-TelepatProject-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FC00DECE52E94064754E2513 /* Embed Pods Frameworks */ = {
+		FC00DECE52E94064754E2513 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TelepatProject/Pods-TelepatProject-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -344,7 +349,6 @@
 /* Begin XCBuildConfiguration section */
 		A50731621BB1A54700A41090 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = TelepatProjectTests/Info.plist;
@@ -451,9 +455,10 @@
 		};
 		A5330D081BB1959100271E08 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 32D3E38A95746CA0EA5050F2 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 0AFA243A6EC041B902B4A326 /* Pods-TelepatProject.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 5RAG6G47CV;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = TelepatProject/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -464,9 +469,10 @@
 		};
 		A5330D091BB1959100271E08 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A3F210B6D5A2F24BA29D0622 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 2F4A0BC8A15A2D3A639D8BF6 /* Pods-TelepatProject.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 5RAG6G47CV;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = TelepatProject/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

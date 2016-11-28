@@ -20,13 +20,13 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - CocoaLumberjack (2.2.0):
-    - CocoaLumberjack/Default (= 2.2.0)
-    - CocoaLumberjack/Extensions (= 2.2.0)
-  - CocoaLumberjack/Core (2.2.0)
-  - CocoaLumberjack/Default (2.2.0):
+  - CocoaLumberjack (2.4.0):
+    - CocoaLumberjack/Default (= 2.4.0)
+    - CocoaLumberjack/Extensions (= 2.4.0)
+  - CocoaLumberjack/Core (2.4.0)
+  - CocoaLumberjack/Default (2.4.0):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.2.0):
+  - CocoaLumberjack/Extensions (2.4.0):
     - CocoaLumberjack/Default
   - JSONModel (1.1.2)
   - leveldb-library (1.18.2)
@@ -49,7 +49,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
-  CocoaLumberjack: 17fe8581f84914d5d7e6360f7c70022b173c3ae0
+  CocoaLumberjack: aa9dcab71bdf9eaf2a63bbd9ddc87863efe45457
   JSONModel: 216584d0311b053ff714f1d6cb700dbf890847bc
   leveldb-library: ef0453697c0fda3a9e550e5650e52976e6724548
   Objective-LevelDB: fa075efd9d0be645aee51847cc3ee70cdadb80ce
