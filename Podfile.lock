@@ -45,7 +45,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   Telepat:
-    :path: "./"
+    :path: ./
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
@@ -56,4 +56,6 @@ SPEC CHECKSUMS:
   SIOSocket: 2facc0bd02ae72d98c223634a46dd8ebdf9be321
   Telepat: 7cc0763a9d19cc9b29a4552fa0b991f51c0d1b97
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: cc2138f5e2d219aa8fb4bff02a11288b56c8040d
+
+COCOAPODS: 1.1.0.rc.2

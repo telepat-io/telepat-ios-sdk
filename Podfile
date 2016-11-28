@@ -1,1 +1,3 @@
-pod 'Telepat', :path => './'
+target 'TelepatProject' do
+	pod 'Telepat', :path => './'
+end
