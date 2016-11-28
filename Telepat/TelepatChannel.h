@@ -118,6 +118,14 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortOrder) {
 - (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block;
 
 /**
+ *  Subscribe to this channel by specifying an offset an a limit of object to receive
+ *
+ *  @param range A `NSRange` specifying the offset and the limit of objects count to be returned
+ *  @param block A block which will be called when the request is completed.
+ */
+- (void) subscribeWithRange:(NSRange)range withBlock:(void (^)(TelepatResponse *response))block;
+
+/**
  *  Unsubscribe from this channel
  *
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.

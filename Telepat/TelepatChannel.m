@@ -67,35 +67,53 @@
                                     params:[self paramsForSubscription]
                                    headers:@{}
                                   andBlock:^(NSDictionary *dictionary, NSError *error) {
-                                      TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
-                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                          if (subscribeResponse.status == 200) {
-                                              if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
-                                                  for (NSDictionary *dict in subscribeResponse.content) {
-                                                      NSError *err;
-                                                      id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
-                                                      if (err) {
-                                                          [NSException raise:kTelepatDeserializeError format:@"Error while deserializing object: %@", err];
-                                                      }
-                                                      [self persistObject:obj];
-                                                  }
-                                              } else {
-                                                  NSError *err;
-                                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:&err];
-                                                  if (err) {
-                                                      [NSException raise:kTelepatDeserializeError format:@"Error while deserializing object: %@", err];
-                                                  }
-                                                  [self persistObject:obj];
-                                              }
-                                              
-                                              [[Telepat client] registerSubscription:self];
-                                          }
-                                          
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              block(subscribeResponse);
-                                          });
-                                      });
+                                      [self processSubscriptionResponse:dictionary error:error withBlock:block];
                                   }];
+}
+
+- (void) subscribeWithRange:(NSRange)range withBlock:(void (^)(TelepatResponse *response))block {
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
+//    mutableParams[@"offset"] = @(range.location);
+//    mutableParams[@"limit"] = @(range.length);
+    
+    [[Telepat client] performRequestOfType:@"POST"
+                                   withURL:[Telepat urlForEndpoint:@"/object/subscribe"]
+                                    params:mutableParams
+                                   headers:@{}
+                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
+                                      [self processSubscriptionResponse:dictionary error:error withBlock:block];
+                                  }];
+}
+
+- (void) processSubscriptionResponse:(NSDictionary *)dictionary error:(NSError *)error withBlock:(void (^)(TelepatResponse *response))block {
+    TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (subscribeResponse.status == 200) {
+            if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
+                for (NSDictionary *dict in subscribeResponse.content) {
+                    NSError *err;
+                    id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
+                    if (err) {
+                        [NSException raise:kTelepatDeserializeError format:@"Error while deserializing object: %@", err];
+                    }
+                    [self persistObject:obj];
+                }
+            } else {
+                NSError *err;
+                id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:&err];
+                if (err) {
+                    [NSException raise:kTelepatDeserializeError format:@"Error while deserializing object: %@", err];
+                }
+                [self persistObject:obj];
+            }
+            
+            [[Telepat client] registerSubscription:self];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block(subscribeResponse);
+        });
+    });
 }
 
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block {

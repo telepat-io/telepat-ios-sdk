@@ -435,7 +435,7 @@ typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
  *  @param filter Filters to use when subscribing
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
-- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block;
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter range:(NSRange)range withBlock:(TelepatResponseBlock)block;
 
 /*
  *  Unsubscribe from a channel

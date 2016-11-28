@@ -652,16 +652,16 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
-    return [self subscribe:context modelName:modelName classType:classType filter:nil withBlock:block];
+    return [self subscribe:context modelName:modelName classType:classType filter:nil range:NSMakeRange(0, INT_MAX) withBlock:block];
 }
 
-- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block {
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter range:(NSRange)range withBlock:(TelepatResponseBlock)block {
     if (![classType isSubclassOfClass:[TelepatBaseObject class]])
         @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"classType parameter must be a subclass of TelepatBaseObject" userInfo:@{@"classType": classType}]);
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
     if (filter) channel.opFilter = filter;
-    [channel subscribeWithBlock:^(TelepatResponse *response) {
+    [channel subscribeWithRange:range withBlock:^(TelepatResponse *response) {
         block(response);
     }];
     return channel;
