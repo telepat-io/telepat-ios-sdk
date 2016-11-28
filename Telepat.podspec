@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Telepat"
-  s.version      = "0.3.0"
+  s.version      = "0.4.0"
   s.summary      = "Real Time, Open Source Data Sync"
 
   s.description  = <<-DESC
