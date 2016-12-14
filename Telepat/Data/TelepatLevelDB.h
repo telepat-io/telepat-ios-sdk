@@ -6,7 +6,7 @@
 //
 //
 
-#import "LevelDB.h"
+#import <Objective_LevelDB/LevelDB.h>
 #import "TelepatDB.h"
 
 @interface TelepatLevelDB : TelepatDB

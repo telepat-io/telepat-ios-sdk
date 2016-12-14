@@ -73,8 +73,8 @@
 
 - (void) subscribeWithRange:(NSRange)range withBlock:(void (^)(TelepatResponse *response))block {
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
-//    mutableParams[@"offset"] = @(range.location);
-//    mutableParams[@"limit"] = @(range.length);
+    mutableParams[@"offset"] = @(range.location);
+    mutableParams[@"limit"] = @(range.length);
     
     [[Telepat client] performRequestOfType:@"POST"
                                    withURL:[Telepat urlForEndpoint:@"/object/subscribe"]

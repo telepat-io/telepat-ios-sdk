@@ -30,9 +30,9 @@ response.statusCode, \
 [[NSString alloc] initWithData:error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding])
 
 #ifdef DEBUG
-const int ddLogLevel = LOG_LEVEL_DEBUG;
+const int ddLogLevel = DDLogLevelDebug;
 #else
-const int ddLogLevel = LOG_LEVEL_ERROR;
+const int ddLogLevel = DDLogLevelError;
 #endif
 
 @implementation Telepat {
@@ -97,8 +97,8 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
         
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
-        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor greenColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
-        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor redColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];
+        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor greenColor] backgroundColor:nil forFlag:DDLogFlagInfo];
+        [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor redColor] backgroundColor:nil forFlag:DDLogFlagInfo];
         
         _dbInstance = [TelepatLevelDB database];
         self.deviceId = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
@@ -221,7 +221,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
                         [self performRequestOfType:requestType withURL:url params:params headers:headers andBlock:block];
                     }];
                 } else {
-                    block(nil, error);
+                    block(jsonDict, error);
                 }
             } else {
                 block(nil, error);
@@ -247,7 +247,7 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 - (void) registerDeviceForWebsocketsWithBlock:(TelepatResponseBlock)block shouldUpdateBackend:(BOOL)shouldUpdateBackend {
     NSString *udid = [_dbInstance getOperationsDataForKey:kUDID defaultValue:@""];
     if ([udid length] && !shouldUpdateBackend) {
-        block(nil);
+        block([[TelepatResponse alloc] init]);
         return;
     }
     UIDevice *device = [UIDevice currentDevice];
@@ -652,7 +652,11 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
-    return [self subscribe:context modelName:modelName classType:classType filter:nil range:NSMakeRange(0, INT_MAX) withBlock:block];
+    return [self subscribe:context modelName:modelName classType:classType filter:nil range:NSMakeRange(NSNotFound, INT_MAX) withBlock:block];
+}
+
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block {
+    return [self subscribe:context modelName:modelName classType:classType filter:filter range:NSMakeRange(NSNotFound, INT_MAX) withBlock:block];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter range:(NSRange)range withBlock:(TelepatResponseBlock)block {
@@ -661,9 +665,15 @@ const int ddLogLevel = LOG_LEVEL_ERROR;
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
     if (filter) channel.opFilter = filter;
-    [channel subscribeWithRange:range withBlock:^(TelepatResponse *response) {
-        block(response);
-    }];
+    if (range.location != NSNotFound) {
+        [channel subscribeWithBlock:^(TelepatResponse * _Nonnull response) {
+            block(response);
+        }];
+    } else {
+        [channel subscribeWithRange:range withBlock:^(TelepatResponse *response) {
+            block(response);
+        }];
+    }
     return channel;
 }
 

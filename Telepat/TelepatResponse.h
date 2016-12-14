@@ -24,22 +24,22 @@
 /**
  *  The content of the response
  */
-@property (nonatomic, strong) id content;
+@property (nonatomic, strong) id _Nullable content;
 
 /**
  *  The message sent from Telepat Sync API
  */
-@property (nonatomic, strong) NSString *message;
+@property (nonatomic, strong) NSString *_Nullable message;
 
 /**
  *  The code of the Telepat Error
  */
-@property (nonatomic, strong) NSString *code;
+@property (nonatomic, strong) NSString *_Nullable code;
 
 /**
  *  The error (if any) from Telepat Sync API
  */
-@property (nonatomic, strong) NSError *error;
+@property (nonatomic, strong) NSError *_Nullable error;
 
 /**
  *  Initialize a `TelepatResponse` with a dictionary and an error object
@@ -47,7 +47,7 @@
  *  @param dictonary A `NSDictionary` based on data returned by Telepat
  *  @param error A `NSError` instance, if something gone wrong
  */
-- (id) initWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
+- (id) initWithDictionary:(NSDictionary *_Nonnull)dictionary error:(NSError *_Nullable)error;
 
 /**
  *  Check if the request resulted into an error

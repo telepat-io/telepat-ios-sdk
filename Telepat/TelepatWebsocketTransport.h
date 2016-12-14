@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SIOSocket.h"
+#import <SIOSocket/SIOSocket.h>
 
 /**
  *  A block to be called everytime a message comes over socket.io

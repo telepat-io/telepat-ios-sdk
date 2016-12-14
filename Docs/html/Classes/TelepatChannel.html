@@ -7,7 +7,7 @@
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
-	<meta name="generator" content="appledoc 2.2.1 (build 1333)">
+	<meta name="generator" content="appledoc 2.2.1 (build 1334)">
 </head>
 <body class="appledoc">
 	<header>
@@ -88,6 +88,16 @@
 		
 		<option value="//api/name/countWithBlock:">- countWithBlock:</option>
 		
+		<option value="//api/name/deleteObject:">- deleteObject:</option>
+		
+		<option value="//api/name/deleteObject:withBlock:">- deleteObject:withBlock:</option>
+		
+		<option value="//api/name/getAllObjects:">- getAllObjects:</option>
+		
+		<option value="//api/name/getLocalObjects">- getLocalObjects</option>
+		
+		<option value="//api/name/getObjectsInRange:withBlock:">- getObjectsInRange:withBlock:</option>
+		
 		<option value="//api/name/initWithModelName:context:filter:objectType:">- initWithModelName:context:filter:objectType:</option>
 		
 		<option value="//api/name/initWithModelName:context:objectType:">- initWithModelName:context:objectType:</option>
@@ -104,7 +114,11 @@
 		
 		<option value="//api/name/setSortedProperty:order:">- setSortedProperty:order:</option>
 		
+		<option value="//api/name/setSortedProperty:poi:order:">- setSortedProperty:poi:order:</option>
+		
 		<option value="//api/name/subscribeWithBlock:">- subscribeWithBlock:</option>
+		
+		<option value="//api/name/subscribeWithRange:withBlock:">- subscribeWithRange:withBlock:</option>
 		
 		<option value="//api/name/subscriptionIdentifier">- subscriptionIdentifier</option>
 		
@@ -217,7 +231,7 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>A reference to the current logged in <code>TelepatUser</code>, if available</p>
+				<p>A reference to the current logged in <a href="../Classes/TelepatUser.html"><code>TelepatUser</code></a>, if available</p>
 			</div>
 			
 		    
@@ -234,7 +248,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>A reference to the current logged in <code>TelepatUser</code>, if available</p>
+				<p>A reference to the current logged in <a href="../Classes/TelepatUser.html"><code>TelepatUser</code></a>, if available</p>
 			</div>
 			
 
@@ -309,7 +323,7 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>The desired class of the objects that will be emitted in this channel (should inherit from the <code>TelepatBaseObject</code> class)</p>
+				<p>The desired class of the objects that will be emitted in this channel (should inherit from the <a href="../Classes/TelepatBaseObject.html"><code>TelepatBaseObject</code></a> class)</p>
 			</div>
 			
 		    
@@ -326,7 +340,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>The desired class of the objects that will be emitted in this channel (should inherit from the <code>TelepatBaseObject</code> class)</p>
+				<p>The desired class of the objects that will be emitted in this channel (should inherit from the <a href="../Classes/TelepatBaseObject.html"><code>TelepatBaseObject</code></a> class)</p>
 			</div>
 			
 
@@ -863,6 +877,69 @@
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/subscribeWithRange:withBlock:" title="subscribeWithRange:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscribeWithRange:withBlock:">&ndash;&nbsp;subscribeWithRange:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Subscribe to this channel by specifying an offset an a limit of object to receive</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)subscribeWithRange:(NSRange)<em>range</em> withBlock:(void ( ^ ) ( TelepatResponse *response ))<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>A <code>NSRange</code> specifying the offset and the limit of objects count to be returned</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A block which will be called when the request is completed.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Subscribe to this channel by specifying an offset an a limit of object to receive</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/unsubscribeWithBlock:" title="unsubscribeWithBlock:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/unsubscribeWithBlock:">&ndash;&nbsp;unsubscribeWithBlock:</a></code>
 </h3>
@@ -921,6 +998,178 @@
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/getAllObjects:" title="getAllObjects:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getAllObjects:">&ndash;&nbsp;getAllObjects:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get all objects from this channel. This doesn&rsquo;t subscribe you to the notifications from <a href="../Classes/Telepat.html">Telepat</a></p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getAllObjects:(void ( ^ ) ( NSArray *objects , TelepatResponse *response ))<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A block which will be called when the request is completed.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get all objects from this channel. This doesn&rsquo;t subscribe you to the notifications from <a href="../Classes/Telepat.html">Telepat</a></p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getObjectsInRange:withBlock:" title="getObjectsInRange:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getObjectsInRange:withBlock:">&ndash;&nbsp;getObjectsInRange:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get objects from this channel in the specified range. This doesn&rsquo;t subscribe you to the notifications from <a href="../Classes/Telepat.html">Telepat</a></p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getObjectsInRange:(NSRange)<em>range</em> withBlock:(void ( ^ ) ( NSArray *objects , TelepatResponse *response ))<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>range</code></th>
+						<td><p>A <code>NSRange</code> specifying the offset and the limit of objects count to be returned</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A block which will be called when the request is completed.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get objects from this channel in the specified range. This doesn&rsquo;t subscribe you to the notifications from <a href="../Classes/Telepat.html">Telepat</a></p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getLocalObjects" title="getLocalObjects"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getLocalObjects">&ndash;&nbsp;getLocalObjects</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Get cached objects from this channel.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSArray *)getLocalObjects</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>A list of objects contained by this channel and cached in the internal database</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Get cached objects from this channel.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/setSortedProperty:order:" title="setSortedProperty:order:"></a>
 	<h3 class="method-title"><code><a href="#//api/name/setSortedProperty:order:">&ndash;&nbsp;setSortedProperty:order:</a></code>
 </h3>
@@ -937,7 +1186,7 @@
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)setSortedProperty:(NSString *)<em>sortedProperty</em> order:(TelepatChannelSortMode)<em>order</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)setSortedProperty:(NSString *)<em>sortedProperty</em> order:(TelepatChannelSortOrder)<em>order</em></code></div>
 
 		    
 			
@@ -967,6 +1216,74 @@
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>Configure the channel to sort after a property value</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/setSortedProperty:poi:order:" title="setSortedProperty:poi:order:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/setSortedProperty:poi:order:">&ndash;&nbsp;setSortedProperty:poi:order:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Configure the channel to sort after a POI</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)setSortedProperty:(NSString *)<em>sortedProperty</em> poi:(CLLocationCoordinate2D)<em>poi</em> order:(TelepatChannelSortOrder)<em>order</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sortedProperty</code></th>
+						<td><p>A <code>NSString</code> naming the property which will be sorted</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>poi</code></th>
+						<td><p>A <code>CLLocationCoordinate2D</code> representing geospatial values used for sorting</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>sortOrder</code></th>
+						<td><p>The sorting order, ascedent or descendent</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Configure the channel to sort after a POI</p>
 			</div>
 			
 
@@ -1068,7 +1385,7 @@
 				
 					<tr>
 						<th scope="row" class="argument-name"><code>object</code></th>
-						<td><p>An instance of a <code>TelepatBaseObject</code> subclass to be added in this channel</p></td>
+						<td><p>An instance of a <a href="../Classes/TelepatBaseObject.html"><code>TelepatBaseObject</code></a> subclass to be added in this channel</p></td>
 					</tr>
 				
 				</table>
@@ -1131,7 +1448,7 @@
 				
 					<tr>
 						<th scope="row" class="argument-name"><code>object</code></th>
-						<td><p>An instance of a <code>TelepatBaseObject</code> subclass to be added in this channel</p></td>
+						<td><p>An instance of a <a href="../Classes/TelepatBaseObject.html"><code>TelepatBaseObject</code></a> subclass to be added in this channel</p></td>
 					</tr>
 				
 					<tr>
@@ -1219,6 +1536,127 @@
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>Update an object in this channel</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/deleteObject:" title="deleteObject:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/deleteObject:">&ndash;&nbsp;deleteObject:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Delete an object in this channel</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)deleteObject:(TelepatBaseObject *)<em>object</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>object</code></th>
+						<td><p>Object to delete</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Delete an object in this channel</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">TelepatChannel.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/deleteObject:withBlock:" title="deleteObject:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/deleteObject:withBlock:">&ndash;&nbsp;deleteObject:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Delete an object in this channel</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)deleteObject:(TelepatBaseObject *)<em>object</em> withBlock:(void ( ^ ) ( TelepatResponse *response ))<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>object</code></th>
+						<td><p>Object to delete</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A block which will be called when the delete request was completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Delete an object in this channel</p>
 			</div>
 			
 
@@ -1490,10 +1928,10 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Appscend. All rights reserved. Updated: 2016-03-28</p>
+						<p class="copyright">Copyright &copy; 2016 Appscend. All rights reserved. Updated: 2016-11-28</p>
 						
 						
-						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
 						
 					</div>
 				</footer>

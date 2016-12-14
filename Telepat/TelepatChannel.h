@@ -115,7 +115,7 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortOrder) {
  *
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed. You can retrieve a list of the current objects in this channel by calling `getObjectOfType on the block's `TelepatResponse` argument
  */
-- (void) subscribeWithBlock:(void (^)(TelepatResponse *response))block;
+- (void) subscribeWithBlock:(void (^)(TelepatResponse *_Nonnull response))block;
 
 /**
  *  Subscribe to this channel by specifying an offset an a limit of object to receive
@@ -123,21 +123,21 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortOrder) {
  *  @param range A `NSRange` specifying the offset and the limit of objects count to be returned
  *  @param block A block which will be called when the request is completed.
  */
-- (void) subscribeWithRange:(NSRange)range withBlock:(void (^)(TelepatResponse *response))block;
+- (void) subscribeWithRange:(NSRange)range withBlock:(void (^)(TelepatResponse *_Nonnull response))block;
 
 /**
  *  Unsubscribe from this channel
  *
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
-- (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block;
+- (void) unsubscribeWithBlock:(void (^)(TelepatResponse *_Nonnull response))block;
 
 /**
  *  Get all objects from this channel. This doesn't subscribe you to the notifications from Telepat
  *
  *  @param block A block which will be called when the request is completed.
  */
-- (void) getAllObjects:(void (^)(NSArray *objects, TelepatResponse *response))block;
+- (void) getAllObjects:(void (^)(NSArray *objects, TelepatResponse *_Nonnull response))block;
 
 /*
  *  Get a fresh copy from the backend of the specified object
@@ -153,7 +153,7 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortOrder) {
  *  @param range A `NSRange` specifying the offset and the limit of objects count to be returned
  *  @param block A block which will be called when the request is completed.
  */
-- (void) getObjectsInRange:(NSRange)range withBlock:(void (^)(NSArray *objects, TelepatResponse *response))block;
+- (void) getObjectsInRange:(NSRange)range withBlock:(void (^)(NSArray *objects, TelepatResponse *_Nonnull response))block;
 
 /**
  *  Get cached objects from this channel.

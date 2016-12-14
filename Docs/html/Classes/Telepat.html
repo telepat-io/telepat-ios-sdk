@@ -7,7 +7,7 @@
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
-	<meta name="generator" content="appledoc 2.2.1 (build 1333)">
+	<meta name="generator" content="appledoc 2.2.1 (build 1334)">
 </head>
 <body class="appledoc">
 	<header>
@@ -60,6 +60,14 @@
 		
 		<option value="//api/name/appId">appId</option>
 		
+		<option value="//api/name/bearer">bearer</option>
+		
+		<option value="//api/name/deviceId">deviceId</option>
+		
+		<option value="//api/name/sessionManager">sessionManager</option>
+		
+		<option value="//api/name/updatesTransportType">updatesTransportType</option>
+		
 	</optgroup>
 	
 
@@ -70,9 +78,11 @@
 		
 		<option value="//api/name/deviceName">+ deviceName</option>
 		
-		<option value="//api/name/restClient">+ restClient</option>
-		
 		<option value="//api/name/setApplicationId:apiKey:">+ setApplicationId:apiKey:</option>
+		
+		<option value="//api/name/socketURL">+ socketURL</option>
+		
+		<option value="//api/name/urlForEndpoint:">+ urlForEndpoint:</option>
 		
 	</optgroup>
 	
@@ -80,9 +90,25 @@
 	
 	<optgroup label="Instance Methods">
 		
+		<option value="//api/name/count:withBlock:">- count:withBlock:</option>
+		
 		<option value="//api/name/dbInstance">- dbInstance</option>
 		
-		<option value="//api/name/deviceID">- deviceID</option>
+		<option value="//api/name/delete:parameters:headers:responseBlock:">- delete:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/get:parameters:headers:responseBlock:">- get:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/getCurrentUserWithBlock:">- getCurrentUserWithBlock:</option>
+		
+		<option value="//api/name/linkAccountWithFacebook:token:withBlock:">- linkAccountWithFacebook:token:withBlock:</option>
+		
+		<option value="//api/name/patch:parameters:headers:responseBlock:">- patch:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/performRequestOfType:withURL:params:headers:andBlock:">- performRequestOfType:withURL:params:headers:andBlock:</option>
+		
+		<option value="//api/name/post:parameters:headers:responseBlock:">- post:parameters:headers:responseBlock:</option>
+		
+		<option value="//api/name/put:parameters:headers:responseBlock:">- put:parameters:headers:responseBlock:</option>
 		
 		<option value="//api/name/registerDeviceForWebsocketsWithBlock:shouldUpdateBackend:">- registerDeviceForWebsocketsWithBlock:shouldUpdateBackend:</option>
 		
@@ -230,6 +256,144 @@
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/deviceId" title="deviceId"></a>
+	<h3 class="method-title"><code><a href="#//api/name/deviceId">&nbsp;&nbsp;deviceId</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores the device identifier</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSString *deviceId</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Stores the device identifier</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sessionManager" title="sessionManager"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sessionManager">&nbsp;&nbsp;sessionManager</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The <code>AFHTTPSessionManager</code> object used for HTTP requests</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) AFHTTPSessionManager *sessionManager</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The <code>AFHTTPSessionManager</code> object used for HTTP requests</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updatesTransportType" title="updatesTransportType"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updatesTransportType">&nbsp;&nbsp;updatesTransportType</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The kind of transport Telepat uses to receive updates</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic) TelepatUpdatesTransportType updatesTransportType</code></div>
+
+		    
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The kind of transport Telepat uses to receive updates</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/client" title="client"></a>
 	<h3 class="method-title"><code><a href="#//api/name/client">+&nbsp;client</a></code>
 </h3>
@@ -264,57 +428,6 @@
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>Instantiate (if needed) and returns a <code>Telepat</code> singleton instance.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">Telepat.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/restClient" title="restClient"></a>
-	<h3 class="method-title"><code><a href="#//api/name/restClient">+&nbsp;restClient</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Returns the underlying REST <a href="#//api/name/client">client</a> which Telepat uses for REST requests</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>+ (KRRest *)restClient</code></div>
-
-		    
-			
-
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>The current <a href="../Classes/KRRest.html"><code>KRRest</code></a> instance</p>
-			</div>
-			
-
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Returns the underlying REST <a href="#//api/name/client">client</a> which Telepat uses for REST requests</p>
 			</div>
 			
 
@@ -395,8 +508,8 @@
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/deviceID" title="deviceID"></a>
-	<h3 class="method-title"><code><a href="#//api/name/deviceID">&ndash;&nbsp;deviceID</a></code>
+	<a name="//api/name/bearer" title="bearer"></a>
+	<h3 class="method-title"><code><a href="#//api/name/bearer">&nbsp;&nbsp;bearer</a></code>
 </h3>
 
 	<div class="method-info">
@@ -406,21 +519,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Get the current device ID</p>
+				<p>The Authentication HTTP header</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSString *)deviceID</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSString *bearer</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>A <code>NSString</code> with the device ID</p>
-			</div>
 			
 
 			
@@ -428,7 +536,7 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>Get the current device ID</p>
+				<p>The Authentication HTTP header</p>
 			</div>
 			
 
@@ -497,6 +605,57 @@
 		</div>
 	</div>
 </div><div class="section-method">
+	<a name="//api/name/socketURL" title="socketURL"></a>
+	<h3 class="method-title"><code><a href="#//api/name/socketURL">+&nbsp;socketURL</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>The url to the WS server</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (NSURL *)socketURL</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>a <code>NSURL</code> object containing the address to the WS server</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>The url to the WS server</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/dbInstance" title="dbInstance"></a>
 	<h3 class="method-title"><code><a href="#//api/name/dbInstance">&ndash;&nbsp;dbInstance</a></code>
 </h3>
@@ -521,7 +680,7 @@
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>A <a href="../Classes/TelepatDB.html"><code>TelepatDB</code></a> subclass instance</p>
+				<p>A <code>TelepatDB</code> subclass instance</p>
 			</div>
 			
 
@@ -531,6 +690,510 @@
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
 				<p>Get an instance of the underlying database manager</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/urlForEndpoint:" title="urlForEndpoint:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/urlForEndpoint:">+&nbsp;urlForEndpoint:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Returns the complete URL for a given endpoint</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (NSURL *)urlForEndpoint:(NSString *)<em>endpoint</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>endpoint</code></th>
+						<td><p>The endpoint to be called, e.g. &ldquo;/login&rdquo;</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>A <code>NSURL</code> object pointing to the specified endpoint</p>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Returns the complete URL for a given endpoint</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/get:parameters:headers:responseBlock:" title="get:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/get:parameters:headers:responseBlock:">&ndash;&nbsp;get:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Peform a GET request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)get:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(HTTPResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of GET parameters</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/HTTPResponseBlock.html"><code>HTTPResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Peform a GET request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/post:parameters:headers:responseBlock:" title="post:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/post:parameters:headers:responseBlock:">&ndash;&nbsp;post:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a POST request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)post:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(HTTPResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/HTTPResponseBlock.html"><code>HTTPResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a POST request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/put:parameters:headers:responseBlock:" title="put:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/put:parameters:headers:responseBlock:">&ndash;&nbsp;put:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a PUT request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)put:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(HTTPResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/HTTPResponseBlock.html"><code>HTTPResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a PUT request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/patch:parameters:headers:responseBlock:" title="patch:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/patch:parameters:headers:responseBlock:">&ndash;&nbsp;patch:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a PATCH request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)patch:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(HTTPResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/HTTPResponseBlock.html"><code>HTTPResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a PATCH request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/delete:parameters:headers:responseBlock:" title="delete:parameters:headers:responseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/delete:parameters:headers:responseBlock:">&ndash;&nbsp;delete:parameters:headers:responseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a DELETE request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)delete:(NSURL *)<em>url</em> parameters:(id)<em>params</em> headers:(NSDictionary *)<em>headers</em> responseBlock:(HTTPResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>url</code></th>
+						<td><p>The URL</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/HTTPResponseBlock.html"><code>HTTPResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a DELETE request</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/performRequestOfType:withURL:params:headers:andBlock:" title="performRequestOfType:withURL:params:headers:andBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/performRequestOfType:withURL:params:headers:andBlock:">&ndash;&nbsp;performRequestOfType:withURL:params:headers:andBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform a HTTP request</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)performRequestOfType:(NSString *)<em>requestType</em> withURL:(NSURL *)<em>url</em> params:(NSDictionary *)<em>params</em> headers:(NSDictionary *)<em>headers</em> andBlock:(HTTPResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>requestType</code></th>
+						<td><p>The type of the HTTP request (&ldquo;GET&rdquo;, &ldquo;POST&rdquo;, &ldquo;PUT&rdquo;, &ldquo;PATCH&rdquo;, &ldquo;DELETE&rdquo;)</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>params</code></th>
+						<td><p>A dictionary of parameters to be sent as the request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>headers</code></th>
+						<td><p>The headers to be added to the request</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/HTTPResponseBlock.html"><code>HTTPResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Perform a HTTP request</p><p>This method performs a HTTP request while making sure that the authorization token (<a href="#//api/name/bearer">bearer</a>) is valid.
+If the token is expired this method calls /user/refresh_token, updates the token and repeats the request. Call this
+method everytime you need to perform a request which needs a valid auth token, otherwise use other methods such
+as <code>post:parameters:headers:responseBlock</code>.</p>
 			</div>
 			
 
@@ -611,8 +1274,8 @@
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/sendProxiedRequest:withResponseBlock:" title="sendProxiedRequest:withResponseBlock:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/sendProxiedRequest:withResponseBlock:">&ndash;&nbsp;sendProxiedRequest:withResponseBlock:</a></code>
+	<a name="//api/name/linkAccountWithFacebook:token:withBlock:" title="linkAccountWithFacebook:token:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/linkAccountWithFacebook:token:withBlock:">&ndash;&nbsp;linkAccountWithFacebook:token:withBlock:</a></code>
 </h3>
 
 	<div class="method-info">
@@ -622,12 +1285,12 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Sends a proxied request. See <code>TelepatProxyRequest</code> for more details</p>
+				<p>Link a Telepat account with Facebook</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)sendProxiedRequest:(TelepatProxyRequest *)<em>request</em> withResponseBlock:(KRResponseBlock)<em>block</em></code></div>
+			<div class="method-subsection method-declaration"><code>- (void)linkAccountWithFacebook:(NSString *)<em>username</em> token:(NSString *)<em>token</em> withBlock:(TelepatResponseBlock)<em>block</em></code></div>
 
 		    
 			
@@ -636,13 +1299,18 @@
 				<table class="argument-def parameter-def">
 				
 					<tr>
-						<th scope="row" class="argument-name"><code>request</code></th>
-						<td><p>The <code>TelepatProxyRequest</code> object</p></td>
+						<th scope="row" class="argument-name"><code>username</code></th>
+						<td><p>Username of the Telepat account to be linked</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>token</code></th>
+						<td><p>The token returned from Facebook (accessed via <code>[[FBSDKAccessToken currentAccessToken] tokenString]</code>)</p></td>
 					</tr>
 				
 					<tr>
 						<th scope="row" class="argument-name"><code>block</code></th>
-						<td><p>A <a href="../Blocks/KRResponseBlock.html"><code>KRResponseBlock</code></a> which will be called when the request is completed.</p></td>
+						<td><p>A <a href="../Blocks/TelepatResponseBlock.html"><code>TelepatResponseBlock</code></a> which will be called when the login completed.</p></td>
 					</tr>
 				
 				</table>
@@ -656,7 +1324,191 @@
 			
 			<div class="method-subsection discussion-section">
 				<h4 class="method-subtitle">Discussion</h4>
-				<p>Sends a proxied request. See <code>TelepatProxyRequest</code> for more details</p>
+				<p>Link a Telepat account with Facebook</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/count:withBlock:" title="count:withBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/count:withBlock:">&ndash;&nbsp;count:withBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Count objects</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)count:(id)<em>body</em> withBlock:(TelepatResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>body</code></th>
+						<td><p>The request body</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/TelepatResponseBlock.html"><code>TelepatResponseBlock</code></a> which will be called when the request is completed</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Count objects</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/getCurrentUserWithBlock:" title="getCurrentUserWithBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/getCurrentUserWithBlock:">&ndash;&nbsp;getCurrentUserWithBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Info about logged user</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)getCurrentUserWithBlock:(TelepatResponseBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <a href="../Blocks/TelepatResponseBlock.html"><code>TelepatResponseBlock</code></a> which will be called when the request is completed.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Info about logged user</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">Telepat.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/sendProxiedRequest:withResponseBlock:" title="sendProxiedRequest:withResponseBlock:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/sendProxiedRequest:withResponseBlock:">&ndash;&nbsp;sendProxiedRequest:withResponseBlock:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Sends a proxied request. See <a href="../Classes/TelepatProxyRequest.html"><code>TelepatProxyRequest</code></a> for more details</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)sendProxiedRequest:(TelepatProxyRequest *)<em>request</em> withResponseBlock:(void ( ^ ) ( NSData *responseData , NSError *error ))<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>request</code></th>
+						<td><p>The <a href="../Classes/TelepatProxyRequest.html"><code>TelepatProxyRequest</code></a> object</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>A <code>KRResponseBlock</code> which will be called when the request is completed.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Sends a proxied request. See <a href="../Classes/TelepatProxyRequest.html"><code>TelepatProxyRequest</code></a> for more details</p>
 			</div>
 			
 
@@ -688,10 +1540,10 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2016 Appscend. All rights reserved. Updated: 2016-03-28</p>
+						<p class="copyright">Copyright &copy; 2016 Appscend. All rights reserved. Updated: 2016-11-28</p>
 						
 						
-						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1334)</a>.</p>
 						
 					</div>
 				</footer>

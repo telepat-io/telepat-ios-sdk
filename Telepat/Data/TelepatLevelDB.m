@@ -33,6 +33,7 @@ NSString *const OBJECTS_PREFIX = @"TP_OBJECTS_";
 - (id) init {
     if (self = [super init]) {
         _dbInstance = [LevelDB databaseInLibraryWithName:@"Telepat.ldb"];
+        _dbInstance.safe = YES;
     }
     return self;
 }

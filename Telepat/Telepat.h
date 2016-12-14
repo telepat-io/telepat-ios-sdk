@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DDLog.h"
-#import "DDTTYLogger.h"
+#import <AFNetworking/AFNetworking.h>
 #import "TelepatConstants.h"
 #import "TelepatResponse.h"
 #import "TelepatDeviceIdentifier.h"
@@ -20,7 +19,8 @@
 #import "TelepatOperatorFilter.h"
 #import "TelepatLevelDB.h"
 #import "TelepatProxyRequest.h"
-#import "AFNetworking.h"
+
+@import CocoaLumberjack;
 
 extern const int ddLogLevel;
 typedef NS_ENUM(NSInteger, TelepatUpdatesTransportType) {
