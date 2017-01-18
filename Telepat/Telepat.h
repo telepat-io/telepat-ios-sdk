@@ -435,6 +435,18 @@ typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
  *  @param filter Filters to use when subscribing
  *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
  */
+- (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block;
+
+/*
+ *  Subscribe to a `TelepatContext`. A new `TelepatChannel` object will be instantiated and returned
+ *
+ *  @param context A `TelepatContext` to subscribe to
+ *  @param modelName The name of the model to subscribe to
+ *  @param classType The kind of objects which will be stored in the `TelepatChannel` instance. Used for instantiating the proper objects when notifications arrives.
+ *  @param filter Filters to use when subscribing
+ *  @param range Limits for the quantity of data to be returned
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ */
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter range:(NSRange)range withBlock:(TelepatResponseBlock)block;
 
 /*
@@ -458,6 +470,21 @@ typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
  *  @param channel The channel to unregister
  */
 - (void) unregisterSubscription:(TelepatChannel *)channel;
+
+/*
+ *  Check if there is an subscription to a channel identifier
+ *
+ *  @param channelIdentifier The channel identifier to check
+ *  @return `YES` if there is a subscription for the provided channel identifier
+ */
+- (BOOL) isSubscribedToChannelId:(NSString *) channelIdentifier;
+
+/*
+ *  Get a list of current subscriptions
+ *
+ *  @return A `NSArray` of `TelepatChannel`s for all the current subscriptions
+ */
+- (NSArray *) currentlySubscribedChannels;
 
 /*
  *  Get all the current contexts as a NSDictionary with context IDs as key and the `TelepatContext` instances as values.
@@ -529,10 +556,11 @@ typedef void (^HTTPResponseBlock)(NSDictionary *dictionary, NSError *error);
  *
  *  @param oldObject The old version of the object
  *  @param newObject The updated version of the object
+ *  @param model     The model name in which the object live
  *  @param block     A `TelepatResponseBlock` which will be called when the request is completed.
  *
  */
-- (void) updateObject:(TelepatBaseObject *)oldObject withObject:(TelepatBaseObject *)newObject withBlock:(TelepatResponseBlock)block;
+- (void) updateObject:(TelepatBaseObject *)oldObject withObject:(TelepatBaseObject *)newObject inModel:(NSString *)model withBlock:(TelepatResponseBlock)block;
 
 /**
  *  Count objects

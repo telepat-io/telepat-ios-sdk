@@ -8,8 +8,13 @@
 
 #import "TelepatWebsocketTransport.h"
 #import "Telepat.h"
+#import "TelepatConstants.h"
 
 static TelepatWebsocketTransport *sharedClient;
+
+@interface TelepatWebsocketTransport ()
+@property (nonatomic, strong) SIOSocket *socket;
+@end
 
 @implementation TelepatWebsocketTransport
 
@@ -60,7 +65,7 @@ static TelepatWebsocketTransport *sharedClient;
         };
         
         [self.socket on:@"message" callback:^(NSArray *args) {
-            NSLog(@"Websockets: message");
+            NSLog(@"Websockets: message: %@", [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:args[0] options:NSJSONWritingPrettyPrinted error:nil] encoding:NSUTF8StringEncoding]);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:TelepatRemoteNotificationReceived object:args[0] userInfo:@{@"source": @(TelepatNotificationOriginWebsockets)}];
             });
@@ -68,6 +73,7 @@ static TelepatWebsocketTransport *sharedClient;
         
         [self.socket on:@"ready" callback:^(SIOParameterArray *args) {
             NSLog(@"Websockets: ready");
+            [[NSNotificationCenter defaultCenter] postNotificationName:TelepatWebsocketsReady object:[NSArray arrayWithArray:args]];
             block();
         }];
     }];

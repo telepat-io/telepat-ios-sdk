@@ -58,4 +58,9 @@ extern NSString *const TelepatContextUpdated;
  */
 extern NSString *const TelepatContextDeleted;
 
+/**
+ *  Posted when the websocket connection is ready
+ */
+extern NSString *const TelepatWebsocketsReady;
+
 #endif

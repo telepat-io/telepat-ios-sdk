@@ -14,11 +14,11 @@
     TelepatTransportNotification *transportNotification = [[TelepatTransportNotification alloc] init];
     transportNotification.origin = origin;
     
-    if ([dict[@"op"] isEqualToString:@"create"]) {
+    if ([dict[@"op"] isEqual:@"create"]) {
         transportNotification.type = TelepatNotificationTypeObjectAdded;
-    } else if ([dict[@"op"] isEqualToString:@"update"]) {
+    } else if ([dict[@"op"] isEqual:@"update"]) {
         transportNotification.type = TelepatNotificationTypeObjectUpdated;
-    } else if ([dict[@"op"] isEqualToString:@"delete"]) {
+    } else if ([dict[@"op"] isEqual:@"delete"]) {
         transportNotification.type = TelepatNotificationTypeObjectDeleted;
     }
     

@@ -17,3 +17,5 @@ NSString *const TelepatContextDeleted = @"telepatContextDeleted";
 NSString *const TelepatChannelObjectAdded = @"telepatObjectAdded";
 NSString *const TelepatChannelObjectUpdated = @"telepatObjectUpdated";
 NSString *const TelepatChannelObjectDeleted = @"telepatObjectDeleted";
+
+NSString *const TelepatWebsocketsReady = @"websocketsReady";

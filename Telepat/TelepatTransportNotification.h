@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, TelepatNotificationType) {
     /**
      *  Marks that an object was added
      */
-    TelepatNotificationTypeObjectAdded,
+    TelepatNotificationTypeObjectAdded = 1,
     /**
      *  Marks that an object was updated
      */

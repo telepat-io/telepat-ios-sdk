@@ -25,7 +25,7 @@ typedef void (^TelepatResponseBlock)(TelepatResponse  *_Nonnull response);
 @property (nonatomic, strong) NSDate<Optional> *_Nullable modified;
 
 + (TelepatJSONKeyMapper *_Nullable)keyMapper;
-- (NSDictionary *_Nullable) patchAgainst:(TelepatBaseObject *_Nonnull)updatedObject;
+- (NSDictionary *_Nullable) patchAgainst:(TelepatBaseObject *_Nonnull)updatedObject withModel:(NSString *_Nonnull)model;
 - (NSArray *_Nonnull) propertiesList;
 - (void) setValue:(id <NSObject>_Nonnull)value forProperty:(NSString *_Nonnull)propertyName;
 - (void) update;

@@ -17,8 +17,8 @@ Pod::Spec.new do |s|
   s.source_files = "Telepat", "Telepat/**/*.{h,m}"
   s.requires_arc = true
   s.dependency "Objective-LevelDB", "~>2.1"
-  s.dependency "JSONModel", "~>1.7.0"
-  s.dependency "AFNetworking", "~>2.5.0"
+  s.dependency "JSONModel", "~>1.1.0"
+  s.dependency "AFNetworking", "~>2.5"
   s.dependency "SIOSocket", "~>0.2.0"
   s.dependency "CocoaLumberjack", "~>2.3"
 

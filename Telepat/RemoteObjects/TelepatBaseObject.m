@@ -56,7 +56,7 @@
     return NO;
 }
 
-- (NSDictionary *) patchAgainst:(TelepatBaseObject *)updatedObject {
+- (NSDictionary *_Nullable) patchAgainst:(TelepatBaseObject *_Nonnull)updatedObject withModel:(NSString *_Nonnull)model {
     if (![updatedObject isKindOfClass:[TelepatBaseObject class]]) @throw([NSException exceptionWithName:kTelepatInvalidClass reason:@"The received object is not the same as the current one" userInfo:nil]);
     NSMutableDictionary *patch = [NSMutableDictionary dictionary];
     
@@ -67,7 +67,7 @@
         if (!(initialValue == nil && updatedValue == nil) && ![updatedValue isEqual:initialValue]) {
             NSString *convertedProperty = [[[updatedObject class] keyMapper] convertValue:property isImportingToModel:YES];
             NSMutableDictionary *patchDict = [NSMutableDictionary dictionary];
-            patchDict[@"path"] = [NSString stringWithFormat:@"user/%@/%@", self.object_id, convertedProperty];
+            patchDict[@"path"] = [NSString stringWithFormat:@"%@/%@/%@", model, self.object_id, convertedProperty];
             
 //            if ([updatedObject valueForKey:property] == nil) {
 //                patchDict[@"op"] = @"delete";

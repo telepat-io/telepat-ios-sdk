@@ -25,8 +25,6 @@ typedef void (^TelepatWebSocketWelcomeBlock)();
 
 @interface TelepatWebsocketTransport : NSObject
 
-@property (nonatomic, strong) SIOSocket *socket;
-
 /**
  *  Connect to a websockets server
  *

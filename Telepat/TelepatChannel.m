@@ -134,56 +134,15 @@
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
     mutableParams[@"no_subscribe"] = @YES;
     
-    [[Telepat client] performRequestOfType:@"POST"
-                                   withURL:[Telepat urlForEndpoint:@"/object/subscribe"]
-                                    params:mutableParams
-                                   headers:@{}
-                                  andBlock:^(NSDictionary *dictionary, NSError *error) {
-                                      TelepatResponse *subscribeResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
-                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                          if (subscribeResponse.status == 200) {
-                                              NSMutableArray *returnedObjects = [NSMutableArray array];
-                                              
-                                              if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
-                                                  for (NSDictionary *dict in subscribeResponse.content) {
-                                                      NSError *err;
-                                                      id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
-                                                      if (err) continue;
-                                                      ((TelepatBaseObject*) obj).channel = self;
-                                                      [self persistObject:obj];
-                                                      [returnedObjects addObject:obj];
-                                                  }
-                                                  
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      block([NSArray arrayWithArray:returnedObjects], subscribeResponse);
-                                                  });
-                                              } else {
-                                                  NSError *err;
-                                                  id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:&err];
-                                                  if (err) {
-                                                      block(nil, subscribeResponse);
-                                                      return;
-                                                  }
-                                                  ((TelepatBaseObject*) obj).channel = self;
-                                                  [self persistObject:obj];
-                                                  
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      block(@[obj], subscribeResponse);
-                                                  });
-                                              }
-                                          } else {
-                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                  block(nil, subscribeResponse);
-                                              });
-                                          }
-                                      });
-                                  }];
+    [self getObjectsInRange:NSMakeRange(NSNotFound, INT_MAX) withBlock:^(NSArray *objects, TelepatResponse * _Nonnull response) {
+        block(objects, response);
+    }];
 }
 
 - (void) getObjectsInRange:(NSRange)range withBlock:(void (^)(NSArray *objects, TelepatResponse *response))block {
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionaryWithDictionary:[self paramsForSubscription]];
     mutableParams[@"no_subscribe"] = @YES;
-    mutableParams[@"offset"] = @(range.location);
+    mutableParams[@"offset"] = range.location == NSNotFound ? @(0) : @(range.location);
     mutableParams[@"limit"] = @(range.length);
     
     [[Telepat client] performRequestOfType:@"POST"
@@ -198,9 +157,12 @@
                                               
                                               if ([subscribeResponse.content isKindOfClass:[NSArray class]]) {
                                                   for (NSDictionary *dict in subscribeResponse.content) {
-                                                      id obj = [[_objectType alloc] initWithDictionary:dict error:nil];
-                                                      [self persistObject:obj];
-                                                      [returnedObjects addObject:obj];
+                                                      NSError *err;
+                                                      id obj = [[_objectType alloc] initWithDictionary:dict error:&err];
+                                                      if (obj) {
+                                                          [self persistObject:obj];
+                                                          [returnedObjects addObject:obj];
+                                                      }
                                                   }
                                                   
                                                   dispatch_async(dispatch_get_main_queue(), ^{
@@ -208,11 +170,18 @@
                                                   });
                                               } else {
                                                   id obj = [[_objectType alloc] initWithDictionary:subscribeResponse.content error:nil];
-                                                  [self persistObject:obj];
                                                   
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      block(@[obj], subscribeResponse);
-                                                  });
+                                                  if (obj) {
+                                                      [self persistObject:obj];
+                                                      
+                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                          block(@[obj], subscribeResponse);
+                                                      });
+                                                  } else {
+                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                          block(@[], subscribeResponse);
+                                                      });
+                                                  }
                                               }
                                           } else {
                                               dispatch_async(dispatch_get_main_queue(), ^{
@@ -378,7 +347,7 @@
     [[Telepat client] performRequestOfType:@"POST"
                                    withURL:[Telepat urlForEndpoint:@"/object/update"]
                                     params:@{@"model": self.modelName,
-                                             @"context": self.context.context_id,
+                                             @"context": self.context ? self.context.context_id : @"",
                                              @"id": object.object_id,
                                              @"patches": patches}
                                    headers:@{}
@@ -474,7 +443,7 @@
         }
             
         case TelepatNotificationTypeObjectDeleted: {
-            TelepatBaseObject *deletedObject = [[TelepatBaseObject alloc] initWithDictionary:notification.value error:nil];
+            TelepatBaseObject *deletedObject = [[self.objectType alloc] initWithDictionary:notification.value error:nil];
              if ([[[Telepat client] dbInstance] objectWithID:deletedObject.object_id existsInChannel:[self subscriptionIdentifier]]) {
                  [[[Telepat client] dbInstance] deleteObjectWithID:deletedObject.object_id fromChannel:[self subscriptionIdentifier]];
                  ((TelepatBaseObject*)deletedObject).channel = self;
