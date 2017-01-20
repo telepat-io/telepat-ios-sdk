@@ -14,7 +14,7 @@
 #import "NSData+HexString.h"
 #import "NSDictionary+String.h"
 
-#define DebugRequest(requestType) DLog(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
+#define DebugRequest(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
 requestType,\
 [url absoluteString], \
 [self.sessionManager.requestSerializer.HTTPRequestHeaders stringRepresentation], \
@@ -22,7 +22,7 @@ requestType,\
 response.statusCode, \
 responseObject)
 
-#define DebugRequestError(requestType) DLog(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
+#define DebugRequestError(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
 requestType, \
 [url absoluteString], \
 [self.sessionManager.requestSerializer.HTTPRequestHeaders stringRepresentation], \
