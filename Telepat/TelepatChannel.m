@@ -408,7 +408,7 @@
             TelepatBaseObject *obj = [[_objectType alloc] initWithDictionary:notification.value error:&err];
             obj.channel = self;
             if (obj) {
-                if ([[[Telepat client] dbInstance] objectWithID:obj.object_id existsInChannel:[self subscriptionIdentifier]]) return;
+                if ([[[Telepat client] dbInstance] objectWithID:obj.object_id existsInChannel:[self subscriptionIdentifier]]) return;  // Duplicate object
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self persistObject:obj];
