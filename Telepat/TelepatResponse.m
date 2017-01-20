@@ -26,7 +26,7 @@
     if (self = [super init]) {
         if (error) {
             self.error = error;
-            self.status = error.code;
+            self.status = dictionary[@"status"] ? [dictionary[@"status"] integerValue] : error.code;
             self.message = dictionary[@"message"];
             self.code = dictionary[@"code"];
             return self;
