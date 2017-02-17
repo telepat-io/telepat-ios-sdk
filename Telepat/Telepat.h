@@ -23,6 +23,8 @@
 @import CocoaLumberjack;
 
 extern const int ddLogLevel;
+extern NSString *const TelepatAuthTokenUpdated;
+
 typedef NS_ENUM(NSInteger, TelepatUpdatesTransportType) {
     TelepatUpdatesTransportTypeSockets,
     TelepatUpdatesTransportTypeiOS

@@ -36,6 +36,8 @@ const int ddLogLevel = DDLogLevelDebug;
 const int ddLogLevel = DDLogLevelError;
 #endif
 
+NSString *const TelepatAuthTokenUpdated = @"io.telepat.ios.token_updated";
+
 @implementation Telepat {
     NSMutableDictionary *_mServerContexts;
     NSMutableDictionary *_subscriptions;
@@ -440,6 +442,7 @@ const int ddLogLevel = DDLogLevelError;
                     [_dbInstance setOperationsDataWithObject:tokenObj forKey:kJWT];
                     [_dbInstance setOperationsDataWithObject:[NSDate date] forKey:kJWT_TIMESTAMP];
                     self.bearer = tokenObj.token;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:TelepatAuthTokenUpdated object:tokenObj];
                 }
                 block(loginResponse);
             }];
@@ -677,11 +680,11 @@ const int ddLogLevel = DDLogLevelError;
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType withBlock:(TelepatResponseBlock)block {
-    return [self subscribe:context modelName:modelName classType:classType filter:nil range:NSMakeRange(NSNotFound, INT_MAX) withBlock:block];
+    return [self subscribe:context modelName:modelName classType:classType filter:nil range:NSMakeRange(0, INT_MAX) withBlock:block];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter withBlock:(TelepatResponseBlock)block {
-    return [self subscribe:context modelName:modelName classType:classType filter:filter range:NSMakeRange(NSNotFound, INT_MAX) withBlock:block];
+    return [self subscribe:context modelName:modelName classType:classType filter:filter range:NSMakeRange(0, INT_MAX) withBlock:block];
 }
 
 - (TelepatChannel *) subscribe:(TelepatContext *)context modelName:(NSString *)modelName classType:(Class)classType filter:(TelepatOperatorFilter*)filter range:(NSRange)range withBlock:(TelepatResponseBlock)block {
@@ -690,15 +693,9 @@ const int ddLogLevel = DDLogLevelError;
     
     TelepatChannel *channel = [[TelepatChannel alloc] initWithModelName:modelName context:context objectType:classType];
     if (filter) channel.opFilter = filter;
-    if (range.location == NSNotFound) {
-        [channel subscribeWithBlock:^(TelepatResponse * _Nonnull response) {
-            block(response);
-        }];
-    } else {
-        [channel subscribeWithRange:range withBlock:^(TelepatResponse *response) {
-            block(response);
-        }];
-    }
+    [channel subscribeWithRange:range withBlock:^(TelepatResponse *response) {
+        block(response);
+    }];
     return channel;
 }
 
