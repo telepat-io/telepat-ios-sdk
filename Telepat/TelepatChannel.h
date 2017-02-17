@@ -133,6 +133,14 @@ typedef NS_ENUM(NSInteger, TelepatChannelSortOrder) {
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *_Nonnull response))block;
 
 /**
+ *  Unsubscribe from this channel
+ *
+ *  @param block A `TelepatResponseBlock` which will be called when the request is completed.
+ *  @param unregister If the subscription should be unregistered from local cache
+ */
+- (void) unsubscribeWithBlock:(void (^)(TelepatResponse *_Nonnull response))block unregisterSubscription:(BOOL)unregister;
+
+/**
  *  Get all objects from this channel. This doesn't subscribe you to the notifications from Telepat
  *
  *  @param block A block which will be called when the request is completed.

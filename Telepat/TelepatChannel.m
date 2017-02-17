@@ -117,13 +117,17 @@
 }
 
 - (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block {
+    [self unsubscribeWithBlock:block unregisterSubscription:YES];
+}
+
+- (void) unsubscribeWithBlock:(void (^)(TelepatResponse *response))block unregisterSubscription:(BOOL)unregister {
     [[Telepat client] performRequestOfType:@"POST"
                                    withURL:[Telepat urlForEndpoint:@"/object/unsubscribe"]
                                     params:[self paramsForSubscription]
                                    headers:@{}
                                   andBlock:^(NSDictionary *dictionary, NSError *error) {
                                       TelepatResponse *unsubscribeResponse = [[TelepatResponse alloc] initWithDictionary:dictionary error:error];
-                                      if (unsubscribeResponse.status == 200) {
+                                      if (unsubscribeResponse.status == 200 && unregister) {
                                           [[Telepat client] unregisterSubscription:self];
                                       }
                                       block(unsubscribeResponse);
