@@ -12,6 +12,7 @@
 #import "TelepatLevelDB.h"
 #import "TelepatWebsocketTransport.h"
 #import "NSData+HexString.h"
+#import "NSDictionary+String.h"
 
 #define DebugRequest(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
 requestType,\
