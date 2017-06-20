@@ -12,7 +12,6 @@
 #import "TelepatLevelDB.h"
 #import "TelepatWebsocketTransport.h"
 #import "NSData+HexString.h"
-#import "NSDictionary+String.h"
 
 #define DebugRequest(requestType) DDLogDebug(@"\n%@ %@\n%@\n%@\n----\nHTTP: %d\n%@\n", \
 requestType,\
@@ -115,7 +114,7 @@ NSString *const TelepatAuthTokenUpdated = @"io.telepat.ios.token_updated";
 - (NSDictionary *) mergedHeadersWithHeaders:(NSDictionary*)newHeaders {
     NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"kHTTPHeaders"]];
     [headers setObject:@"application/json" forKey:@"Content-Type"];
-    self.deviceId ? [headers setObject:self.deviceId forKey:@"X-BLGREQ-UDID"] : [headers setObject:@"" forKey:@"X-BLGREQ-UDID"];
+    self.deviceId.length ? [headers setObject:self.deviceId forKey:@"X-BLGREQ-UDID"] : [headers setObject:@"TP_EMPTY_UDID" forKey:@"X-BLGREQ-UDID"];
     if (self.bearer) [headers setObject:[NSString stringWithFormat:@"Bearer %@", self.bearer] forKey:@"Authorization"];
     if (self.apiKey) [headers setObject:self.apiKey forKey:@"X-BLGREQ-SIGN"];
     if (self.appId) [headers setObject:self.appId forKey:@"X-BLGREQ-APPID"];
